@@ -1,12 +1,26 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Eye, EyeOff, Save, AlertCircle, CheckCircle, User, Lock, LogOut } from "lucide-react";
-import { useAdminAuth, logout as adminLogout } from "@/hooks/use-admin-auth";
+
+function checkAuth(): boolean {
+  const localSession = localStorage.getItem("admin_session");
+  const sessionSession = sessionStorage.getItem("admin_session");
+  if (!localSession && !sessionSession) return false;
+  try {
+    const session = JSON.parse(localSession || sessionSession || "{}");
+    return !!(session.username && session.loginTime);
+  } catch {
+    return false;
+  }
+}
+
+function logout() {
+  localStorage.removeItem("admin_session");
+  sessionStorage.removeItem("admin_session");
+}
 
 export default function AdminSettingsPage() {
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAdminAuth();
-  
   const [currentUsername, setCurrentUsername] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
@@ -17,12 +31,28 @@ export default function AdminSettingsPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    setIsReady(true);
+  }, []);
+
+  useEffect(() => {
+    if (isReady && !checkAuth()) {
       navigate("/admin/login");
     }
-  }, [isAuthenticated, navigate]);
+  }, [isReady, navigate]);
+
+  // Get current username from session
+  useEffect(() => {
+    const session = localStorage.getItem("admin_session") || sessionStorage.getItem("admin_session");
+    if (session) {
+      try {
+        const s = JSON.parse(session);
+        setCurrentUsername(s.username || "");
+      } catch {}
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -88,10 +118,11 @@ export default function AdminSettingsPage() {
   };
 
   const handleLogout = () => {
-    adminLogout();
+    logout();
+    window.location.href = "/admin/login";
   };
 
-  if (!isAuthenticated) return null;
+  if (!checkAuth()) return null;
 
   return (
     <div className="min-h-screen bg-background p-4 sm:p-8">
