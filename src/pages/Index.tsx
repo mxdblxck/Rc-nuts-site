@@ -143,12 +143,13 @@ export default function Index() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16 grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16">
+          {/* Text Content - Always first on mobile */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center md:text-start order-2 md:order-1"
+            className="text-center"
           >
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -159,15 +160,15 @@ export default function Index() {
               <Sparkles className="w-4 h-4" />
               مرحبا بزبائننا الكرام
             </motion.div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.15] mb-4 md:mb-5 font-serif">
+            <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.15] mb-5 font-serif">
               أجود المكسرات
               <br />
               <span className="text-primary">والفواكه المجففة</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-md mx-auto md:mx-0">
+            <p className="text-base sm:text-lg md:text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg mx-auto">
               مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center md:items-start mb-8 md:mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-10">
               <BuyButton>
                 <Link to="/shop">
                   <><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />اشتري الآن</>
@@ -194,13 +195,14 @@ export default function Index() {
             </motion.div>
           </motion.div>
 
+          {/* Hero Image - Last on mobile, right side on desktop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative order-1 md:order-2"
+            className="mt-12 md:mt-0 md:absolute md:left-1/2 md:right-4 md:top-1/2 md:-translate-y-1/2 md:max-w-sm lg:max-w-md"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square max-w-sm mx-auto">
               <img
                 src={`/hero2.png`}
                 alt="مكسرات طبيعية فاخرة"
