@@ -7,9 +7,11 @@ import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { useCart } from "@/hooks/use-cart.tsx";
-import { toast } from "sonner";
 import Navbar from "@/components/Navbar.tsx";
 import Footer from "@/components/Footer.tsx";
+import { showAddedToCartToast } from "@/lib/cart-toast.tsx";
+
+const PLACEHOLDER = "/logo.png";
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -18,11 +20,12 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedPackaging, setSelectedPackaging] = useState<string | null>(null);
   const [selectedTaste, setSelectedTaste] = useState<string | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const product = useQuery(api.products.getProductBySlug, { slug: slug ?? "" });
 
   const packagingOptions = product?.packagingOptions ?? [];
-  const activePackaging = packagingOptions.find((p) => p.name === selectedPackaging) ?? packagingOptions[0];
+  const activePackaging = packagingOptions.find((p: typeof packagingOptions[0]) => p.name === selectedPackaging) ?? packagingOptions[0];
 
   const TASTE_OPTIONS = product?.tasteOptions ?? [];
   const activeTaste = selectedTaste ?? TASTE_OPTIONS[0];
@@ -37,17 +40,24 @@ export default function ProductPage() {
     const tasteLabel = TASTE_OPTIONS.length > 0 ? activeTaste : undefined;
     const cartItemId = `${product._id}-${weightLabel ?? "default"}-${tasteLabel ?? "default"}`;
 
+    // Resolve images for cart
+    const resolvedImages: string[] = (() => {
+      if (product.images && product.images.length > 0) return product.images;
+      if (product.imageUrl) return [product.imageUrl];
+      return [PLACEHOLDER];
+    })();
+
     addItem({
       cartItemId,
       productId: product._id,
       productName: product.nameAr,
       price: currentPrice,
       quantity,
-      imageUrl: product.imageUrl ?? "/logo.png",
+      imageUrl: resolvedImages[0] ?? PLACEHOLDER,
       weight: weightLabel,
       taste: tasteLabel,
     });
-    toast.success(`تمت الإضافة إلى السلة: ${product.nameAr} (${quantity})`);
+    showAddedToCartToast(product.nameAr, () => navigate("/cart"));
   };
 
   if (product === undefined) {
@@ -79,6 +89,14 @@ export default function ProductPage() {
 
   // Loading and Not Found are handled above
 
+  // Resolve gallery images: prefer galleryStorageIds-resolved images, fallback to imageUrl
+  const galleryImages: string[] = (() => {
+    if (product.images && product.images.length > 0) return product.images;
+    if (product.imageUrl) return [product.imageUrl];
+    return [PLACEHOLDER];
+  })();
+  const activeImage = galleryImages[selectedImageIndex] ?? galleryImages[0] ?? PLACEHOLDER;
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -94,18 +112,70 @@ export default function ProductPage() {
         </button>
 
         <div className="grid md:grid-cols-2 gap-10">
-          {/* Image */}
-          <div className="relative rounded-2xl overflow-hidden aspect-square bg-muted shadow-lg">
-            <img
-              src={product.imageUrl ?? "/logo.png"}
-              alt={product.nameAr}
-              className="w-full h-full object-cover"
-            />
-            {discount > 0 && (
-              <Badge className="absolute top-4 right-4 bg-destructive text-white text-sm px-3 py-1">
-                خصم {discount}%
-              </Badge>
+          {/* Image Gallery */}
+          <div className="flex flex-col-reverse md:flex-row gap-3">
+            {/* Thumbnails — bottom on mobile, right side on desktop (RTL: left visually) */}
+            {galleryImages.length > 1 && (
+              <div className="flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-y-auto md:max-h-[480px] shrink-0">
+                {galleryImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setSelectedImageIndex(idx)}
+                    onMouseEnter={() => setSelectedImageIndex(idx)}
+                    className={`shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-xl overflow-hidden border-2 transition-all duration-200 focus:outline-none ${
+                      selectedImageIndex === idx
+                        ? "border-primary shadow-md"
+                        : "border-border hover:border-primary/60"
+                    }`}
+                    aria-label={`صورة ${idx + 1}`}
+                  >
+                    <img
+                      src={img}
+                      alt={`${product.nameAr} - ${idx + 1}`}
+                      width={80}
+                      height={80}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }}
+                    />
+                  </button>
+                ))}
+              </div>
             )}
+
+            {/* Main image */}
+            <div className="relative flex-1 rounded-2xl overflow-hidden aspect-square bg-muted shadow-lg">
+              <img
+                src={activeImage}
+                alt={product.nameAr}
+                width={600}
+                height={600}
+                className="w-full h-full object-cover transition-opacity duration-300"
+                onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }}
+              />
+              {discount > 0 && (
+                <Badge className="absolute top-4 right-4 bg-destructive text-white text-sm px-3 py-1">
+                  خصم {discount}%
+                </Badge>
+              )}
+              {/* Image counter indicator */}
+              {galleryImages.length > 1 && (
+                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+                  {galleryImages.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                        selectedImageIndex === idx ? "bg-primary w-4" : "bg-white/70"
+                      }`}
+                      aria-label={`انتقل للصورة ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Details */}
@@ -144,7 +214,7 @@ export default function ProductPage() {
               <div className="mb-6">
                 <h3 className="font-bold text-foreground mb-3 text-sm">اختر الوزن / التعليب</h3>
                 <div className="grid grid-cols-2 gap-3">
-                  {packagingOptions.map((pkg) => {
+                  {packagingOptions.map((pkg: any) => {
                     const isSelected = activePackaging?.name === pkg.name;
                     return (
                       <button
@@ -183,7 +253,7 @@ export default function ProductPage() {
               <div className="mb-6">
                 <h3 className="font-bold text-foreground mb-3 text-sm">اختر الذوق</h3>
                 <div className="flex flex-wrap gap-2">
-                  {TASTE_OPTIONS.map((taste) => {
+                  {TASTE_OPTIONS.map((taste: any) => {
                     const isSelected = activeTaste === taste;
                     return (
                       <button
@@ -214,7 +284,7 @@ export default function ProductPage() {
                   الفوائد الصحية
                 </h3>
                 <ul className="space-y-2">
-                  {product.benefitsAr.map((benefit) => (
+                  {product.benefitsAr.map((benefit: any) => (
                     <li key={benefit} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle className="w-4 h-4 text-primary shrink-0" />
                       {benefit}

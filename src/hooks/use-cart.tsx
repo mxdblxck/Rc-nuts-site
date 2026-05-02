@@ -3,13 +3,14 @@ import type { Id } from "@/convex/_generated/dataModel.d.ts";
 
 type CartItem = {
   cartItemId: string; // productId + weight + taste
-  productId: Id<"products">;
+  productId: Id<"products"> | Id<"packs">; // supports both products and packs
   productName: string;
   price: number;
   quantity: number;
   imageUrl: string;
   weight?: string;
   taste?: string;
+  isPack?: boolean; // true when item is a bundle pack
 };
 
 type CartContextType = {
@@ -20,6 +21,7 @@ type CartContextType = {
   clearCart: () => void;
   total: number;
   itemCount: number;
+  hasPackInCart: boolean; // true when at least one pack is in cart
 };
 
 const CartContext = createContext<CartContextType | null>(null);
@@ -57,9 +59,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
+  const hasPackInCart = items.some((i) => i.isPack === true);
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount }}>
+    <CartContext.Provider value={{ items, addItem, removeItem, updateQuantity, clearCart, total, itemCount, hasPackInCart }}>
       {children}
     </CartContext.Provider>
   );

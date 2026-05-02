@@ -50,12 +50,13 @@ export default defineSchema({
     customerCity: v.string(),
     items: v.array(
       v.object({
-        productId: v.id("products"),
+        productId: v.string(), // Id<"products"> or Id<"packs"> — stored as string for flexibility
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
+        isPack: v.optional(v.boolean()),
       })
     ),
     subtotal: v.number(),
@@ -106,4 +107,23 @@ export default defineSchema({
     deskDeliveryCost: v.number(),
     active: v.boolean(),
   }).index("by_code", ["wilayaCode"]),
+
+  packs: defineTable({
+    nameAr: v.string(),
+    descriptionAr: v.string(),
+    price: v.number(),
+    originalPrice: v.optional(v.number()),
+    productIds: v.array(v.id("products")), // kept for backwards compat
+    packItems: v.optional(v.array(v.object({
+      productId: v.id("products"),
+      quantity: v.number(),
+      customWeight: v.optional(v.string()), // override product weight label
+    }))),
+    imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.id("_storage")),
+    active: v.boolean(),
+    slug: v.string(),
+  })
+    .index("by_active", ["active"])
+    .index("by_slug", ["slug"]),
 });

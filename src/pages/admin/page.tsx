@@ -4,7 +4,7 @@ import { api } from "@/convex/_generated/api.js";
 import {
   Package, ShoppingCart, Users, Tag, LayoutDashboard,
   TrendingUp, CheckCircle, Clock, Trash2, ToggleLeft, ToggleRight, Plus, Edit,
-  AlertTriangle, LogOut, Settings,
+  AlertTriangle, LogOut, Settings, Gift,
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -15,10 +15,11 @@ import AdminProductForm from "./_components/AdminProductForm.tsx";
 import AdminCouponForm from "./_components/AdminCouponForm.tsx";
 import AdminShippingForm from "./_components/AdminShippingForm.tsx";
 import AdminOrdersTab from "./_components/AdminOrdersTab.tsx";
+import AdminPacksTab from "./_components/AdminPacksTab.tsx";
 import DashboardTab from "./_components/DashboardTab.tsx";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 
-type AdminTab = "dashboard" | "products" | "orders" | "customers" | "coupons" | "shipping";
+type AdminTab = "dashboard" | "products" | "orders" | "customers" | "coupons" | "shipping" | "packs";
 
 const statusLabels: Record<string, string> = {
   pending: "قيد الانتظار",
@@ -70,7 +71,8 @@ function AdminContent() {
     { id: "orders" as AdminTab, label: "الطلبات", icon: <ShoppingCart className="w-4 h-4" /> },
     { id: "customers" as AdminTab, label: "العملاء", icon: <Users className="w-4 h-4" /> },
     { id: "coupons" as AdminTab, label: "الكوبونات", icon: <Tag className="w-4 h-4" /> },
-    { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> }, // could use a Truck icon if available
+    { id: "packs" as AdminTab, label: "الباقات", icon: <Gift className="w-4 h-4" /> },
+    { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> },
   ];
 
   const handleEditProduct = (product: Doc<"products">) => {
@@ -276,6 +278,9 @@ function AdminContent() {
 
           {/* Orders */}
           {tab === "orders" && <AdminOrdersTab />}
+
+          {/* Packs */}
+          {tab === "packs" && <AdminPacksTab />}
 
           {/* Customers */}
           {tab === "customers" && (

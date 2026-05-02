@@ -11,12 +11,13 @@ export const createOrder = mutation({
     customerCity: v.string(),
     items: v.array(
       v.object({
-        productId: v.id("products"),
+        productId: v.string(), // Id<"products"> or Id<"packs">
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
+        isPack: v.optional(v.boolean()),
       })
     ),
     subtotal: v.number(),
@@ -95,6 +96,14 @@ export const updateOrderStatus = mutation({
   handler: async (ctx, args) => {
     // Auth bypassed for local development
     await ctx.db.patch(args.orderId, { status: args.status });
+  },
+});
+
+export const deleteOrder = mutation({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    // Auth bypassed for local development
+    await ctx.db.delete(args.orderId);
   },
 });
 

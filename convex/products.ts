@@ -2,6 +2,45 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 
+// Helper to resolve storage URLs for a product
+// Final `images` array = [mainImage, ...galleryImages] — main image is always first
+async function resolveProductUrls(ctx: any, p: any) {
+  // Resolve main image from storage if needed
+  if (p.imageStorageId) {
+    p.imageUrl = (await ctx.storage.getUrl(p.imageStorageId)) ?? p.imageUrl;
+  }
+
+  // Resolve gallery images from storage IDs
+  let galleryUrls: string[] = [];
+  if (p.galleryStorageIds && p.galleryStorageIds.length > 0) {
+    const resolved = await Promise.all(
+      p.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))
+    );
+    galleryUrls = resolved.filter(Boolean) as string[];
+  }
+
+  // Also include any external-URL gallery entries (p.images stored as plain strings)
+  const externalGallery: string[] = (p.images ?? []).filter(
+    (url: string) => !url.startsWith("blob:")
+  );
+
+  // Build final images array: main image first, then gallery (storage-resolved + external URLs)
+  const allGallery = [...galleryUrls, ...externalGallery];
+  const mainImage = p.imageUrl ?? null;
+
+  if (mainImage) {
+    // Deduplicate: don't add mainImage again if it's already in gallery
+    const rest = allGallery.filter((u) => u !== mainImage);
+    p.images = [mainImage, ...rest];
+  } else if (allGallery.length > 0) {
+    p.images = allGallery;
+  } else {
+    p.images = [];
+  }
+
+  return p;
+}
+
 // Public queries
 export const listProducts = query({
   args: {
@@ -9,24 +48,21 @@ export const listProducts = query({
     featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    let products;
     if (args.featured) {
-      return await ctx.db
+      products = await ctx.db
         .query("products")
         .withIndex("by_featured", (q) => q.eq("featured", true))
         .collect();
-    }
-    if (args.category) {
-      return await ctx.db
+    } else if (args.category) {
+      products = await ctx.db
         .query("products")
         .withIndex("by_category", (q) => q.eq("category", args.category!))
         .collect();
+    } else {
+      products = await ctx.db.query("products").collect();
     }
-    const products = await ctx.db.query("products").collect();
-    return Promise.all(products.map(async (p) => {
-      if (p.imageStorageId) p.imageUrl = await ctx.storage.getUrl(p.imageStorageId) ?? p.imageUrl;
-      if (p.galleryStorageIds) p.images = await Promise.all(p.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
-      return p;
-    }));
+    return Promise.all(products.map((p) => resolveProductUrls(ctx, p)));
   },
 });
 
@@ -38,8 +74,7 @@ export const getProductBySlug = query({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
     if (product) {
-      if (product.imageStorageId) product.imageUrl = await ctx.storage.getUrl(product.imageStorageId) ?? product.imageUrl;
-      if (product.galleryStorageIds) product.images = await Promise.all(product.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
+      return resolveProductUrls(ctx, product);
     }
     return product;
   },
@@ -50,8 +85,7 @@ export const getProduct = query({
   handler: async (ctx, args) => {
     const product = await ctx.db.get(args.id);
     if (product) {
-      if (product.imageStorageId) product.imageUrl = await ctx.storage.getUrl(product.imageStorageId) ?? product.imageUrl;
-      if (product.galleryStorageIds) product.images = await Promise.all(product.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
+      return resolveProductUrls(ctx, product);
     }
     return product;
   },
