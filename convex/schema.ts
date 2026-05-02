@@ -16,16 +16,16 @@ export default defineSchema({
     category: v.string(),
     price: v.number(),
     originalPrice: v.optional(v.number()),
-    imageUrl: v.optional(v.string()), // Optional to allow using only storage
-    imageStorageId: v.optional(v.id("_storage")), // Direct file upload
-    images: v.optional(v.array(v.string())), // Old external links gallery
-    galleryStorageIds: v.optional(v.array(v.id("_storage"))), // New file uploads gallery
+    imageUrl: v.optional(v.string()),
+    imageStorageId: v.optional(v.id("_storage")),
+    images: v.optional(v.array(v.string())),
+    galleryStorageIds: v.optional(v.array(v.id("_storage"))),
     inStock: v.boolean(),
     stockQuantity: v.optional(v.number()),
     weight: v.optional(v.string()),
     featured: v.optional(v.boolean()),
     slug: v.string(),
-    hasTasteOptions: v.optional(v.boolean()), // Obsolete field kept for backwards compatibility
+    hasTasteOptions: v.optional(v.boolean()),
     tasteOptions: v.optional(v.array(v.string())),
     packagingOptions: v.optional(
       v.array(
@@ -50,28 +50,21 @@ export default defineSchema({
     customerCity: v.string(),
     items: v.array(
       v.object({
-<<<<<<< HEAD
         productId: v.string(), // Id<"products"> or Id<"packs"> — stored as string for flexibility
-=======
-        productId: v.id("products"),
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
-<<<<<<< HEAD
         isPack: v.optional(v.boolean()),
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
       })
     ),
     subtotal: v.number(),
     discount: v.optional(v.number()),
     couponCode: v.optional(v.string()),
     total: v.number(),
-    status: v.string(), // "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
-    paymentMethod: v.string(), // "cash_on_delivery" | "bank_transfer"
+    status: v.string(),
+    paymentMethod: v.string(),
     notes: v.optional(v.string()),
   })
     .index("by_status", ["status"])
@@ -79,7 +72,7 @@ export default defineSchema({
 
   coupons: defineTable({
     code: v.string(),
-    discountType: v.string(), // "percentage" | "fixed"
+    discountType: v.string(),
     discountValue: v.number(),
     minOrderAmount: v.optional(v.number()),
     maxUses: v.optional(v.number()),
@@ -114,7 +107,6 @@ export default defineSchema({
     deskDeliveryCost: v.number(),
     active: v.boolean(),
   }).index("by_code", ["wilayaCode"]),
-<<<<<<< HEAD
 
   packs: defineTable({
     nameAr: v.string(),
@@ -125,7 +117,7 @@ export default defineSchema({
     packItems: v.optional(v.array(v.object({
       productId: v.id("products"),
       quantity: v.number(),
-      customWeight: v.optional(v.string()), // override product weight label
+      customWeight: v.optional(v.string()),
     }))),
     imageUrl: v.optional(v.string()),
     imageStorageId: v.optional(v.id("_storage")),
@@ -134,6 +126,4 @@ export default defineSchema({
   })
     .index("by_active", ["active"])
     .index("by_slug", ["slug"]),
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 });
