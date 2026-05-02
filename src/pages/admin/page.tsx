@@ -16,6 +16,7 @@ import AdminProductForm from "./_components/AdminProductForm.tsx";
 import AdminCouponForm from "./_components/AdminCouponForm.tsx";
 import AdminShippingForm from "./_components/AdminShippingForm.tsx";
 import AdminOrdersTab from "./_components/AdminOrdersTab.tsx";
+import AdminCustomersTab from "./_components/AdminCustomersTab.tsx";
 import AdminPacksTab from "./_components/AdminPacksTab.tsx";
 import DashboardTab from "./_components/DashboardTab.tsx";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
@@ -304,85 +305,7 @@ function AdminContent() {
           {tab === "packs" && <AdminPacksTab />}
 
           {/* Customers */}
-          {tab === "customers" && (
-            <div>
-              <h1 className="text-2xl font-black text-foreground mb-6">إدارة العملاء (CRM)</h1>
-              {customerStats === undefined ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-24" />)}
-                </div>
-              ) : customerStats.length === 0 ? (
-                <div className="text-center py-12 text-muted-foreground">لا يوجد عملاء بعد</div>
-              ) : (
-                <div className="space-y-4">
-                  {customerStats.map((c: any) => (
-                    <div key={c.phone} className="bg-card border border-border rounded-xl p-4 md:p-6 flex flex-col md:flex-row gap-6">
-                      <div className="flex-1 min-w-0 space-y-2">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center font-bold text-primary text-xl">
-                            {(c.name ?? "؟")[0]}
-                          </div>
-                          <div>
-                            <div className="font-bold text-foreground text-lg">{c.name}</div>
-                            <div className="text-sm text-muted-foreground" dir="ltr">{c.phone}</div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 mt-3">
-                          <Badge variant="secondary" className="px-3 py-1 text-sm">
-                            {c.orderCount} طلبات
-                          </Badge>
-                          <span className="font-black text-primary text-lg">
-                            {c.totalSpent.toLocaleString("ar-DZ")} دج
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="font-bold text-sm mb-2 text-foreground">ملاحظات الإدارة:</div>
-                        {editingNoteFor === c.phone ? (
-                          <div className="space-y-2">
-                            <textarea 
-                              className="w-full border border-border rounded-lg p-2 text-sm bg-background min-h-[80px] focus:outline-none focus:ring-2 focus:ring-primary/20"
-                              value={tempNote}
-                              onChange={(e) => setTempNote(e.target.value)}
-                              placeholder="أضف ملاحظة حول العميل (مثال: يفضل التوصيل مساءً)..."
-                            />
-                            <div className="flex gap-2">
-                              <Button 
-                                size="sm" 
-                                onClick={async () => {
-                                  await saveCustomerNote({ phone: c.phone, note: tempNote });
-                                  setEditingNoteFor(null);
-                                  toast.success("تم حفظ الملاحظة");
-                                }}
-                              >
-                                حفظ
-                              </Button>
-                              <Button size="sm" variant="outline" onClick={() => setEditingNoteFor(null)}>إلغاء</Button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div 
-                            className="w-full border border-border rounded-lg p-3 text-sm bg-muted/30 min-h-[80px] cursor-pointer hover:bg-muted/50 transition-colors"
-                            onClick={() => {
-                              setTempNote(c.note);
-                              setEditingNoteFor(c.phone);
-                            }}
-                          >
-                            {c.note ? (
-                              <p className="text-foreground whitespace-pre-wrap">{c.note}</p>
-                            ) : (
-                              <p className="text-muted-foreground italic text-xs mt-1">لا توجد ملاحظات... انقر للإضافة</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {tab === "customers" && <AdminCustomersTab customerStats={customerStats} />}
 
           {/* Coupons */}
           {tab === "coupons" && (

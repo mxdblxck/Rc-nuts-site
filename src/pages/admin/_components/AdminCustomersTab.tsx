@@ -1,0 +1,274 @@
+import { useState, useMemo } from "react";
+import { Search, Download, User, Phone, MapPin, FileText, Tag, Star, Filter, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
+import { Badge } from "@/components/ui/badge.tsx";
+import { Skeleton } from "@/components/ui/skeleton.tsx";
+import { toast } from "sonner";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api.js";
+
+type CustomerStat = {
+  name: string;
+  phone: string;
+  city?: string;
+  wilaya?: string;
+  orderCount: number;
+  totalSpent: number;
+  note?: string;
+  lastOrderDate?: number;
+  tags?: string[];
+};
+
+type Props = {
+  customerStats: CustomerStat[] | undefined;
+};
+
+const availableTags = [
+  { id: "vip", label: "VIP", color: "bg-amber-100 text-amber-700 border-amber-300" },
+  { id: "regular", label: "عميل منتظم", color: "bg-blue-100 text-blue-700 border-blue-300" },
+  { id: "new", label: "جديد", color: "bg-green-100 text-green-700 border-green-300" },
+  { id: "problem", label: "مشكلة", color: "bg-red-100 text-red-700 border-red-300" },
+];
+
+export default function AdminCustomersTab({ customerStats }: Props) {
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"name" | "total" | "orders" | "date">("total");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  const saveCustomerNote = useMutation(api.orders.saveCustomerNote);
+
+  // Filter and sort customers
+  const filteredCustomers = useMemo(() => {
+    if (!customerStats) return [];
+    
+    let filtered = customerStats.filter((c: CustomerStat) => {
+      if (!search) return true;
+      const searchLower = search.toLowerCase();
+      return (
+        c.name?.toLowerCase().includes(searchLower) ||
+        c.phone?.includes(search) ||
+        c.wilaya?.toLowerCase().includes(searchLower) ||
+        c.city?.toLowerCase().includes(searchLower)
+      );
+    });
+
+    filtered.sort((a: CustomerStat, b: CustomerStat) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case "name":
+          comparison = (a.name || "").localeCompare(b.name || "");
+          break;
+        case "total":
+          comparison = (a.totalSpent || 0) - (b.totalSpent || 0);
+          break;
+        case "orders":
+          comparison = (a.orderCount || 0) - (b.orderCount || 0);
+          break;
+        case "date":
+          comparison = (a.lastOrderDate || 0) - (b.lastOrderDate || 0);
+          break;
+      }
+      return sortOrder === "desc" ? -comparison : comparison;
+    });
+
+    return filtered;
+  }, [customerStats, search, sortBy, sortOrder]);
+
+  // Export to Excel
+  const exportToExcel = () => {
+    if (!filteredCustomers.length) {
+      toast.error("لا يوجد بيانات للتصدير");
+      return;
+    }
+
+    const headers = ["الاسم", "الهاتف", "الولاية", "البلدية", "عدد الطلبات", "إجمالي الصرف", "آخر طلب", "ملاحظات"];
+    const rows = filteredCustomers.map((c: CustomerStat) => [
+      c.name || "",
+      c.phone || "",
+      c.wilaya || "",
+      c.city || "",
+      c.orderCount || 0,
+      c.totalSpent || 0,
+      c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString("ar-DZ") : "",
+      c.note || "",
+    ]);
+
+    const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
+    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `clients_rc_nuts_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("تم تصدير البيانات بنجاح");
+  };
+
+  if (customerStats === undefined) {
+    return (
+      <div className="space-y-4">
+        <div className="flex gap-4">
+          <Skeleton className="h-10 flex-1" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+        {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-32" />)}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-black text-foreground">العملاء</h1>
+          <p className="text-sm text-muted-foreground mt-1">{customerStats.length} عميلمسجل</p>
+        </div>
+        <Button onClick={exportToExcel} className="bg-emerald-600 hover:bg-emerald-700">
+          <Download className="w-4 h-4 mr-2" />
+          تصدير Excel
+        </Button>
+      </div>
+
+      {/* Search & Filters */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="البحث بالاسم، الهاتف، أو الولاية..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pr-10 pl-4 py-2.5 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+          />
+        </div>
+        <select
+          value={`${sortBy}-${sortOrder}`}
+          onChange={(e) => {
+            const [by, order] = e.target.value.split("-");
+            setSortBy(by as any);
+            setSortOrder(order as any);
+          }}
+          className="px-4 py-2.5 rounded-xl border border-border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+        >
+          <option value="total-desc">الأعلى إنفاقا</option>
+          <option value="total-asc">الأقل إنفاقا</option>
+          <option value="orders-desc">الأكثر طلبات</option>
+          <option value="orders-asc">الأقل طلبات</option>
+          <option value="date-desc">الأحدث طلب</option>
+          <option value="date-asc">الأقدم طلب</option>
+          <option value="name-asc">الاسم (أ-ي)</option>
+          <option value="name-desc">الاسم (ي-أ)</option>
+        </select>
+      </div>
+
+      {/* Results count */}
+      {search && (
+        <p className="text-sm text-muted-foreground">
+          {filteredCustomers.length} نتيجة من {customerStats.length} عميل
+        </p>
+      )}
+
+      {/* Customer Cards */}
+      {filteredCustomers.length === 0 ? (
+        <div className="text-center py-12">
+          <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">لا يوجد عملاء_matches kriteria</p>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {filteredCustomers.map((c: CustomerStat) => (
+            <div
+              key={c.phone}
+              className={`bg-card border rounded-2xl p-5 hover:shadow-lg transition-all duration-300 cursor-pointer ${
+                selectedCustomer === c.phone ? "border-primary ring-2 ring-primary/20" : "border-border"
+              }`}
+              onClick={() => setSelectedCustomer(selectedCustomer === c.phone ? null : c.phone)}
+            >
+              <div className="flex items-start justify-between gap-4">
+                {/* Avatar & Info */}
+                <div className="flex items-start gap-4 min-w-0">
+                  <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center shrink-0">
+                    <span className="text-xl font-black text-primary">{(c.name || "?")[0]}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-lg text-foreground truncate">{c.name || "بدون اسم"}</h3>
+                      {c.tags?.includes("vip") && (
+                        <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground font-mono" dir="ltr">{c.phone}</p>
+                    {(c.wilaya || c.city) && (
+                      <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
+                        <MapPin className="w-3 h-3" />
+                        {c.city}{c.wilaya ? `، ${c.wilaya}` : ""}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Stats */}
+                <div className="text-left shrink-0">
+                  <div className="flex items-center gap-3 mb-2">
+                    <Badge className="bg-blue-100 text-blue-700 px-3 py-1">
+                      {c.orderCount} طلب
+                    </Badge>
+                    <span className="font-black text-xl text-primary">
+                      {(c.totalSpent || 0).toLocaleString("ar-DZ")}
+                    </span>
+                    <span className="text-xs text-muted-foreground">دج</span>
+                  </div>
+                  {c.lastOrderDate && (
+                    <p className="text-xs text-muted-foreground">
+                      آخر طلب: {new Date(c.lastOrderDate).toLocaleDateString("ar-DZ")}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Expanded Details */}
+              {selectedCustomer === c.phone && (
+                <div className="mt-4 pt-4 border-t border-border space-y-4">
+                  {/* Tags */}
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">الوسوم:</label>
+                    <div className="flex flex-wrap gap-2">
+                      {availableTags.map((tag) => (
+                        <button
+                          key={tag.id}
+                          className={`px-3 py-1 rounded-full text-sm border ${
+                            c.tags?.includes(tag.id)
+                              ? tag.color
+                              : "bg-muted/50 text-muted-foreground border-transparent hover:border-primary/50"
+                          }`}
+                        >
+                          {tag.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">ملاحظات:</label>
+                    <textarea
+                      className="w-full border border-border rounded-xl p-3 text-sm bg-background min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
+                      placeholder="ملاحظات حول العميل..."
+                      defaultValue={c.note}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={async (e) => {
+                        await saveCustomerNote({ phone: c.phone, note: e.target.value });
+                        toast.success("تم حفظ الملاحظة");
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
