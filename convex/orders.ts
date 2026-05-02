@@ -11,20 +11,12 @@ export const createOrder = mutation({
     customerCity: v.string(),
     items: v.array(
       v.object({
-<<<<<<< HEAD
-        productId: v.string(), // Id<"products"> or Id<"packs">
-=======
         productId: v.id("products"),
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
-<<<<<<< HEAD
-        isPack: v.optional(v.boolean()),
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
       })
     ),
     subtotal: v.number(),
@@ -106,17 +98,6 @@ export const updateOrderStatus = mutation({
   },
 });
 
-<<<<<<< HEAD
-export const deleteOrder = mutation({
-  args: { orderId: v.id("orders") },
-  handler: async (ctx, args) => {
-    // Auth bypassed for local development
-    await ctx.db.delete(args.orderId);
-  },
-});
-
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 export const getOrderStats = query({
   args: {},
   handler: async (ctx) => {

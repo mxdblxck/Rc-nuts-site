@@ -23,17 +23,12 @@ const schema = z.object({
   customerName: z.string().min(3, "الاسم مطلوب"),
   customerPhone: z
     .string()
-<<<<<<< HEAD
-    .min(1, "رقم الهاتف مطلوب")
-    .regex(/^0[567]\d{8}$/, "رقم الهاتف يجب أن يبدأ بـ 0 ويتكون من 10 أرقام (مثال: 0551234567)"),
-=======
     .regex(/^0[567]\d{8}$/, "رقم الهاتف يجب أن يبدأ بـ 0 ويتكون من 10 أرقام (مثال: 0551234567)"),
   customerEmail: z
     .string()
     .email("البريد الإلكتروني غير صحيح")
     .optional()
     .or(z.literal("")),
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   wilaya: z.string().min(1, "الولاية مطلوبة"),
   daira: z.string().min(1, "الدائرة مطلوبة"),
   commune: z.string().min(1, "البلدية مطلوبة"),
@@ -44,11 +39,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function CheckoutPage() {
-<<<<<<< HEAD
-  const { items, total, clearCart, hasPackInCart } = useCart();
-=======
   const { items, total, clearCart } = useCart();
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   const navigate = useNavigate();
   const createOrder = useMutation(api.orders.createOrder);
   const convex = useConvex();
@@ -59,13 +50,8 @@ export default function CheckoutPage() {
   const [deliveryOption, setDeliveryOption] = useState<DeliveryOption>("office");
 
   const shippingRates = useQuery(api.shipping.getShippingRates);
-<<<<<<< HEAD
-  const activeWilayas = shippingRates?.filter((r) => r.active).map((r) => r.wilayaName) ?? [];
-  const availableCities = algeriaCities.filter((w) => activeWilayas.includes(w.name));
-=======
   const activeWilayas = shippingRates?.filter(r => r.active).map(r => r.wilayaName) ?? [];
   const availableCities = algeriaCities.filter(w => activeWilayas.includes(w.name));
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
   const {
     register,
@@ -88,13 +74,7 @@ export default function CheckoutPage() {
   const selectedShippingRate = shippingRates?.find((r) => r.wilayaName === watchedWilaya);
   const deskPrice = selectedShippingRate?.deskDeliveryCost ?? 400;
   const homePrice = selectedShippingRate?.homeDeliveryCost ?? 900;
-<<<<<<< HEAD
-
-  // Free shipping automatically when cart contains a pack
-  const deliveryPrice = hasPackInCart ? 0 : deliveryOption === "home" ? homePrice : deskPrice;
-=======
   const deliveryPrice = deliveryOption === "home" ? homePrice : deskPrice;
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
   const dynamicDeliveryOptions = [
     { id: "office" as const, label: "توصيل للمكتب", description: "استلام من أقرب مكتب وكالة توصيل", price: deskPrice },
@@ -139,27 +119,16 @@ export default function CheckoutPage() {
       const orderId = await createOrder({
         customerName: data.customerName,
         customerPhone: data.customerPhone,
-<<<<<<< HEAD
-        customerAddress: data.customerAddress,
-        customerCity: cityFull,
-        items: items.map((i) => ({
-          productId: i.productId as string,
-=======
         customerEmail: data.customerEmail ?? undefined,
         customerAddress: data.customerAddress,
         customerCity: cityFull,
         items: items.map((i) => ({
           productId: i.productId,
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           productName: i.productName,
           quantity: i.quantity,
           price: i.price,
           weight: i.weight,
           taste: i.taste,
-<<<<<<< HEAD
-          isPack: i.isPack ?? false,
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         })),
         subtotal: total,
         discount: discount > 0 ? discount : undefined,
@@ -186,17 +155,6 @@ export default function CheckoutPage() {
       <div className="max-w-5xl mx-auto px-4 py-10 flex-1 w-full">
         <h1 className="text-3xl font-black text-foreground font-serif mb-8">إتمام الطلب</h1>
 
-<<<<<<< HEAD
-        {/* Free shipping notice for packs */}
-        {hasPackInCart && (
-          <div className="mb-6 flex items-center gap-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3">
-            <Truck className="w-5 h-5 shrink-0 text-emerald-600" />
-            <span className="font-bold text-sm">🎁 طلبك يحتوي على باقة خاصة — التوصيل مجاني تلقائياً!</span>
-          </div>
-        )}
-
-=======
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid md:grid-cols-3 gap-8">
             {/* Form */}
@@ -209,11 +167,7 @@ export default function CheckoutPage() {
                     <Label htmlFor="customerName">الاسم الكامل *</Label>
                     <Input
                       id="customerName"
-<<<<<<< HEAD
-                      placeholder="Nom & Prénom"
-=======
                       placeholder="محمد أحمد"
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                       {...register("customerName")}
                     />
                     {errors.customerName && (
@@ -221,11 +175,7 @@ export default function CheckoutPage() {
                     )}
                   </div>
                   <div className="space-y-2">
-<<<<<<< HEAD
-                    <Label htmlFor="customerPhone">رقم الهاتف *</Label>
-=======
                     <Label htmlFor="customerPhone">رقم الهاتف</Label>
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                     <Input
                       id="customerPhone"
                       type="tel"
@@ -234,11 +184,6 @@ export default function CheckoutPage() {
                       maxLength={10}
                       {...register("customerPhone")}
                       onInput={(e) => {
-<<<<<<< HEAD
-                        let val = e.currentTarget.value.replace(/[^0-9]/g, "");
-                        if (val.length > 0 && val[0] !== "0") val = "0" + val;
-                        if (val.length > 1 && !["5", "6", "7"].includes(val[1])) val = val[0];
-=======
                         let val = e.currentTarget.value.replace(/[^0-9]/g, '');
                         // Force starting with 0
                         if (val.length > 0 && val[0] !== '0') val = '0' + val;
@@ -246,7 +191,6 @@ export default function CheckoutPage() {
                         if (val.length > 1 && !['5', '6', '7'].includes(val[1])) {
                           val = val[0];
                         }
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                         e.currentTarget.value = val;
                       }}
                     />
@@ -254,8 +198,6 @@ export default function CheckoutPage() {
                       <p className="text-destructive text-xs">{errors.customerPhone.message}</p>
                     )}
                   </div>
-<<<<<<< HEAD
-=======
                   <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="customerEmail">البريد الإلكتروني (اختياري)</Label>
                     <Input
@@ -269,7 +211,6 @@ export default function CheckoutPage() {
                       <p className="text-destructive text-xs">{errors.customerEmail.message}</p>
                     )}
                   </div>
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                 </div>
               </div>
 
@@ -280,10 +221,7 @@ export default function CheckoutPage() {
                   عنوان التوصيل
                 </h2>
 
-<<<<<<< HEAD
-=======
                 {/* Country - Fixed */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                 <div className="flex items-center gap-3 bg-muted rounded-xl px-4 py-3 mb-4">
                   <span className="text-2xl">🇩🇿</span>
                   <div>
@@ -293,36 +231,21 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-<<<<<<< HEAD
-=======
                   {/* Wilaya selector */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   <div className="space-y-2">
                     <Label htmlFor="wilaya">الولاية *</Label>
                     <select
                       id="wilaya"
                       className="w-full border border-border rounded-lg p-2 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                       {...register("wilaya", {
-<<<<<<< HEAD
-                        onChange: () => { setValue("daira", ""); setValue("commune", ""); },
-=======
                         onChange: (e) => {
                           setValue("daira", "");
                           setValue("commune", "");
                         },
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                       })}
                     >
                       <option value="">-- اختر الولاية --</option>
                       {availableCities.map((w) => (
-<<<<<<< HEAD
-                        <option key={w.code} value={w.name}>{w.code} - {w.name}</option>
-                      ))}
-                    </select>
-                    {errors.wilaya && <p className="text-destructive text-xs">{errors.wilaya.message}</p>}
-                  </div>
-
-=======
                         <option key={w.code} value={w.name}>
                           {w.code} - {w.name}
                         </option>
@@ -334,7 +257,6 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Daira selector */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   <div className="space-y-2">
                     <Label htmlFor="daira">الدائرة *</Label>
                     <select
@@ -342,17 +264,6 @@ export default function CheckoutPage() {
                       className="w-full border border-border rounded-lg p-2 bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
                       disabled={dairas.length === 0}
                       {...register("daira", {
-<<<<<<< HEAD
-                        onChange: () => { setValue("commune", ""); },
-                      })}
-                    >
-                      <option value="">{dairas.length === 0 ? "اختر الولاية أولاً" : "-- اختر الدائرة --"}</option>
-                      {dairas.map((d) => <option key={d.name} value={d.name}>{d.name}</option>)}
-                    </select>
-                    {errors.daira && <p className="text-destructive text-xs">{errors.daira.message}</p>}
-                  </div>
-
-=======
                         onChange: (e) => {
                           setValue("commune", "");
                         },
@@ -373,7 +284,6 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Commune selector */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   <div className="space-y-2">
                     <Label htmlFor="commune">البلدية *</Label>
                     <select
@@ -382,14 +292,6 @@ export default function CheckoutPage() {
                       disabled={communes.length === 0}
                       {...register("commune")}
                     >
-<<<<<<< HEAD
-                      <option value="">{communes.length === 0 ? "اختر الدائرة أولاً" : "-- اختر البلدية --"}</option>
-                      {communes.map((c) => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                    {errors.commune && <p className="text-destructive text-xs">{errors.commune.message}</p>}
-                  </div>
-
-=======
                       <option value="">
                         {communes.length === 0 ? "اختر الدائرة أولاً" : "-- اختر البلدية --"}
                       </option>
@@ -405,7 +307,6 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* Detailed address */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   <div className="space-y-2 sm:col-span-3">
                     <Label htmlFor="customerAddress">العنوان التفصيلي *</Label>
                     <Input
@@ -436,51 +337,6 @@ export default function CheckoutPage() {
                   <Truck className="w-5 h-5 text-primary" />
                   طريقة التوصيل
                 </h2>
-<<<<<<< HEAD
-                {hasPackInCart ? (
-                  <div className="flex items-center gap-3 p-4 rounded-xl border-2 border-emerald-400 bg-emerald-50">
-                    <Truck className="w-5 h-5 text-emerald-600 shrink-0" />
-                    <div>
-                      <div className="font-bold text-emerald-800">توصيل مجاني — مشمول في الباقة</div>
-                      <div className="text-xs text-emerald-600">يصلك طلبك مجاناً بفضل الباقة الخاصة</div>
-                    </div>
-                    <span className="mr-auto font-black text-emerald-700 text-lg">0 دج</span>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {dynamicDeliveryOptions.map((option) => (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => setDeliveryOption(option.id)}
-                        className={`w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all cursor-pointer text-right ${
-                          deliveryOption === option.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/40"
-                        }`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                            deliveryOption === option.id ? "border-primary bg-primary" : "border-muted-foreground"
-                          }`}>
-                            {deliveryOption === option.id && <div className="w-2 h-2 rounded-full bg-primary-foreground" />}
-                          </div>
-                          <div className="text-right">
-                            <div className="font-bold text-foreground text-sm">{option.label}</div>
-                            <div className="text-xs text-muted-foreground">{option.description}</div>
-                          </div>
-                        </div>
-                        <span className="font-black text-primary text-base shrink-0 mr-2">
-                          {option.price.toLocaleString("ar-DZ")} دج
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Payment */}
-=======
                 <div className="space-y-3">
                   {dynamicDeliveryOptions.map((option) => (
                     <button
@@ -513,20 +369,15 @@ export default function CheckoutPage() {
               </div>
 
               {/* Payment - Cash only */}
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
               <div className="bg-card border border-border rounded-2xl p-6">
                 <h2 className="font-bold text-lg text-foreground mb-4">طريقة الدفع</h2>
                 <div className="flex items-center gap-4 p-4 rounded-xl border-2 border-primary bg-primary/5">
                   <span className="text-3xl">💵</span>
                   <div>
                     <div className="font-bold text-foreground">الدفع عند الاستلام</div>
-<<<<<<< HEAD
-                    <div className="text-sm text-muted-foreground">تدفع نقداً عند وصول طلبك إليك</div>
-=======
                     <div className="text-sm text-muted-foreground">
                       تدفع نقداً عند وصول طلبك إليك
                     </div>
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   </div>
                   <div className="mr-auto">
                     <div className="w-5 h-5 rounded-full border-2 border-primary bg-primary flex items-center justify-center">
@@ -565,13 +416,9 @@ export default function CheckoutPage() {
                   </Button>
                 </div>
                 {couponApplied && (
-<<<<<<< HEAD
-                  <p className="text-primary text-xs mt-2 font-medium">✓ تم تطبيق الخصم بنجاح</p>
-=======
                   <p className="text-primary text-xs mt-2 font-medium">
                     ✓ تم تطبيق الخصم بنجاح
                   </p>
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                 )}
               </div>
 
@@ -611,17 +458,6 @@ export default function CheckoutPage() {
                   )}
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">سعر التوصيل</span>
-<<<<<<< HEAD
-                    {hasPackInCart ? (
-                      <span className="font-bold text-emerald-600">مجاني 🎁</span>
-                    ) : (
-                      <span className="font-medium text-foreground">{deliveryPrice.toLocaleString("ar-DZ")} دج</span>
-                    )}
-                  </div>
-                  <div className="flex justify-between font-black text-base border-t border-border pt-2">
-                    <span>الإجمالي</span>
-                    <span className="text-primary">{finalTotal.toLocaleString("ar-DZ")} دج</span>
-=======
                     <span className="font-medium text-foreground">
                       {deliveryPrice.toLocaleString("ar-DZ")} دج
                     </span>
@@ -631,21 +467,16 @@ export default function CheckoutPage() {
                     <span className="text-primary">
                       {finalTotal.toLocaleString("ar-DZ")} دج
                     </span>
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                   </div>
                 </div>
               </div>
 
-<<<<<<< HEAD
-              <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-=======
               <Button
                 type="submit"
                 size="lg"
                 className="w-full"
                 disabled={isSubmitting}
               >
->>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
                 {isSubmitting ? "جاري الإرسال..." : "تأكيد الطلب"}
               </Button>
 

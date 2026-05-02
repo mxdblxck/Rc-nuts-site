@@ -16,16 +16,16 @@ export default defineSchema({
     category: v.string(),
     price: v.number(),
     originalPrice: v.optional(v.number()),
-    imageUrl: v.optional(v.string()),
-    imageStorageId: v.optional(v.id("_storage")),
-    images: v.optional(v.array(v.string())),
-    galleryStorageIds: v.optional(v.array(v.id("_storage"))),
+    imageUrl: v.optional(v.string()), // Optional to allow using only storage
+    imageStorageId: v.optional(v.id("_storage")), // Direct file upload
+    images: v.optional(v.array(v.string())), // Old external links gallery
+    galleryStorageIds: v.optional(v.array(v.id("_storage"))), // New file uploads gallery
     inStock: v.boolean(),
     stockQuantity: v.optional(v.number()),
     weight: v.optional(v.string()),
     featured: v.optional(v.boolean()),
     slug: v.string(),
-    hasTasteOptions: v.optional(v.boolean()),
+    hasTasteOptions: v.optional(v.boolean()), // Obsolete field kept for backwards compatibility
     tasteOptions: v.optional(v.array(v.string())),
     packagingOptions: v.optional(
       v.array(
@@ -50,21 +50,20 @@ export default defineSchema({
     customerCity: v.string(),
     items: v.array(
       v.object({
-        productId: v.string(), // Id<"products"> or Id<"packs"> — stored as string for flexibility
+        productId: v.id("products"),
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
-        isPack: v.optional(v.boolean()),
       })
     ),
     subtotal: v.number(),
     discount: v.optional(v.number()),
     couponCode: v.optional(v.string()),
     total: v.number(),
-    status: v.string(),
-    paymentMethod: v.string(),
+    status: v.string(), // "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
+    paymentMethod: v.string(), // "cash_on_delivery" | "bank_transfer"
     notes: v.optional(v.string()),
   })
     .index("by_status", ["status"])
@@ -72,7 +71,7 @@ export default defineSchema({
 
   coupons: defineTable({
     code: v.string(),
-    discountType: v.string(),
+    discountType: v.string(), // "percentage" | "fixed"
     discountValue: v.number(),
     minOrderAmount: v.optional(v.number()),
     maxUses: v.optional(v.number()),
@@ -107,23 +106,4 @@ export default defineSchema({
     deskDeliveryCost: v.number(),
     active: v.boolean(),
   }).index("by_code", ["wilayaCode"]),
-
-  packs: defineTable({
-    nameAr: v.string(),
-    descriptionAr: v.string(),
-    price: v.number(),
-    originalPrice: v.optional(v.number()),
-    productIds: v.array(v.id("products")), // kept for backwards compat
-    packItems: v.optional(v.array(v.object({
-      productId: v.id("products"),
-      quantity: v.number(),
-      customWeight: v.optional(v.string()),
-    }))),
-    imageUrl: v.optional(v.string()),
-    imageStorageId: v.optional(v.id("_storage")),
-    active: v.boolean(),
-    slug: v.string(),
-  })
-    .index("by_active", ["active"])
-    .index("by_slug", ["slug"]),
 });
