@@ -143,13 +143,13 @@ export default function Index() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16">
-          {/* Text Content - Always first on mobile */}
+        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16 grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
+          {/* Text - First on mobile, left on desktop */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center"
+            className="text-center md:text-start"
           >
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -165,10 +165,10 @@ export default function Index() {
               <br />
               <span className="text-primary">والفواكه المجففة</span>
             </h1>
-            <p className="text-base sm:text-lg md:text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg mx-auto">
+            <p className="text-base sm:text-lg md:text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">
               مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-10">
+            <div className="flex flex-col sm:flex-row gap-4 items-center md:items-start justify-center md:justify-start mb-10">
               <BuyButton>
                 <Link to="/shop">
                   <><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />اشتري الآن</>
@@ -181,13 +181,12 @@ export default function Index() {
               </BuyButton>
             </div>
 
-            {/* Stats - Professional Counters */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="flex gap-8 sm:gap-12 justify-center"
+              className="flex gap-8 sm:gap-12 justify-center md:justify-start"
             >
               <AnimatedCounter target={15} suffix="+" label="منتج فاخر" />
               <AnimatedCounter target={100} suffix="%" label="طبيعي" />
@@ -195,14 +194,14 @@ export default function Index() {
             </motion.div>
           </motion.div>
 
-          {/* Hero Image - Last on mobile, right side on desktop */}
+          {/* Image - Last on mobile, right on desktop */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="mt-12 md:mt-0 md:absolute md:left-1/2 md:right-4 md:top-1/2 md:-translate-y-1/2 md:max-w-sm lg:max-w-md"
+            className="relative"
           >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square max-w-sm mx-auto">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square max-w-sm mx-auto md:max-w-none md:aspect-[4/5] lg:aspect-square">
               <img
                 src={`/hero2.png`}
                 alt="مكسرات طبيعية فاخرة"
@@ -215,12 +214,11 @@ export default function Index() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
             </div>
-            {/* Floating badge */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="absolute -bottom-5 -right-4 sm:-bottom-6 sm:-right-6 bg-card rounded-2xl shadow-2xl p-4 sm:p-5 border border-border left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0"
+              className="absolute -bottom-4 sm:-bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-4 sm:translate-x-0 bg-card rounded-2xl shadow-2xl p-4 sm:p-5 border border-border"
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
