@@ -35,6 +35,7 @@ async function resolveProductUrls(ctx: any, p: any) {
   } else if (allGallery.length > 0) {
     p.images = allGallery;
   } else {
+    p.galleryStorageIds = p.galleryStorageIds;
     p.images = [];
   }
 

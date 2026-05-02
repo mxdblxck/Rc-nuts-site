@@ -24,7 +24,8 @@ export default function ProductPage() {
 
   const product = useQuery(api.products.getProductBySlug, { slug: slug ?? "" });
 
-  const packagingOptions = product?.packagingOptions ?? [];
+  const baseOpts = product?.weight ? [{ name: product.weight, price: product.price, originalPrice: product.originalPrice }] : [];
+  const packagingOptions = [...baseOpts, ...(product?.packagingOptions ?? [])];
   const activePackaging = packagingOptions.find((p: typeof packagingOptions[0]) => p.name === selectedPackaging) ?? packagingOptions[0];
 
   const TASTE_OPTIONS = product?.tasteOptions ?? [];
