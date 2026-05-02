@@ -1,6 +1,13 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { DefaultProviders } from "./components/providers/default.tsx";
-import AuthCallback from "./pages/auth/Callback.tsx";
+import { useEffect } from "react";
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 import Index from "./pages/Index.tsx";
 import ShopPage from "./pages/shop/page.tsx";
 import ProductPage from "./pages/product/page.tsx";
@@ -10,12 +17,14 @@ import OrderConfirmPage from "./pages/order-confirm/page.tsx";
 import AdminPage from "./pages/admin/page.tsx";
 import AboutPage from "./pages/about/page.tsx";
 import PacksPage from "./pages/packs/page.tsx";
+import AuthCallback from "./pages/auth/Callback.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 export default function App() {
   return (
     <DefaultProviders>
       <BrowserRouter>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/shop" element={<ShopPage />} />

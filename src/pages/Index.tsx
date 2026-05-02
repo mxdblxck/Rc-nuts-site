@@ -98,12 +98,12 @@ function BuyButton({ children, secondary = false }: { children: React.ReactNode;
   const isPrimary = !secondary;
   
   return (
-    <motion.div whileTap={{ scale: 0.95 }} className="inline-block">
+    <motion.div whileTap={{ scale: 0.95 }} className="inline-block w-full sm:w-auto">
       <Button 
         size="lg"
         asChild
         className={`
-          gap-3 text-lg px-10 py-7 shadow-lg border-2
+          gap-2 sm:gap-3 text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-7 shadow-lg border-2 w-full sm:w-auto
           ${isPrimary 
             ? "border-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25" 
             : "border-border/50 bg-transparent text-foreground hover:bg-muted border-border/30"
@@ -114,7 +114,7 @@ function BuyButton({ children, secondary = false }: { children: React.ReactNode;
         onClick={() => { if (isPrimary) { setClicked(true); setTimeout(() => setClicked(false), 1500); }}}
       >
         {isPrimary && clicked ? (
-          <><CheckCircle className="w-6 h-6" />تم!</>
+          <><CheckCircle className="w-5 sm:w-6" />تم!</>
         ) : children}
       </Button>
     </motion.div>
@@ -143,11 +143,12 @@ export default function Index() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16 grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-center md:text-start order-2 md:order-1"
           >
             <motion.div
               initial={{ opacity: 0, y: -20 }}
@@ -158,23 +159,23 @@ export default function Index() {
               <Sparkles className="w-4 h-4" />
               مرحبا بزبائننا الكرام
             </motion.div>
-            <h1 className="text-4xl md:text-6xl font-black text-foreground leading-tight mb-4 font-serif">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.15] mb-4 md:mb-5 font-serif">
               أجود المكسرات
               <br />
               <span className="text-primary">والفواكه المجففة</span>
             </h1>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 md:mb-8 leading-relaxed max-w-md mx-auto md:mx-0">
               مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
             </p>
-            <div className="flex flex-wrap gap-3 mb-10">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-center md:items-start mb-8 md:mb-10">
               <BuyButton>
                 <Link to="/shop">
-                  {false ? <><CheckCircle className="w-6 h-6" />تم!</> : <><ArrowLeft className="w-6 h-6" />اشتري الآن</>}
+                  <><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />اشتري الآن</>
                 </Link>
               </BuyButton>
               <BuyButton secondary>
                 <Link to="/#about">
-                  <><ArrowRight className="w-6 h-6" />تفاصيل أكثر</>
+                  <><ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />تفاصيل أكثر</>
                 </Link>
               </BuyButton>
             </div>
@@ -197,7 +198,7 @@ export default function Index() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative"
+            className="relative order-1 md:order-2"
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square">
               <img
