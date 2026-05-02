@@ -1,0 +1,190 @@
+import { Button } from "@/components/ui/button.tsx";
+import { Search, Heart, ShoppingBag, User } from "lucide-react";
+
+export default function Index() {
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Top Bar */}
+      <div className="bg-black text-center py-2 text-sm text-white">
+        FREE SHIPPING WORLDWIDE
+      </div>
+
+      {/* Header */}
+      <header className="border-b border-gray-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            {/* Left Navigation */}
+            <nav className="hidden md:flex items-center space-x-8">
+              <a href="#" className="text-gray-800 hover:text-black transition-colors font-medium">Shop</a>
+              <a href="#" className="text-gray-800 hover:text-black transition-colors font-medium">Sale</a>
+              <a href="#" className="text-gray-800 hover:text-black transition-colors font-medium">Customer Care</a>
+              <a href="#" className="text-gray-800 hover:text-black transition-colors font-medium">Stories</a>
+            </nav>
+
+            {/* Logo */}
+            <div className="text-2xl font-light tracking-[0.2em] text-black">
+              ATELIER NOIR
+            </div>
+
+            {/* Right Icons */}
+            <div className="flex items-center space-x-5">
+              <Search className="w-5 h-5 text-gray-800 hover:text-black cursor-pointer transition-colors" />
+              <Heart className="w-5 h-5 text-gray-800 hover:text-black cursor-pointer transition-colors" />
+              <ShoppingBag className="w-5 h-5 text-gray-800 hover:text-black cursor-pointer transition-colors" />
+              <User className="w-5 h-5 text-gray-800 hover:text-black cursor-pointer transition-colors" />
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Hero Section */}
+      <section className="relative h-[70vh] bg-gradient-to-r from-amber-50 via-yellow-50 to-stone-50">
+        <div className="absolute inset-0 flex max-w-7xl mx-auto">
+          {/* Left Content */}
+          <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+            <div className="text-left max-w-md">
+              <h1 className="text-5xl md:text-6xl font-extralight text-black mb-3 tracking-wide">
+                NEW
+              </h1>
+              <h2 className="text-4xl md:text-5xl font-extralight text-black mb-12 tracking-wide">
+                COLLECTION
+              </h2>
+              <Button className="bg-black hover:bg-gray-900 text-white px-10 py-4 text-sm font-medium tracking-wider uppercase transition-colors shadow-lg">
+                Shop Now
+              </Button>
+            </div>
+          </div>
+          
+          {/* Right Image */}
+          <div className="flex-1 relative overflow-hidden">
+            <img 
+              src="https://images.unsplash.com/photo-1746730921292-bd6be2c256d5?q=80&w=4000&auto=format&fit=crop&ixlib=rb-4.0.3"
+              alt="Fashion Model"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute inset-0 bg-black/10"></div>
+          </div>
+        </div>
+      </section>
+
+      {/* Best Sellers Section */}
+      <section className="py-20 bg-zinc-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-extralight text-black mb-3 tracking-wide">
+            OUR BEST SELLERS
+          </h2>
+          <p className="text-gray-600 text-base mb-16 tracking-wide">
+            Don't Miss Out
+          </p>
+          
+          {/* Product Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            {/* Product 1 - White Blazer */}
+            <div className="group cursor-pointer">
+              <div className="aspect-square bg-white mb-6 overflow-hidden rounded-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1746730921250-b31cb91788e3?q=80&w=4000&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="Classic White Blazer"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="font-light text-black mb-2 text-lg tracking-wide">Classic White Blazer</h3>
+              <p className="text-gray-700 font-medium">$299</p>
+            </div>
+
+            {/* Product 2 - Silk Evening Dress */}
+            <div className="group cursor-pointer">
+              <div className="aspect-square bg-white mb-6 overflow-hidden rounded-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1756441082607-ea083d06e6ed?q=80&w=3760&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="Silk Evening Dress"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="font-light text-black mb-2 text-lg tracking-wide">Silk Evening Dress</h3>
+              <p className="text-gray-700 font-medium">$549</p>
+            </div>
+
+            {/* Product 3 - Cashmere Sweater */}
+            <div className="group cursor-pointer">
+              <div className="aspect-square bg-white mb-6 overflow-hidden rounded-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1687275160322-5a428ab5f6ca?q=80&w=4000&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="Cashmere Sweater"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="font-light text-black mb-2 text-lg tracking-wide">Cashmere Sweater</h3>
+              <p className="text-gray-700 font-medium">$389</p>
+            </div>
+
+            {/* Product 4 - Leather Jacket */}
+            <div className="group cursor-pointer">
+              <div className="aspect-square bg-white mb-6 overflow-hidden rounded-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1596451984027-a127248221e1?q=80&w=1867&auto=format&fit=crop&ixlib=rb-4.0.3"
+                  alt="Leather Jacket"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+              <h3 className="font-light text-black mb-2 text-lg tracking-wide">Leather Jacket</h3>
+              <p className="text-gray-700 font-medium">$629</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-black text-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+            {/* Company Info */}
+            <div>
+              <h3 className="text-xl font-light mb-6 tracking-wider uppercase">ATELIER NOIR</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">
+                Discover our curated collection of luxury women's fashion, crafted with precision and elegance.
+              </p>
+            </div>
+
+            {/* Customer Care */}
+            <div>
+              <h4 className="font-medium mb-6 tracking-wide uppercase text-sm">Customer Care</h4>
+              <ul className="space-y-3 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Size Guide</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Returns</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Shipping</a></li>
+              </ul>
+            </div>
+
+            {/* Company */}
+            <div>
+              <h4 className="font-medium mb-6 tracking-wide uppercase text-sm">Company</h4>
+              <ul className="space-y-3 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Press</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Sustainability</a></li>
+              </ul>
+            </div>
+
+            {/* Connect */}
+            <div>
+              <h4 className="font-medium mb-6 tracking-wide uppercase text-sm">Connect</h4>
+              <ul className="space-y-3 text-sm text-gray-400">
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Newsletter</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-16 pt-10 text-center text-sm text-gray-500">
+            <p className="tracking-wide">© {new Date().getFullYear()} Atelier Noir. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
