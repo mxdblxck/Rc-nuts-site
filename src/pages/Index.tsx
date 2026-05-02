@@ -34,13 +34,21 @@ const categories = [
 // Animated Counter Component
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const spring = useSpring(0, { stiffness: 50, damping: 20, mass: 1 });
-  const display = useTransform(spring, (val) => Math.round(val).toLocaleString("ar-DZ"));
+  const [isMounted, setIsMounted] = useState(false);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const spring = useSpring(0, { stiffness: 30, damping: 15, mass: 0.5 });
+  const display = useTransform(spring, (val) => Math.round(val).toString());
 
+  useEffect(() => { setIsMounted(true); }, []);
   useEffect(() => { if (isInView) { spring.set(target); }}, [isInView, target, spring]);
 
-  return (<motion.span ref={ref} className="tabular-nums">{prefix}<motion.span>{display}</motion.span>{suffix}</motion.span>);
+  if (!isMounted) return <>{prefix}{target}{suffix}</>;
+
+  return (
+    <motion.span ref={ref} className="tabular-nums inline-block">
+      {prefix}<motion.span>{display}</motion.span>{suffix}
+    </motion.span>
+  );
 }
 
 // Big Buy Button with click animation
@@ -176,7 +184,7 @@ export default function Index() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="absolute -bottom-4 -right-4 bg-card rounded-2xl shadow-xl p-4 border border-border"
+              className="absolute -bottom-5 -right-4 sm:-bottom-6 sm:-right-6 bg-card rounded-2xl shadow-2xl p-4 sm:p-5 border border-border left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0"
             >
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">

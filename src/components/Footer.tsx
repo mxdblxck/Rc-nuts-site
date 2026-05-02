@@ -6,9 +6,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-foreground text-background mt-16">
-      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-start">
         {/* Brand */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
           <div className="flex items-center gap-2 mb-4">
             <img src="/logo.png" alt="RC Nuts" className="w-10 h-10 object-contain rounded-full" />
             <div>
@@ -22,7 +22,7 @@ export default function Footer() {
         </div>
 
         {/* Links */}
-        <div>
+        <div className="flex flex-col items-center md:items-start">
           <h3 className="font-bold text-background mb-4">روابط سريعة</h3>
           <ul className="space-y-2 text-sm text-background/70">
             {[
@@ -41,7 +41,7 @@ export default function Footer() {
         </div>
 
         {/* Contact */}
-        <div id="contact">
+        <div id="contact" className="flex flex-col items-center md:items-start">
           <h3 className="font-bold text-background mb-4">تواصل معنا</h3>
           <ul className="space-y-3 text-sm text-background/70">
             <li className="flex items-center gap-2">
