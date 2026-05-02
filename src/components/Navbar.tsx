@@ -32,9 +32,9 @@ export default function Navbar() {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0" onClick={() => setMenuOpen(false)}>
             <img src="/logo.png" alt="RC Nuts" className="w-9 h-9 object-contain rounded-full shadow" />
-            <div className="hidden xs:block">
-              <div className="font-bold text-base leading-none text-primary font-serif">RC Nuts</div>
-              <div className="text-[9px] text-muted-foreground tracking-widest uppercase">الخيار الملكي للمكسرات</div>
+            <div>
+              <div className="font-bold text-sm xs:text-base leading-none text-primary font-serif">RC Nuts</div>
+              <div className="text-[8px] xs:text-[9px] text-muted-foreground tracking-widest uppercase">الخيار الملكي للمكسرات</div>
             </div>
           </Link>
 
