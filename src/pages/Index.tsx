@@ -24,10 +24,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", icon: Nut, color: "bg-stone-50/80 border-stone-200 hover:border-stone-400 hover:bg-stone-100/50" },
-  { name: "بذور", icon: Sprout, color: "bg-green-50/80 border-green-200 hover:border-green-400 hover:bg-green-100/50" },
-  { name: "خلطات", icon: Blend, color: "bg-amber-50/80 border-amber-200 hover:border-amber-400 hover:bg-amber-100/50" },
-  { name: "مجففات", icon: Grape, color: "bg-orange-50/80 border-orange-200 hover:border-orange-400 hover:bg-orange-100/50" },
+  { name: "مكسرات", icon: Nut, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
+  { name: "بذور", icon: Sprout, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
+  { name: "خلطات", icon: Blend, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
+  { name: "مجففات", icon: Grape, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
 ];
 
 export default function Index() {
@@ -173,7 +173,7 @@ export default function Index() {
                   className={`flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-2xl border-2 ${cat.color} hover:shadow-lg transition-all duration-300 cursor-pointer group h-full`}
                 >
                   <div className="relative">
-                    <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-foreground/70 group-hover:text-foreground group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
+                    <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-primary/70 group-hover:text-primary group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
                   </div>
                   <span className="font-bold text-foreground text-sm sm:text-base">{cat.name}</span>
                 </Link>
