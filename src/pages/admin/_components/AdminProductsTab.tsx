@@ -41,6 +41,24 @@ export default function AdminProductsTab({ products }: Props) {
     toast.success(!product.inStock ? "تم تفعيل المنتج" : "تم تحديد المنتج كـنـفذت الكمية");
   };
 
+  // iOS-style toggle button
+  const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
+    <button
+      type="button"
+      onClick={onChange}
+      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+        enabled ? "bg-green-500" : "bg-gray-300"
+      }`}
+    >
+      <span className="sr-only">Toggle</span>
+      <span
+        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out ${
+          enabled ? "translate-x-5" : "translate-x-0"
+        }`}
+      />
+    </button>
+  );
+
   const handleEdit = (product: Doc<"products">) => {
     setEditingProduct(product);
     setShowProductForm(true);
@@ -156,9 +174,7 @@ export default function AdminProductsTab({ products }: Props) {
                   </span>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => handleToggleStock(p)} className={`flex-1 py-2 rounded-lg text-sm font-medium ${p.inStock ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}`}>
-                    {p.inStock ? <CheckCircle className="w-4 h-4 mx-auto" /> : <XCircle className="w-4 h-4 mx-auto" />}
-                  </button>
+                  <ToggleSwitch enabled={p.inStock} onChange={() => handleToggleStock(p)} />
                   <button onClick={() => handleEdit(p)} className="p-2 rounded-lg bg-muted"><Edit className="w-4 h-4" /></button>
                   <button onClick={() => handleDelete(p)} className="p-2 rounded-lg bg-muted hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
                 </div>
@@ -186,9 +202,7 @@ export default function AdminProductsTab({ products }: Props) {
                 <p className={`text-sm ${p.inStock ? "text-green-600" : "text-destructive"}`}>{p.inStock ? `${p.stockQuantity || 0} في المخزن` : "منفذ"}</p>
               </div>
               <div className="flex gap-2 shrink-0">
-                <button onClick={() => handleToggleStock(p)} className={`px-3 py-2 rounded-xl text-sm font-medium ${p.inStock ? "bg-green-50 text-green-700" : "bg-yellow-50 text-yellow-700"}`}>
-                  {p.inStock ? "متوفر" : "نفذ"}
-                </button>
+                <ToggleSwitch enabled={p.inStock} onChange={() => handleToggleStock(p)} />
                 <button onClick={() => handleEdit(p)} className="p-2 rounded-xl bg-muted"><Edit className="w-4 h-4" /></button>
                 <button onClick={() => handleDelete(p)} className="p-2 rounded-xl bg-muted hover:text-destructive"><Trash2 className="w-4 h-4" /></button>
               </div>
