@@ -190,7 +190,7 @@ export default function PacksPage() {
                       ) : (
                         <>
                           <ShoppingCart className="w-4 h-4" />
-                          أضف الباقة للسلة
+                          أضف الباقة لسلة مقتنياتك
                         </>
                       )}
                     </Button>
