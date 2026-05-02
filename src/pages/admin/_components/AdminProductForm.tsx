@@ -21,7 +21,7 @@ const schema = z.object({
   originalPrice: z.coerce.number().optional(),
   imageUrl: z.string().optional(),
   baseWeightValue: z.string().optional(),
-  baseWeightUnit: z.string().default("غ"),
+  baseWeightUnit: z.string(),
   stockQuantity: z.coerce.number().min(0, "الكمية لا يمكن أن تكون سالبة"),
   inStock: z.boolean(),
   featured: z.boolean(),
@@ -69,6 +69,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       stockQuantity: 0,
       tasteOptions: [],
       packagingOptions: [],
+      baseWeightUnit: "غ",
     },
   });
 

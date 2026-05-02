@@ -12,7 +12,7 @@ type Product = {
   nameAr: string;
   price: number;
   originalPrice?: number;
-  imageUrl: string;
+  imageUrl?: string;
   inStock: boolean;
   slug: string;
   category: string;
@@ -26,6 +26,9 @@ export default function ProductCard({ product }: { product: Product }) {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
     : 0;
 
+  // Fallback image URL
+  const displayImageUrl = product.imageUrl ?? "/logo.png";
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -35,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
       productName: product.nameAr,
       price: product.price,
       quantity: 1,
-      imageUrl: product.imageUrl,
+      imageUrl: displayImageUrl,
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 3000);
@@ -48,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
         {/* Image */}
         <div className="relative overflow-hidden aspect-square bg-muted">
           <img
-            src={product.imageUrl}
+            src={displayImageUrl}
             alt={product.nameAr}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />

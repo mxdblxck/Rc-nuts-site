@@ -43,7 +43,7 @@ export default function ProductPage() {
       productName: product.nameAr,
       price: currentPrice,
       quantity,
-      imageUrl: product.imageUrl,
+      imageUrl: product.imageUrl ?? "/logo.png",
       weight: weightLabel,
       taste: tasteLabel,
     });
@@ -97,7 +97,7 @@ export default function ProductPage() {
           {/* Image */}
           <div className="relative rounded-2xl overflow-hidden aspect-square bg-muted shadow-lg">
             <img
-              src={product.imageUrl}
+              src={product.imageUrl ?? "/logo.png"}
               alt={product.nameAr}
               className="w-full h-full object-cover"
             />
