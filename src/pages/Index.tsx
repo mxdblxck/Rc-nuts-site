@@ -24,10 +24,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", icon: Nut, color: "bg-amber-50/80 border-amber-200 hover:border-amber-400 hover:bg-amber-100/50" },
+  { name: "مكسرات", icon: Nut, color: "bg-stone-50/80 border-stone-200 hover:border-stone-400 hover:bg-stone-100/50" },
   { name: "بذور", icon: Sprout, color: "bg-green-50/80 border-green-200 hover:border-green-400 hover:bg-green-100/50" },
-  { name: "خلطات", icon: Blend, color: "bg-yellow-50/80 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-100/50" },
-  { name: "مجففات", icon: Grape, color: "bg-purple-50/80 border-purple-200 hover:border-purple-400 hover:bg-purple-100/50" },
+  { name: "خلطات", icon: Blend, color: "bg-amber-50/80 border-amber-200 hover:border-amber-400 hover:bg-amber-100/50" },
+  { name: "مجففات", icon: Grape, color: "bg-orange-50/80 border-orange-200 hover:border-orange-400 hover:bg-orange-100/50" },
 ];
 
 export default function Index() {
