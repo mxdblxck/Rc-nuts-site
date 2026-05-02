@@ -193,7 +193,7 @@ export default function AdminOrdersTab() {
               <tr>
                 <th className="px-4 py-3 font-bold">رقم الطلب</th>
                 <th className="px-4 py-3 font-bold">التاريخ</th>
-                <th className="px-4 py-3 font-bold">العميل</th>
+                <th className="px-4 py-3 font-bold">الزبون</th>
                 <th className="px-4 py-3 font-bold hidden md:table-cell">الولاية</th>
                 <th className="px-4 py-3 font-bold">الحالة</th>
                 <th className="px-4 py-3 font-bold">الإجمالي</th>
@@ -409,7 +409,7 @@ export default function AdminOrdersTab() {
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold text-foreground flex items-center gap-2 border-b border-border pb-2">
                     <Phone className="w-4 h-4 text-primary" />
-                    بيانات العميل
+                    بيانات الزبون
                   </h3>
                   <div className="bg-card border border-border rounded-xl p-4 space-y-3 text-sm">
                     <div className="flex justify-between items-start">

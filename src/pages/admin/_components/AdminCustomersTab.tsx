@@ -136,8 +136,8 @@ export default function AdminCustomersTab({ customerStats }: Props) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-foreground">العملاء</h1>
-          <p className="text-sm text-muted-foreground mt-1">{customerStats.length} عميلمسجل</p>
+          <h1 className="text-2xl font-black text-foreground">الزبائن</h1>
+          <p className="text-sm text-muted-foreground mt-1">{customerStats.length} زبونمسجل</p>
         </div>
         <Button onClick={exportToExcel} className="bg-emerald-600 hover:bg-emerald-700">
           <Download className="w-4 h-4 mr-2" />
@@ -180,7 +180,7 @@ export default function AdminCustomersTab({ customerStats }: Props) {
       {/* Results count */}
       {search && (
         <p className="text-sm text-muted-foreground">
-          {filteredCustomers.length} نتيجة من {customerStats.length} عميل
+          {filteredCustomers.length} نتيجة من {customerStats.length} زبون
         </p>
       )}
 
@@ -269,7 +269,7 @@ export default function AdminCustomersTab({ customerStats }: Props) {
                     <label className="text-sm font-medium text-muted-foreground mb-2 block">ملاحظات:</label>
                     <textarea
                       className="w-full border border-border rounded-xl p-3 text-sm bg-background min-h-[100px] focus:outline-none focus:ring-2 focus:ring-primary/20 resize-none"
-                      placeholder="ملاحظات حول العميل..."
+                      placeholder="ملاحظات حول الزبون..."
                       defaultValue={c.note}
                       onClick={(e) => e.stopPropagation()}
                       onChange={async (e) => {
