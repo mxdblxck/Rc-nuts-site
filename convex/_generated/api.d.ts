@@ -13,7 +13,10 @@ import type * as files from "../files.js";
 import type * as generated_api from "../generated/api.js";
 import type * as generated_server from "../generated/server.js";
 import type * as orders from "../orders.js";
+<<<<<<< HEAD
 import type * as packs from "../packs.js";
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 import type * as products from "../products.js";
 import type * as shipping from "../shipping.js";
 import type * as users from "../users.js";
@@ -30,7 +33,10 @@ declare const fullApi: ApiFromModules<{
   "generated/api": typeof generated_api;
   "generated/server": typeof generated_server;
   orders: typeof orders;
+<<<<<<< HEAD
   packs: typeof packs;
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   products: typeof products;
   shipping: typeof shipping;
   users: typeof users;

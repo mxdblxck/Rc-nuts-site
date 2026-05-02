@@ -2,6 +2,7 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
 
+<<<<<<< HEAD
 // Helper to resolve storage URLs for a product
 // Final `images` array = [mainImage, ...galleryImages] — main image is always first
 async function resolveProductUrls(ctx: any, p: any) {
@@ -41,6 +42,8 @@ async function resolveProductUrls(ctx: any, p: any) {
   return p;
 }
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 // Public queries
 export const listProducts = query({
   args: {
@@ -48,6 +51,7 @@ export const listProducts = query({
     featured: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+<<<<<<< HEAD
     let products;
     if (args.featured) {
       products = await ctx.db
@@ -63,6 +67,26 @@ export const listProducts = query({
       products = await ctx.db.query("products").collect();
     }
     return Promise.all(products.map((p) => resolveProductUrls(ctx, p)));
+=======
+    if (args.featured) {
+      return await ctx.db
+        .query("products")
+        .withIndex("by_featured", (q) => q.eq("featured", true))
+        .collect();
+    }
+    if (args.category) {
+      return await ctx.db
+        .query("products")
+        .withIndex("by_category", (q) => q.eq("category", args.category!))
+        .collect();
+    }
+    const products = await ctx.db.query("products").collect();
+    return Promise.all(products.map(async (p) => {
+      if (p.imageStorageId) p.imageUrl = await ctx.storage.getUrl(p.imageStorageId) ?? p.imageUrl;
+      if (p.galleryStorageIds) p.images = await Promise.all(p.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
+      return p;
+    }));
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   },
 });
 
@@ -74,7 +98,12 @@ export const getProductBySlug = query({
       .withIndex("by_slug", (q) => q.eq("slug", args.slug))
       .unique();
     if (product) {
+<<<<<<< HEAD
       return resolveProductUrls(ctx, product);
+=======
+      if (product.imageStorageId) product.imageUrl = await ctx.storage.getUrl(product.imageStorageId) ?? product.imageUrl;
+      if (product.galleryStorageIds) product.images = await Promise.all(product.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
     }
     return product;
   },
@@ -85,7 +114,12 @@ export const getProduct = query({
   handler: async (ctx, args) => {
     const product = await ctx.db.get(args.id);
     if (product) {
+<<<<<<< HEAD
       return resolveProductUrls(ctx, product);
+=======
+      if (product.imageStorageId) product.imageUrl = await ctx.storage.getUrl(product.imageStorageId) ?? product.imageUrl;
+      if (product.galleryStorageIds) product.images = await Promise.all(product.galleryStorageIds.map((id: any) => ctx.storage.getUrl(id))) as string[];
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
     }
     return product;
   },

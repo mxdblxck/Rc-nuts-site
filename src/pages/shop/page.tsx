@@ -1,4 +1,5 @@
 import { useState } from "react";
+<<<<<<< HEAD
 import { useSearchParams, Link } from "react-router-dom";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
@@ -6,16 +7,28 @@ import { Filter, Search, Gift, Truck, CheckCircle } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
+=======
+import { useSearchParams } from "react-router-dom";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api.js";
+import { Filter, Search } from "lucide-react";
+import { Input } from "@/components/ui/input.tsx";
+import { Button } from "@/components/ui/button.tsx";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import Navbar from "@/components/Navbar.tsx";
 import Footer from "@/components/Footer.tsx";
 import ProductCard from "@/components/ProductCard.tsx";
+<<<<<<< HEAD
 import { useCart } from "@/hooks/use-cart.tsx";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
 
 const PLACEHOLDER = "/logo.png";
+=======
+
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 const categories = ["الكل", "مكسرات", "بذور", "خلطات", "مجففات"];
 
 export default function ShopPage() {
@@ -24,6 +37,7 @@ export default function ShopPage() {
   const [selectedCategory, setSelectedCategory] = useState(initialCat);
   const [search, setSearch] = useState("");
   const [priceFilter, setPriceFilter] = useState<"all" | "sale">("all");
+<<<<<<< HEAD
   const [activeTab, setActiveTab] = useState<"products" | "packs">("products");
 
   const products = useQuery(api.products.listProducts, {});
@@ -31,6 +45,10 @@ export default function ShopPage() {
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [addedPackIds, setAddedPackIds] = useState<Set<string>>(new Set());
+=======
+
+  const products = useQuery(api.products.listProducts, {});
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
   const filtered = (products ?? []).filter((p) => {
     const matchCat = selectedCategory === "الكل" || p.category === selectedCategory;
@@ -39,6 +57,7 @@ export default function ShopPage() {
     return matchCat && matchSearch && matchPrice;
   });
 
+<<<<<<< HEAD
   const handleAddPack = (pack: any) => {
     addItem({
       cartItemId: `pack-${pack._id}`,
@@ -68,17 +87,24 @@ export default function ShopPage() {
     );
   };
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 py-10 w-full flex-1">
         {/* Header */}
+<<<<<<< HEAD
         <div className="mb-6">
+=======
+        <div className="mb-8">
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           <h1 className="text-3xl font-black text-foreground font-serif mb-2">المتجر</h1>
           <p className="text-muted-foreground">اكتشف تشكيلتنا من أجود المكسرات والبذور</p>
         </div>
 
+<<<<<<< HEAD
         {/* Main tabs: Products / Packs */}
         <div className="flex gap-2 mb-6 border-b border-border">
           <button
@@ -255,6 +281,65 @@ export default function ShopPage() {
               </Link>
             </div>
           </>
+=======
+        {/* Filters */}
+        <div className="flex flex-col md:flex-row gap-4 mb-8">
+          <div className="relative flex-1">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="ابحث عن منتج..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pr-10"
+            />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {categories.map((cat) => (
+              <Button
+                key={cat}
+                size="sm"
+                variant={selectedCategory === cat ? "default" : "secondary"}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  setSearchParams(cat !== "الكل" ? { category: cat } : {});
+                }}
+                className="cursor-pointer"
+              >
+                {cat}
+              </Button>
+            ))}
+            <Button
+              size="sm"
+              variant={priceFilter === "sale" ? "default" : "secondary"}
+              onClick={() => setPriceFilter(priceFilter === "sale" ? "all" : "sale")}
+              className="gap-1 cursor-pointer"
+            >
+              <Filter className="w-3 h-3" />
+              العروض فقط
+            </Button>
+          </div>
+        </div>
+
+        {/* Products Grid */}
+        {products === undefined ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <Skeleton key={i} className="h-72 rounded-2xl" />
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
+          <div className="text-center py-20 text-muted-foreground">
+            <div className="text-5xl mb-4">🔍</div>
+            <p className="text-lg font-medium">لا توجد منتجات مطابقة</p>
+            <p className="text-sm">جرب البحث بكلمة مختلفة أو غيّر الفئة</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filtered.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+          </div>
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         )}
       </div>
 

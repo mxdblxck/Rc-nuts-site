@@ -1,13 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { ShoppingCart, Tag } from "lucide-react";
+=======
+import { ShoppingCart, Tag, ArrowLeft } from "lucide-react";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { useCart } from "@/hooks/use-cart.tsx";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
+<<<<<<< HEAD
 import { useState } from "react";
 import { showAddedToCartToast } from "@/lib/cart-toast.tsx";
 
 const PLACEHOLDER = "/logo.png";
+=======
+import { toast } from "sonner";
+import { useState } from "react";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
 type Product = {
   _id: Id<"products">;
@@ -15,7 +24,10 @@ type Product = {
   price: number;
   originalPrice?: number;
   imageUrl?: string;
+<<<<<<< HEAD
   images?: string[];
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   inStock: boolean;
   slug: string;
   category: string;
@@ -25,12 +37,16 @@ export default function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
   const navigate = useNavigate();
   const [justAdded, setJustAdded] = useState(false);
+<<<<<<< HEAD
   const [isHovered, setIsHovered] = useState(false);
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   const discount = product.originalPrice && product.originalPrice > product.price 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
     : 0;
 
+<<<<<<< HEAD
   // Build resolved images array: prefer gallery, fallback to imageUrl, then placeholder
   const resolvedImages: string[] = (() => {
     if (product.images && product.images.length > 0) return product.images;
@@ -41,6 +57,10 @@ export default function ProductCard({ product }: { product: Product }) {
   const primaryImage = resolvedImages[0] ?? PLACEHOLDER;
   const hoverImage = resolvedImages[1] ?? null;
   const hasHoverImage = hoverImage !== null;
+=======
+  // Fallback image URL
+  const displayImageUrl = product.imageUrl ?? "/logo.png";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -51,16 +71,25 @@ export default function ProductCard({ product }: { product: Product }) {
       productName: product.nameAr,
       price: product.price,
       quantity: 1,
+<<<<<<< HEAD
       imageUrl: primaryImage,
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 3000);
     showAddedToCartToast(product.nameAr, () => navigate("/cart"));
+=======
+      imageUrl: displayImageUrl,
+    });
+    setJustAdded(true);
+    setTimeout(() => setJustAdded(false), 3000);
+    toast.success(`تمت الإضافة إلى السلة: ${product.nameAr}`);
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   };
 
   return (
     <Link to={`/product/${product.slug}`} className="group block">
       <div className="bg-card rounded-2xl overflow-hidden border border-border hover:shadow-lg hover:border-primary/30 transition-all duration-300">
+<<<<<<< HEAD
         {/* Image with hover swap effect */}
         <div
           className="relative overflow-hidden aspect-square bg-muted"
@@ -96,6 +125,15 @@ export default function ProductCard({ product }: { product: Product }) {
               onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }}
             />
           )}
+=======
+        {/* Image */}
+        <div className="relative overflow-hidden aspect-square bg-muted">
+          <img
+            src={displayImageUrl}
+            alt={product.nameAr}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           {discount > 0 && (
             <Badge className="absolute top-2 right-2 bg-destructive text-white text-xs flex items-center gap-1">
               <Tag className="w-3 h-3" />
@@ -123,6 +161,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </div>
           {product.inStock ? (
             justAdded ? (
+<<<<<<< HEAD
               <Button
                 size="sm"
                 variant="secondary"
@@ -132,6 +171,27 @@ export default function ProductCard({ product }: { product: Product }) {
                 <ShoppingCart className="w-4 h-4" />
                 تمت الإضافة ✓
               </Button>
+=======
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="flex-1 gap-1 cursor-pointer text-xs"
+                  onClick={handleAddToCart}
+                >
+                  <ShoppingCart className="w-3 h-3" />
+                  تمت الإضافة ✓
+                </Button>
+                <Button
+                  size="sm"
+                  className="flex-1 gap-1 cursor-pointer text-xs bg-accent text-accent-foreground hover:bg-accent/90"
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); navigate("/cart"); }}
+                >
+                  الذهاب إلى السلة
+                  <ArrowLeft className="w-3 h-3" />
+                </Button>
+              </div>
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
             ) : (
               <Button
                 size="sm"

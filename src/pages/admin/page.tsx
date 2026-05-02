@@ -4,7 +4,11 @@ import { api } from "@/convex/_generated/api.js";
 import {
   Package, ShoppingCart, Users, Tag, LayoutDashboard,
   TrendingUp, CheckCircle, Clock, Trash2, ToggleLeft, ToggleRight, Plus, Edit,
+<<<<<<< HEAD
   AlertTriangle, LogOut, Settings, Gift,
+=======
+  AlertTriangle, LogOut, Settings,
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -15,11 +19,18 @@ import AdminProductForm from "./_components/AdminProductForm.tsx";
 import AdminCouponForm from "./_components/AdminCouponForm.tsx";
 import AdminShippingForm from "./_components/AdminShippingForm.tsx";
 import AdminOrdersTab from "./_components/AdminOrdersTab.tsx";
+<<<<<<< HEAD
 import AdminPacksTab from "./_components/AdminPacksTab.tsx";
 import DashboardTab from "./_components/DashboardTab.tsx";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 
 type AdminTab = "dashboard" | "products" | "orders" | "customers" | "coupons" | "shipping" | "packs";
+=======
+import DashboardTab from "./_components/DashboardTab.tsx";
+import type { Doc } from "@/convex/_generated/dataModel.d.ts";
+
+type AdminTab = "dashboard" | "products" | "orders" | "customers" | "coupons" | "shipping";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
 const statusLabels: Record<string, string> = {
   pending: "قيد الانتظار",
@@ -71,8 +82,12 @@ function AdminContent() {
     { id: "orders" as AdminTab, label: "الطلبات", icon: <ShoppingCart className="w-4 h-4" /> },
     { id: "customers" as AdminTab, label: "العملاء", icon: <Users className="w-4 h-4" /> },
     { id: "coupons" as AdminTab, label: "الكوبونات", icon: <Tag className="w-4 h-4" /> },
+<<<<<<< HEAD
     { id: "packs" as AdminTab, label: "الباقات", icon: <Gift className="w-4 h-4" /> },
     { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> },
+=======
+    { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> }, // could use a Truck icon if available
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   ];
 
   const handleEditProduct = (product: Doc<"products">) => {
@@ -279,9 +294,12 @@ function AdminContent() {
           {/* Orders */}
           {tab === "orders" && <AdminOrdersTab />}
 
+<<<<<<< HEAD
           {/* Packs */}
           {tab === "packs" && <AdminPacksTab />}
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           {/* Customers */}
           {tab === "customers" && (
             <div>

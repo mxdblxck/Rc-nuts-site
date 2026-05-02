@@ -50,13 +50,20 @@ export default defineSchema({
     customerCity: v.string(),
     items: v.array(
       v.object({
+<<<<<<< HEAD
         productId: v.string(), // Id<"products"> or Id<"packs"> — stored as string for flexibility
+=======
+        productId: v.id("products"),
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         productName: v.string(),
         quantity: v.number(),
         price: v.number(),
         weight: v.optional(v.string()),
         taste: v.optional(v.string()),
+<<<<<<< HEAD
         isPack: v.optional(v.boolean()),
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
       })
     ),
     subtotal: v.number(),
@@ -107,6 +114,7 @@ export default defineSchema({
     deskDeliveryCost: v.number(),
     active: v.boolean(),
   }).index("by_code", ["wilayaCode"]),
+<<<<<<< HEAD
 
   packs: defineTable({
     nameAr: v.string(),
@@ -126,4 +134,6 @@ export default defineSchema({
   })
     .index("by_active", ["active"])
     .index("by_slug", ["slug"]),
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 });

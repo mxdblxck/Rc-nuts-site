@@ -1,17 +1,28 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+<<<<<<< HEAD
 import { useMutation } from "convex/react";
+=======
+import { useMutation, useQuery } from "convex/react";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 import { api } from "@/convex/_generated/api.js";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
+<<<<<<< HEAD
 import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images } from "lucide-react";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 import { useEffect, useRef, useState } from "react";
+=======
+import { UploadCloud, Link as LinkIcon, X, Plus, Trash } from "lucide-react";
+import type { Id } from "@/convex/_generated/dataModel.d.ts";
+import type { Doc } from "@/convex/_generated/dataModel.d.ts";
+import { useEffect, useState } from "react";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
 const schema = z.object({
   nameAr: z.string().min(2, "الاسم مطلوب"),
@@ -53,6 +64,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+<<<<<<< HEAD
   // Gallery state: each entry is either a URL string or a file to upload
   type GalleryEntry =
     | { type: "url"; url: string }
@@ -74,6 +86,8 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
   const [galleryInputType, setGalleryInputType] = useState<"url" | "upload">("upload");
   const [galleryUrlInput, setGalleryUrlInput] = useState("");
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   const {
     register,
     handleSubmit,
@@ -104,11 +118,14 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
   // Populate form when editing
   useEffect(() => {
     if (editProduct) {
+<<<<<<< HEAD
       setExistingGalleryIds(editProduct.galleryStorageIds ?? []);
       setExistingGalleryUrls(
         (editProduct.images ?? []).filter((u) => u !== editProduct.imageUrl)
       );
       setGalleryEntries([]);
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
       reset({
         nameAr: editProduct.nameAr,
         descriptionAr: editProduct.descriptionAr,
@@ -171,6 +188,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         finalStorageId = storageId;
       }
 
+<<<<<<< HEAD
       // Upload gallery files and collect new storage IDs + URL entries
       const newGalleryIds: Id<"_storage">[] = [];
       const newGalleryUrls: string[] = [];
@@ -200,6 +218,8 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         ...newGalleryUrls,
       ];
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
       const { baseWeightValue, baseWeightUnit, ...restData } = data;
       const payload = {
         ...restData,
@@ -207,8 +227,11 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         originalPrice: restData.originalPrice === 0 ? undefined : restData.originalPrice,
         imageStorageId: imageType === "upload" ? finalStorageId : undefined,
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
+<<<<<<< HEAD
         galleryStorageIds: finalGalleryIds.length > 0 ? finalGalleryIds : undefined,
         images: finalGalleryUrls.length > 0 ? finalGalleryUrls : undefined,
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
           price: p.price,
@@ -320,6 +343,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           {errors.imageUrl && imageType === "url" && <p className="text-destructive text-xs">{errors.imageUrl.message}</p>}
         </div>
 
+<<<<<<< HEAD
         {/* Gallery multi-image upload */}
         <div className="space-y-3 sm:col-span-2 border border-border p-4 rounded-xl">
           <div className="flex items-center justify-between flex-wrap gap-2">
@@ -517,6 +541,8 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           )}
         </div>
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
         <div className="space-y-2">
           <Label>الوزن الأساسي</Label>
           <div className="flex gap-2">

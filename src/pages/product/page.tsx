@@ -7,11 +7,17 @@ import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { useCart } from "@/hooks/use-cart.tsx";
+<<<<<<< HEAD
 import Navbar from "@/components/Navbar.tsx";
 import Footer from "@/components/Footer.tsx";
 import { showAddedToCartToast } from "@/lib/cart-toast.tsx";
 
 const PLACEHOLDER = "/logo.png";
+=======
+import { toast } from "sonner";
+import Navbar from "@/components/Navbar.tsx";
+import Footer from "@/components/Footer.tsx";
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
 export default function ProductPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -20,7 +26,10 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedPackaging, setSelectedPackaging] = useState<string | null>(null);
   const [selectedTaste, setSelectedTaste] = useState<string | null>(null);
+<<<<<<< HEAD
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 
   const product = useQuery(api.products.getProductBySlug, { slug: slug ?? "" });
 
@@ -40,6 +49,7 @@ export default function ProductPage() {
     const tasteLabel = TASTE_OPTIONS.length > 0 ? activeTaste : undefined;
     const cartItemId = `${product._id}-${weightLabel ?? "default"}-${tasteLabel ?? "default"}`;
 
+<<<<<<< HEAD
     // Resolve images for cart
     const resolvedImages: string[] = (() => {
       if (product.images && product.images.length > 0) return product.images;
@@ -47,17 +57,27 @@ export default function ProductPage() {
       return [PLACEHOLDER];
     })();
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
     addItem({
       cartItemId,
       productId: product._id,
       productName: product.nameAr,
       price: currentPrice,
       quantity,
+<<<<<<< HEAD
       imageUrl: resolvedImages[0] ?? PLACEHOLDER,
       weight: weightLabel,
       taste: tasteLabel,
     });
     showAddedToCartToast(product.nameAr, () => navigate("/cart"));
+=======
+      imageUrl: product.imageUrl ?? "/logo.png",
+      weight: weightLabel,
+      taste: tasteLabel,
+    });
+    toast.success(`تمت الإضافة إلى السلة: ${product.nameAr} (${quantity})`);
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   };
 
   if (product === undefined) {
@@ -89,6 +109,7 @@ export default function ProductPage() {
 
   // Loading and Not Found are handled above
 
+<<<<<<< HEAD
   // Resolve gallery images: prefer galleryStorageIds-resolved images, fallback to imageUrl
   const galleryImages: string[] = (() => {
     if (product.images && product.images.length > 0) return product.images;
@@ -97,6 +118,8 @@ export default function ProductPage() {
   })();
   const activeImage = galleryImages[selectedImageIndex] ?? galleryImages[0] ?? PLACEHOLDER;
 
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -112,6 +135,7 @@ export default function ProductPage() {
         </button>
 
         <div className="grid md:grid-cols-2 gap-10">
+<<<<<<< HEAD
           {/* Image Gallery */}
           <div className="flex flex-col-reverse md:flex-row gap-3">
             {/* Thumbnails — bottom on mobile, right side on desktop (RTL: left visually) */}
@@ -176,6 +200,20 @@ export default function ProductPage() {
                 </div>
               )}
             </div>
+=======
+          {/* Image */}
+          <div className="relative rounded-2xl overflow-hidden aspect-square bg-muted shadow-lg">
+            <img
+              src={product.imageUrl ?? "/logo.png"}
+              alt={product.nameAr}
+              className="w-full h-full object-cover"
+            />
+            {discount > 0 && (
+              <Badge className="absolute top-4 right-4 bg-destructive text-white text-sm px-3 py-1">
+                خصم {discount}%
+              </Badge>
+            )}
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           </div>
 
           {/* Details */}

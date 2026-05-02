@@ -9,7 +9,10 @@ import CheckoutPage from "./pages/checkout/page.tsx";
 import OrderConfirmPage from "./pages/order-confirm/page.tsx";
 import AdminPage from "./pages/admin/page.tsx";
 import AboutPage from "./pages/about/page.tsx";
+<<<<<<< HEAD
 import PacksPage from "./pages/packs/page.tsx";
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
 import NotFound from "./pages/NotFound.tsx";
 
 export default function App() {
@@ -19,7 +22,10 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/shop" element={<ShopPage />} />
+<<<<<<< HEAD
           <Route path="/packs" element={<PacksPage />} />
+=======
+>>>>>>> 1914fd68a18a49ff8ed72c9014eb86e24651e0d9
           <Route path="/product/:slug" element={<ProductPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
