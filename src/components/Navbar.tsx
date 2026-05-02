@@ -22,9 +22,12 @@ export default function Navbar() {
   const isActive = (href: string) =>
     href === "/" ? location.pathname === "/" : location.pathname.startsWith(href.split("#")[0]) && href !== "/";
 
+  // Hide promo banner on admin pages
+  const isAdminPage = location.pathname.startsWith("/admin") || location.pathname === "/admin";
+
   return (
     <>
-      <PackAnnouncementBanner />
+      {!isAdminPage && <PackAnnouncementBanner />}
 
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
