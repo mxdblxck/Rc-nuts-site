@@ -114,32 +114,20 @@ export default function DashboardTab({ stats, products, orders }: Props) {
           </div>
         </div>
 
-        {/* Visitors Analytics - Real Tracking */}
+        {/* Visitors Analytics - Vercel */}
         <div className="bg-card border border-border rounded-2xl p-5">
           <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-primary" />
-            زوار الموقع
+            زوار الموقع - Vercel Analytics
           </h3>
-          <div className="space-y-4">
-            <div className="text-center py-4">
-              <Globe className="w-12 h-12 text-primary/30 mx-auto mb-3" />
-              <div className="text-muted-foreground text-sm mb-2">
-                خياران للمتابعة:
-              </div>
-              <div className="flex flex-col gap-2 text-xs">
-                <a 
-                  href="https://vercel.com/docs/concepts/analytics" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  1. Vercel Analytics ←
-                </a>
-                <p className="text-muted-foreground">
-                  2.Deploy Convex: npx convex deploy
-                </p>
-              </div>
+          <div className="text-center py-4">
+            <Globe className="w-12 h-12 text-primary/30 mx-auto mb-3" />
+            <div className="text-muted-foreground text-sm">
+              ✅ Vercel Analytics مفعل
             </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              شاهد الإحصائيات في لوحة تحكم Vercel
+            </p>
           </div>
         </div>
       </div>
