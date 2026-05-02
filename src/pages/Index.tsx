@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView, useSpring, useTransform } from "motion/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape, Camera, CheckCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape, Camera, Sparkles, Check, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import Navbar from "@/components/Navbar.tsx";
@@ -43,9 +44,32 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number;
 }
 
 // Big Buy Button with click animation
-function BuyButton() {
+function BuyButton({ children, secondary = false }: { children: React.ReactNode; secondary?: boolean }) {
   const [clicked, setClicked] = useState(false);
-  return (<motion.div whileTap={{ scale: 0.95 }} className="inline-block"><Button size="lg" asChild className={`gap-3 text-lg px-10 py-7 shadow-xl shadow-primary/25 border-2 border-primary/20 ${clicked ? "bg-green-500 border-green-500" : ""}`} onClick={() => { setClicked(true); setTimeout(() => setClicked(false), 1500); }}><Link to="/shop">{clicked ? <><CheckCircle className="w-6 h-6" />تم!</> : <><ArrowLeft className="w-6 h-6" />اشتري الآن</>}</Link></Button></motion.div>);
+  const isPrimary = !secondary;
+  
+  return (
+    <motion.div whileTap={{ scale: 0.95 }} className="inline-block">
+      <Button 
+        size="lg"
+        asChild
+        className={`
+          gap-3 text-lg px-10 py-7 shadow-lg border-2
+          ${isPrimary 
+            ? "border-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25" 
+            : "border-border/50 bg-transparent text-foreground hover:bg-muted border-border/30"
+          }
+          ${clicked ? "bg-green-500 border-green-500 text-white" : ""}
+          transition-all duration-200 font-semibold
+        `}
+        onClick={() => { if (isPrimary) { setClicked(true); setTimeout(() => setClicked(false), 1500); }}}
+      >
+        {isPrimary && clicked ? (
+          <><CheckCircle className="w-6 h-6" />تم!</>
+        ) : children}
+      </Button>
+    </motion.div>
+  );
 }
 
 export default function Index() {
@@ -93,11 +117,17 @@ export default function Index() {
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
               مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
             </p>
-            <div className="flex flex-wrap gap-4 mb-10">
-              <BuyButton />
-              <Button size="lg" variant="secondary" asChild className="gap-2 text-base px-8">
-                <Link to="/#about">تفاصيل أكثر</Link>
-              </Button>
+            <div className="flex flex-wrap gap-3 mb-10">
+              <BuyButton>
+                <Link to="/shop">
+                  {false ? <><CheckCircle className="w-6 h-6" />تم!</> : <><ArrowLeft className="w-6 h-6" />اشتري الآن</>}
+                </Link>
+              </BuyButton>
+              <BuyButton secondary>
+                <Link to="/#about">
+                  <><ArrowRight className="w-6 h-6" />تفاصيل أكثر</>
+                </Link>
+              </BuyButton>
             </div>
 
             {/* Stats - Animated Counters */}
@@ -162,29 +192,24 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Features - Enhanced */}
-      <section className="py-20 bg-gradient-to-b from-muted/30 to-muted/50">
+      {/* Features - Apple Style */}
+      <section className="py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                viewport={{ once: true, margin: "-50px" }}
-                whileHover={{ y: -8, transition: { duration: 0.3 } }}
-                className="group relative overflow-hidden p-6 sm:p-8 bg-card/80 backdrop-blur-sm rounded-3xl border border-border hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10 transition-all duration-300"
+                viewport={{ once: true }}
+                className="group flex flex-col items-center justify-center p-4 lg:p-6 rounded-2xl hover:bg-muted/50 transition-colors duration-300 cursor-pointer"
               >
-                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="relative">
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 text-primary rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
-                    {f.icon}
-                  </div>
-                  <h3 className="font-bold text-foreground mb-2 text-center text-lg">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground text-center leading-relaxed">{f.desc}</p>
+                <div className="text-primary mb-3 group-hover:scale-110 transition-transform duration-300">
+                  {f.icon}
                 </div>
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <h3 className="font-semibold text-foreground text-sm lg:text-base mb-1 text-center">{f.title}</h3>
+                <p className="text-xs text-muted-foreground text-center leading-snug">{f.desc}</p>
               </motion.div>
             ))}
           </div>
