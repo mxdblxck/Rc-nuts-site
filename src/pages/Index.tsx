@@ -103,9 +103,10 @@ export default function Index() {
           >
             <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square">
               <img
-                src="/public/hero2.png"
+                src={`/hero2.png?t=${Date.now()}`}
                 alt="مكسرات طبيعية فاخرة"
                 className="w-full h-full object-cover"
+                onError={(e) => { e.currentTarget.src = "/logo.png"; }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
             </div>
