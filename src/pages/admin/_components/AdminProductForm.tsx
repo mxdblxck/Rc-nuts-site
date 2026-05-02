@@ -207,7 +207,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         originalPrice: restData.originalPrice === 0 ? undefined : restData.originalPrice,
         imageStorageId: imageType === "upload" ? finalStorageId : undefined,
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
-        galleryStorageIds: finalGalleryIds.length > 0 ? finalGalleryIds : undefined,
+        galleryStorageIds: finalGalleryIds,
         images: finalGalleryUrls.length > 0 ? finalGalleryUrls : undefined,
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
