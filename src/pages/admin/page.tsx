@@ -15,6 +15,7 @@ import Navbar from "@/components/Navbar.tsx";
 import AdminProductForm from "./_components/AdminProductForm.tsx";
 import AdminCouponForm from "./_components/AdminCouponForm.tsx";
 import AdminShippingForm from "./_components/AdminShippingForm.tsx";
+import AdminProductsTab from "./_components/AdminProductsTab.tsx";
 import AdminOrdersTab from "./_components/AdminOrdersTab.tsx";
 import AdminCustomersTab from "./_components/AdminCustomersTab.tsx";
 import AdminPacksTab from "./_components/AdminPacksTab.tsx";
@@ -186,121 +187,7 @@ function AdminContent() {
           )}
 
           {/* Products */}
-          {tab === "products" && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h1 className="text-2xl font-black text-foreground">إدارة المنتجات</h1>
-                <Button
-                  onClick={() => { setEditingProduct(null); setShowProductForm(true); }}
-                  className="gap-2 cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  إضافة منتج
-                </Button>
-              </div>
-
-              {showProductForm && (
-                <div className="mb-6">
-                  <AdminProductForm
-                    onClose={handleCloseForm}
-                    editProduct={editingProduct}
-                  />
-                </div>
-              )}
-
-              {products === undefined ? (
-                <div className="space-y-3">
-                  {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-20" />)}
-                </div>
-              ) : (
-                <div className="space-y-3">
-                  {products.map((p) => (
-                    <div
-                      key={p._id}
-                      className={`bg-card border rounded-xl p-4 flex items-center gap-4 ${
-                        !p.inStock ? "border-destructive/30 bg-destructive/5" : "border-border"
-                      }`}
-                    >
-                      <img
-                        src={p.imageUrl}
-                        alt={p.nameAr}
-                        className="w-14 h-14 rounded-xl object-cover shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-foreground truncate">{p.nameAr}</span>
-                          {!p.inStock && (
-                            <Badge variant="destructive" className="text-[10px] shrink-0">
-                              نفذت الكمية
-                            </Badge>
-                          )}
-                          {p.featured && (
-                            <Badge className="text-[10px] shrink-0 bg-accent text-accent-foreground">
-                              مميز
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {p.category} • {p.price.toLocaleString("ar-DZ")} دج
-                        </div>
-                        <div className="text-xs mt-0.5 flex items-center gap-1">
-                          {p.inStock ? (
-                            <span className={`font-medium ${p.stockQuantity !== undefined && p.stockQuantity < 5 ? "text-orange-500" : "text-primary"}`}>
-                              الكمية: {p.stockQuantity ?? "غير محددة"}
-                              {p.stockQuantity !== undefined && p.stockQuantity < 5 && " (كمية قليلة!)"}
-                            </span>
-                          ) : (
-                            <span className="text-destructive flex items-center gap-1">
-                              <AlertTriangle className="w-3 h-3" />
-                              نفذت الكمية
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2 shrink-0">
-                        {/* Toggle stock */}
-                        <button
-                          onClick={() => handleToggleStock(p)}
-                          title={p.inStock ? "تحديد كـ نفذت الكمية" : "تفعيل المخزن"}
-                          className={`text-sm px-2 py-1 rounded-lg border transition-colors cursor-pointer ${
-                            p.inStock
-                              ? "border-primary/30 text-primary hover:bg-primary/10"
-                              : "border-destructive/30 text-destructive hover:bg-destructive/10"
-                          }`}
-                        >
-                          {p.inStock ? "متوفر ✓" : "نفذ ✗"}
-                        </button>
-
-                        {/* Edit */}
-                        <button
-                          onClick={() => handleEditProduct(p)}
-                          className="text-muted-foreground hover:text-primary transition-colors cursor-pointer p-1"
-                          title="تعديل"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </button>
-
-                        {/* Delete */}
-                        <button
-                          onClick={async () => {
-                            if (confirm(`هل تريد حذف "${p.nameAr}"؟`)) {
-                              await deleteProduct({ id: p._id });
-                              toast.success("تم حذف المنتج");
-                            }
-                          }}
-                          className="text-muted-foreground hover:text-destructive transition-colors cursor-pointer p-1"
-                          title="حذف"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          {tab === "products" && <AdminProductsTab products={products} />}
 
           {/* Orders */}
           {tab === "orders" && <AdminOrdersTab />}
