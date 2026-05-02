@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck } from "lucide-react";
+import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import Navbar from "@/components/Navbar.tsx";
@@ -24,10 +24,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", emoji: "🥜", color: "bg-amber-50 border-amber-200" },
-  { name: "بذور", emoji: "🌱", color: "bg-green-50 border-green-200" },
-  { name: "خلطات", emoji: "✨", color: "bg-yellow-50 border-yellow-200" },
-  { name: "مجففات", emoji: "🍇", color: "bg-purple-50 border-purple-200" },
+  { name: "مكسرات", icon: Nut, color: "bg-amber-50/80 border-amber-200 hover:border-amber-400 hover:bg-amber-100/50" },
+  { name: "بذور", icon: Sprout, color: "bg-green-50/80 border-green-200 hover:border-green-400 hover:bg-green-100/50" },
+  { name: "خلطات", icon: Blend, color: "bg-yellow-50/80 border-yellow-200 hover:border-yellow-400 hover:bg-yellow-100/50" },
+  { name: "مجففات", icon: Grape, color: "bg-purple-50/80 border-purple-200 hover:border-purple-400 hover:bg-purple-100/50" },
 ];
 
 export default function Index() {
@@ -158,23 +158,28 @@ export default function Index() {
         <h2 className="text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
         <p className="text-muted-foreground text-center mb-8">اختر ما يناسبك من تشكيلتنا الواسعة</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((cat, i) => (
-            <motion.div
-              key={cat.name}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.4, delay: i * 0.1 }}
-              viewport={{ once: true }}
-            >
-              <Link
-                to={`/shop?category=${cat.name}`}
-                className={`flex flex-col items-center gap-3 p-6 rounded-2xl border-2 ${cat.color} hover:shadow-md transition-all cursor-pointer`}
+          {categories.map((cat, i) => {
+            const IconComponent = cat.icon;
+            return (
+              <motion.div
+                key={cat.name}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: i * 0.1 }}
+                viewport={{ once: true }}
               >
-                <span className="text-4xl">{cat.emoji}</span>
-                <span className="font-bold text-foreground">{cat.name}</span>
-              </Link>
-            </motion.div>
-          ))}
+                <Link
+                  to={`/shop?category=${cat.name}`}
+                  className={`flex flex-col items-center gap-3 p-6 rounded-2xl border-2 ${cat.color} hover:shadow-lg transition-all duration-300 cursor-pointer group`}
+                >
+                  <div className="relative">
+                    <IconComponent className="w-10 h-10 text-foreground/70 group-hover:text-foreground group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
+                  </div>
+                  <span className="font-bold text-foreground">{cat.name}</span>
+                </Link>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
