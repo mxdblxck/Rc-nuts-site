@@ -48,7 +48,7 @@ export default function OrderConfirmPage() {
           {/* WhatsApp follow up */}
           <div className="mt-8">
             <a
-              href="https://wa.me/213XXXXXXXXX?text=مرحبا، لقد أكملت طلبي وأريد متابعة حالته"
+              href="https://wa.me/213549845460?text=مرحبا، لقد أكملت طلبي وأريد متابعة حالته"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-green-600 hover:underline flex items-center justify-center gap-2"
