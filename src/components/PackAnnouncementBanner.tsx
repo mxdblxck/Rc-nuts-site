@@ -17,27 +17,27 @@ export default function PackAnnouncementBanner() {
       : null;
     
     return (
-      <span key={i} className="inline-flex items-center gap-3 mx-6">
-        <span className="flex items-center gap-1.5 font-black whitespace-nowrap">
-          <Gift className="w-4 h-4" />
+      <span key={i} className="inline-flex items-center gap-2 mx-4 text-xs sm:text-sm">
+        <span className="flex items-center gap-1 font-bold whitespace-nowrap">
+          <Gift className="w-3.5 h-3.5" />
           {featured.nameAr}
         </span>
-        <span className="text-primary-foreground/80">|</span>
+        <span className="text-primary-foreground/70">|</span>
         <span className="font-bold whitespace-nowrap">
           {featured.price.toLocaleString("ar-DZ")} دج
           {discount && (
-            <span className="mr-1 bg-white/20 text-xs font-bold px-1.5 py-0.5 rounded-full">
+            <span className="mr-1 bg-white/20 text-[10px] font-bold px-1 py-0.5 rounded-full">
               -{discount}%
             </span>
           )}
         </span>
-        <span className="flex items-center gap-1 font-bold bg-white/15 px-2.5 py-0.5 rounded-full text-xs whitespace-nowrap">
+        <span className="flex items-center gap-1 font-bold bg-white/15 px-2 py-0.5 rounded-full text-[10px] whitespace-nowrap">
           <Truck className="w-3 h-3" />
           توصيل مجاني
         </span>
         <Link
           to="/packs"
-          className="flex items-center gap-1 text-xs font-bold bg-white/25 hover:bg-white/35 transition-colors px-3 py-1 rounded-full whitespace-nowrap"
+          className="flex items-center gap-1 text-[10px] font-bold bg-white/25 hover:bg-white/35 transition-colors px-2 py-1 rounded-full whitespace-nowrap"
         >
           اكتشف <ArrowLeft className="w-3 h-3" />
         </Link>
@@ -71,7 +71,7 @@ export default function PackAnnouncementBanner() {
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(0); }
-          100% { transform: translateX(-33.33%); }
+          100% { transform: translateX(-25%); }
         }
         .marquee-container {
           width: 100%;
@@ -79,11 +79,16 @@ export default function PackAnnouncementBanner() {
         }
         .marquee-content {
           display: flex;
-          animation: marquee 30s linear infinite;
+          animation: marquee 20s linear infinite;
           white-space: nowrap;
         }
         .marquee-content:hover {
           animation-play-state: paused;
+        }
+        @media (max-width: 768px) {
+          .marquee-content {
+            animation-duration: 10s;
+          }
         }
       `}</style>
     </div>
