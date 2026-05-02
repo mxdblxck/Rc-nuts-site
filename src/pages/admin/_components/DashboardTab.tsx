@@ -1,6 +1,7 @@
 import { ShoppingCart, TrendingUp, Clock, CheckCircle, BarChart3, Package, Users, TrendingDown, ArrowUp, ArrowDown, Eye, Globe } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { useVisitorTracker } from "@/hooks/use-visitor-tracker";
 
 type Props = {
   stats: any;
@@ -40,6 +41,9 @@ export default function DashboardTab({ stats, products, orders }: Props) {
   const currentMonthOrders = monthlySales[currentMonth]?.orders || 0;
   const lastMonthOrders = currentMonth > 0 ? monthlySales[currentMonth - 1]?.orders || 0 : 0;
   const salesTrend = calculateTrend(currentMonthOrders, lastMonthOrders);
+
+  // Visitor tracking
+  const visitorStats = useVisitorTracker();
 
   if (!stats) {
     return (
@@ -114,20 +118,35 @@ export default function DashboardTab({ stats, products, orders }: Props) {
           </div>
         </div>
 
-        {/* Visitors Analytics - Vercel */}
+        {/* Visitors Analytics - Real Tracking */}
         <div className="bg-card border border-border rounded-2xl p-5">
           <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
             <Eye className="w-5 h-5 text-primary" />
-            زوار الموقع - Vercel Analytics
+            زوار الموقع
           </h3>
-          <div className="text-center py-4">
-            <Globe className="w-12 h-12 text-primary/30 mx-auto mb-3" />
-            <div className="text-muted-foreground text-sm">
-              ✅ Vercel Analytics مفعل
+          <div className="grid grid-cols-2 gap-4">
+            {/* Today */}
+            <div className="text-center p-4 bg-muted/30 rounded-xl">
+              <div className="text-3xl font-black text-primary">{visitorStats.visitorsToday}</div>
+              <div className="text-xs text-muted-foreground">زوار اليوم</div>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              شاهد الإحصائيات في لوحة تحكم Vercel
-            </p>
+            
+            {/* This Month */}
+            <div className="text-center p-4 bg-muted/30 rounded-xl">
+              <div className="text-3xl font-black text-foreground">{visitorStats.visitorsThisMonth}</div>
+              <div className="text-xs text-muted-foreground">هذا الشهر</div>
+            </div>
+          </div>
+          
+          {/* Comparison */}
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">مقارنة بالشهر الماضي</span>
+              <div className={`flex items-center gap-1 text-sm font-bold ${visitorStats.isPositive ? "text-green-600" : "text-red-500"}`}>
+                {visitorStats.isPositive ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
+                <span>{visitorStats.changePercent}%</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
