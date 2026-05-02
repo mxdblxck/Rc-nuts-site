@@ -1,4 +1,4 @@
-import { ShoppingCart, TrendingUp, Clock, CheckCircle, BarChart3, Package, Users, TrendingDown, ArrowUp, ArrowDown, Eye } from "lucide-react";
+import { ShoppingCart, TrendingUp, Clock, CheckCircle, BarChart3, Package, Users, TrendingDown, ArrowUp, ArrowDown, Eye, Globe } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 
@@ -8,8 +8,8 @@ type Props = {
   orders: any[];
 };
 
-// months in Arabic
-const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+// months in Arabic (Algerian)
+const months = ["جانفي", "فيفري", "مارس", "أفريل", "ماي", "جوان", "جويلية", "أوت", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
 function calculateTrend(current: number, previous: number): { value: number; isPositive: boolean } {
   if (previous === 0) return { value: 0, isPositive: true };
@@ -37,15 +37,9 @@ export default function DashboardTab({ stats, products, orders }: Props) {
   });
   
   // Current vs previous month
-  const currentMonthSales = monthlySales[currentMonth]?.sales || 0;
-  const lastMonthSales = currentMonth > 0 ? monthlySales[currentMonth - 1]?.sales || 0 : 0;
-  const salesTrend = calculateTrend(currentMonthSales, lastMonthSales);
-  
-  // Mock visitor data (would need real tracking in production)
-  const visitorsToday = Math.floor(Math.random() * 50) + 10;
-  const visitorsMonth = Math.floor(Math.random() * 500) + 100;
-  const visitorsLastMonth = Math.floor(Math.random() * 400) + 100;
-  const visitorTrend = calculateTrend(visitorsMonth, visitorsLastMonth);
+  const currentMonthOrders = monthlySales[currentMonth]?.orders || 0;
+  const lastMonthOrders = currentMonth > 0 ? monthlySales[currentMonth - 1]?.orders || 0 : 0;
+  const salesTrend = calculateTrend(currentMonthOrders, lastMonthOrders);
 
   if (!stats) {
     return (
@@ -80,7 +74,7 @@ export default function DashboardTab({ stats, products, orders }: Props) {
             <div className={`flex items-center gap-1 text-sm font-bold ${salesTrend.isPositive ? "text-green-600" : "text-red-500"}`}>
               {salesTrend.isPositive ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
               <span>{salesTrend.value}%</span>
-              <span className="text-muted-foreground mr-1">compared to last month</span>
+              <span className="text-muted-foreground mr-1">compare to last month</span>
             </div>
           </div>
           <div className="h-64">
@@ -90,7 +84,7 @@ export default function DashboardTab({ stats, products, orders }: Props) {
                   dataKey="month" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 11, fill: '#6b7280' }} 
+                  tick={{ fontSize: 10, fill: '#6b7280' }} 
                   interval={0}
                   angle={-45}
                   textAnchor="end"
@@ -99,19 +93,19 @@ export default function DashboardTab({ stats, products, orders }: Props) {
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 11, fill: '#6b7280' }}
+                  tick={{ fontSize: 10, fill: '#6b7280' }}
                   tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}
                 />
                 <Tooltip 
-                  formatter={(value: number) => [`${value.toLocaleString("ar-DZ")} دج`, "المبيعات"]}
+                  formatter={(value: number) => [`${value} طلب`, "عدد الطلبات"]}
                   contentStyle={{ borderRadius: '8px', border: '1px solid oklch(0.88 0.02 80)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   labelStyle={{ fontWeight: 'bold', marginBottom: '4px' }}
                 />
-                <Bar dataKey="sales" radius={[4, 4, 0, 0]} name="المبيعات">
+                <Bar dataKey="orders" radius={[3, 3, 0, 0]} name="الطلبات" barSize={16}>
                   {monthlySales.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
-                      fill={index === currentMonth ? "oklch(0.42 0.1 130)" : "oklch(0.42 0.1 130 / 0.6)"} 
+                      fill={index === currentMonth ? "oklch(0.42 0.1 130)" : "oklch(0.42 0.1 130 / 0.5)"} 
                     />
                   ))}
                 </Bar>
@@ -120,55 +114,30 @@ export default function DashboardTab({ stats, products, orders }: Props) {
           </div>
         </div>
 
-        {/* Visitors Analytics */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-card border border-border rounded-2xl p-5">
-            <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-              <Eye className="w-5 h-5 text-primary" />
-              زوار الموقع
-            </h3>
-            <div className="space-y-4">
-              <div>
-                <div className="text-2xl font-black text-foreground">{visitorsToday}</div>
-                <div className="text-xs text-muted-foreground">زوار اليوم</div>
+        {/* Visitors Analytics - Real Tracking */}
+        <div className="bg-card border border-border rounded-2xl p-5">
+          <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
+            <Eye className="w-5 h-5 text-primary" />
+            زوار الموقع
+          </h3>
+          <div className="space-y-4">
+            <div className="text-center py-4">
+              <Globe className="w-12 h-12 text-primary/30 mx-auto mb-3" />
+              <div className="text-muted-foreground text-sm mb-2">
+                خياران للمتابعة:
               </div>
-              <div className="pt-3 border-t border-border">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-xl font-bold text-foreground">{visitorsMonth}</div>
-                    <div className="text-xs text-muted-foreground">هذا الشهر</div>
-                  </div>
-                  <div className={`flex items-center gap-1 text-sm font-bold ${visitorTrend.isPositive ? "text-green-600" : "text-red-500"}`}>
-                    {visitorTrend.isPositive ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />}
-                    <span>{visitorTrend.value}%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="bg-card border border-border rounded-2xl p-5">
-            <h3 className="font-bold text-foreground mb-4 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-green-600" />
-              نظرة سريعة
-            </h3>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground"> متوسط الطلب</span>
-                <span className="font-bold text-foreground">
-                  {stats.totalOrders > 0 
-                    ? `${Math.round((stats.revenueMonth / stats.totalOrders)).toLocaleString("ar-DZ")} دج`
-                    : "0 دج"}
-                </span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">نسبة التحويل</span>
-                <span className="font-bold text-green-600">{stats.totalOrders > 0 ? "2.5%" : "0%"}</span>
-              </div>
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-muted-foreground">العملاء</span>
-                <span className="font-bold text-foreground">{stats.totalOrders}</span>
+              <div className="flex flex-col gap-2 text-xs">
+                <a 
+                  href="https://vercel.com/docs/concepts/analytics" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  1. Vercel Analytics ←
+                </a>
+                <p className="text-muted-foreground">
+                  2.Deploy Convex: npx convex deploy
+                </p>
               </div>
             </div>
           </div>
