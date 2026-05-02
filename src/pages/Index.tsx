@@ -155,9 +155,9 @@ export default function Index() {
 
       {/* Categories */}
       <section className="py-16 max-w-7xl mx-auto px-4 w-full">
-        <h2 className="text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-8">اختر ما يناسبك من تشكيلتنا الواسعة</p>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
+        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
+        <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
           {categories.map((cat, i) => {
             const IconComponent = cat.icon;
             return (
@@ -170,12 +170,12 @@ export default function Index() {
               >
                 <Link
                   to={`/shop?category=${cat.name}`}
-                  className={`flex flex-col items-center gap-3 p-6 rounded-2xl border-2 ${cat.color} hover:shadow-lg transition-all duration-300 cursor-pointer group`}
+                  className={`flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-2xl border-2 ${cat.color} hover:shadow-lg transition-all duration-300 cursor-pointer group h-full`}
                 >
                   <div className="relative">
-                    <IconComponent className="w-10 h-10 text-foreground/70 group-hover:text-foreground group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
+                    <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-foreground/70 group-hover:text-foreground group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
                   </div>
-                  <span className="font-bold text-foreground">{cat.name}</span>
+                  <span className="font-bold text-foreground text-sm sm:text-base">{cat.name}</span>
                 </Link>
               </motion.div>
             );
