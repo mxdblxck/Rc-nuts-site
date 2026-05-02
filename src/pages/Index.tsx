@@ -31,23 +31,64 @@ const categories = [
   { name: "مجففات", icon: Grape, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
 ];
 
-// Animated Counter Component
-function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
-  const ref = useRef(null);
-  const [isMounted, setIsMounted] = useState(false);
-  const isInView = useInView(ref, { once: true, margin: "-50px" });
-  const spring = useSpring(0, { stiffness: 30, damping: 15, mass: 0.5 });
-  const display = useTransform(spring, (val) => Math.round(val).toString());
+// Professional Counter Component
+function CounterItem({ value, suffix, label }: { value: string; suffix: string; label: string }) {
+  return (
+    <div className="text-center">
+      <div className="text-3xl sm:text-4xl font-black text-primary">
+        <span className="tabular-nums">{value}</span>
+      </div>
+      <div className="text-xs sm:text-sm text-muted-foreground mt-1">{label}</div>
+    </div>
+  );
+}
 
-  useEffect(() => { setIsMounted(true); }, []);
-  useEffect(() => { if (isInView) { spring.set(target); }}, [isInView, target, spring]);
+// Animated Counter that counts up
+function AnimatedCounter({ target, suffix, label }: { target: number; suffix: string; label: string }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  const hasAnimated = useRef(false);
 
-  if (!isMounted) return <>{prefix}{target}{suffix}</>;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated.current) {
+            hasAnimated.current = true;
+            // Smooth count up animation
+            const duration = 2000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            const timer = setInterval(() => {
+              current += increment;
+              if (current >= target) {
+                setCount(target);
+                clearInterval(timer);
+              } else {
+                setCount(Math.floor(current));
+              }
+            }, duration / steps);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => observer.disconnect();
+  }, [target]);
 
   return (
-    <motion.span ref={ref} className="tabular-nums inline-block">
-      {prefix}<motion.span>{display}</motion.span>{suffix}
-    </motion.span>
+    <div ref={ref} className="text-center">
+      <div className="text-3xl sm:text-4xl font-black text-primary">
+        <span className="tabular-nums">{count}{suffix}</span>
+      </div>
+      <div className="text-xs sm:text-sm text-muted-foreground mt-1">{label}</div>
+    </div>
   );
 }
 
@@ -138,25 +179,17 @@ export default function Index() {
               </BuyButton>
             </div>
 
-            {/* Stats - Animated Counters */}
+            {/* Stats - Professional Counters */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex gap-6 sm:gap-10"
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+              className="flex gap-8 sm:gap-12 justify-center"
             >
-              {[
-                { value: 15, suffix: "+", label: "منتج فاخر" },
-                { value: 100, suffix: "%", label: "طبيعي" },
-                { value: 500, suffix: "+", label: "عميل راضٍ" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center">
-                  <div className="text-3xl sm:text-4xl font-black text-primary">
-                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
-                  </div>
-                  <div className="text-xs sm:text-sm text-muted-foreground mt-1">{stat.label}</div>
-                </div>
-              ))}
+              <AnimatedCounter target={15} suffix="+" label="منتج فاخر" />
+              <AnimatedCounter target={100} suffix="%" label="طبيعي" />
+              <AnimatedCounter target={500} suffix="+" label="عميل راضٍ" />
             </motion.div>
           </motion.div>
 
