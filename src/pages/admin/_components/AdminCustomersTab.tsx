@@ -1,11 +1,12 @@
 import { useState, useMemo } from "react";
-import { Search, Download, User, Phone, MapPin, FileText, Tag, Star, Filter, X, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Search, Download, User, Phone, MapPin, FileText, Tag, Star, Filter, X, ChevronDown, ChevronUp, Loader2, FileSpreadsheet, Building, Calendar, Wallet, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import { toast } from "sonner";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
+import * as XLSX from "xlsx";
 
 type CustomerStat = {
   name: string;
@@ -25,7 +26,7 @@ type Props = {
 
 const availableTags = [
   { id: "vip", label: "VIP", color: "bg-amber-100 text-amber-700 border-amber-300" },
-  { id: "regular", label: "عميل منتظم", color: "bg-blue-100 text-blue-700 border-blue-300" },
+  { id: "regular", label: "مستهلك", color: "bg-blue-100 text-blue-700 border-blue-300" },
   { id: "new", label: "جديد", color: "bg-green-100 text-green-700 border-green-300" },
   { id: "problem", label: "مشكلة", color: "bg-red-100 text-red-700 border-red-300" },
 ];
@@ -74,34 +75,48 @@ export default function AdminCustomersTab({ customerStats }: Props) {
     return filtered;
   }, [customerStats, search, sortBy, sortOrder]);
 
-  // Export to Excel
+  // Export to Excel (.xlsx)
   const exportToExcel = () => {
     if (!filteredCustomers.length) {
       toast.error("لا يوجد بيانات للتصدير");
       return;
     }
 
-    const headers = ["الاسم", "الهاتف", "الولاية", "البلدية", "عدد الطلبات", "إجمالي الصرف", "آخر طلب", "ملاحظات"];
-    const rows = filteredCustomers.map((c: CustomerStat) => [
-      c.name || "",
-      c.phone || "",
-      c.wilaya || "",
-      c.city || "",
-      c.orderCount || 0,
-      c.totalSpent || 0,
-      c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString("ar-DZ") : "",
-      c.note || "",
-    ]);
+    // Create Excel data
+    const data = filteredCustomers.map((c: CustomerStat) => ({
+      "الاسم": c.name || "",
+      "الهاتف": c.phone || "",
+      "الولاية": c.wilaya || "",
+      "البلدية": c.city || "",
+      "عدد الطلبات": c.orderCount || 0,
+      "إجمالي الصرف (دج)": c.totalSpent || 0,
+      "آخر طلب": c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString("ar-DZ") : "",
+      "الوسوم": c.tags?.join(", ") || "",
+      "ملاحظات": c.note || "",
+    }));
 
-    const csv = [headers, ...rows].map((row) => row.join(",")).join("\n");
-    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `clients_rc_nuts_${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("تم تصدير البيانات بنجاح");
+    // Create workbook and worksheet
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(data);
+
+    // Set column widths
+    ws["!cols"] = [
+      { wch: 20 }, // الاسم
+      { wch: 15 }, // الهاتف
+      { wch: 15 }, // الولاية
+      { wch: 15 }, // البلدية
+      { wch: 12 }, // عدد الطلبات
+      { wch: 15 }, // إجمالي الصرف
+      { wch: 15 }, // آخر طلب
+      { wch: 15 }, // الوسوم
+      { wch: 30 }, // ملاحظات
+    ];
+
+    XLSX.utils.book_append_sheet(wb, ws, "الزبائن");
+
+    // Download
+    XLSX.writeFile(wb, `زبائن_RC_Nuts_${new Date().toISOString().split("T")[0]}.xlsx`);
+    toast.success("تم تصدير الملف بنجاح");
   };
 
   if (customerStats === undefined) {

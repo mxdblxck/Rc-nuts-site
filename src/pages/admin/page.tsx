@@ -71,7 +71,7 @@ function AdminContent() {
     { id: "dashboard" as AdminTab, label: "الإحصائيات", icon: <LayoutDashboard className="w-4 h-4" /> },
     { id: "products" as AdminTab, label: "المنتجات", icon: <Package className="w-4 h-4" /> },
     { id: "orders" as AdminTab, label: "الطلبات", icon: <ShoppingCart className="w-4 h-4" /> },
-    { id: "customers" as AdminTab, label: "العملاء", icon: <Users className="w-4 h-4" /> },
+    { id: "customers" as AdminTab, label: "الزبائن", icon: <Users className="w-4 h-4" /> },
     { id: "coupons" as AdminTab, label: "الكوبونات", icon: <Tag className="w-4 h-4" /> },
     { id: "packs" as AdminTab, label: "الباقات", icon: <Gift className="w-4 h-4" /> },
     { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> },
@@ -105,76 +105,80 @@ function AdminContent() {
 
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
-      {/* Sidebar */}
-      <aside className="hidden md:flex w-64 flex-col bg-card border-l border-border shrink-0 shadow-sm">
-        <div className="p-5 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-primary-foreground font-black text-sm">R</div>
+      {/* Premium Sidebar */}
+      <aside className="hidden md:flex w-72 flex-col bg-card border-l border-border shrink-0">
+        <div className="p-6 border-b border-border">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg">
+              R
+            </div>
             <div>
-              <h2 className="font-black text-sm text-foreground">RC Nuts Admin</h2>
-              <p className="text-[10px] text-muted-foreground">لوحة التحكم</p>
+              <h2 className="font-black text-lg text-foreground">RC Nuts</h2>
+              <p className="text-xs text-muted-foreground">لوحة تحكم Premium</p>
             </div>
           </div>
         </div>
-        <nav className="flex-1 p-3 space-y-1">
+        <nav className="flex-1 p-4 space-y-2">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 tab === item.id
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground hover:translate-x-0.5"
               }`}
             >
               {item.icon}
               {item.label}
               {item.id === "orders" && orders && orders.filter((o: any) => o.status === "pending").length > 0 && (
-                <span className="mr-auto text-[10px] bg-yellow-500 text-white rounded-full px-1.5 py-0.5 font-bold">
+                <span className="mr-auto text-[10px] bg-yellow-500 text-white rounded-full px-2 py-0.5 font-bold">
                   {orders.filter((o: any) => o.status === "pending").length}
                 </span>
               )}
             </button>
           ))}
         </nav>
-        <div className="p-3 border-t border-border space-y-2">
+        <div className="p-4 border-t border-border space-y-3">
           <Link
             to="/admin/settings"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all duration-200 cursor-pointer"
           >
             <Settings className="w-4 h-4" />
             الإعدادات
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-all cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-all duration-200 cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             تسجيل الخروج
           </button>
-          <div className="text-xs text-muted-foreground text-center pt-2">RC Nuts © 2026</div>
+          <div className="text-xs text-muted-foreground text-center pt-3 border-t border-border mt-2">
+            RC Nuts © 2026
+          </div>
         </div>
       </aside>
 
-      {/* Mobile bottom tabs */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border flex justify-around z-40 px-2 py-1">
+      {/* Premium Mobile bottom tabs */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border flex justify-around z-40 px-3 py-2 shadow-lg">
         {navItems.map((item) => (
           <button
             key={item.id}
             onClick={() => setTab(item.id)}
-            className={`flex flex-col items-center gap-0.5 p-2 rounded-lg transition-colors cursor-pointer ${
-              tab === item.id ? "text-primary" : "text-muted-foreground"
+            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-200 cursor-pointer ${
+              tab === item.id ? "text-primary scale-110" : "text-muted-foreground"
             }`}
           >
             {item.icon}
-            <span className="text-[9px]">{item.label}</span>
+            <span className="text-[8px] font-medium">{item.label}</span>
           </button>
         ))}
       </div>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pb-20 md:pb-0">
-        <div className="p-4 md:p-6">
+      <main className="flex-1 overflow-auto pb-24 md:pb-0">
+        <div className="p-5 md:p-8 bg-background min-h-full">
 
           {/* Dashboard */}
           {tab === "dashboard" && (
