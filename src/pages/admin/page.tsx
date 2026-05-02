@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
+import { Link } from "react-router-dom";
 import {
   Package, ShoppingCart, Users, Tag, LayoutDashboard,
   TrendingUp, CheckCircle, Clock, Trash2, ToggleLeft, ToggleRight, Plus, Edit,
@@ -75,6 +76,12 @@ function AdminContent() {
     { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem("admin_session");
+    sessionStorage.removeItem("admin_session");
+    window.location.href = "/admin/login";
+  };
+
   const handleEditProduct = (product: Doc<"products">) => {
     setEditingProduct(product);
     setShowProductForm(true);
@@ -129,8 +136,22 @@ function AdminContent() {
             </button>
           ))}
         </nav>
-        <div className="p-3 border-t border-border">
-          <div className="text-xs text-muted-foreground text-center">RC Nuts © 2026</div>
+        <div className="p-3 border-t border-border space-y-2">
+          <Link
+            to="/admin/settings"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
+          >
+            <Settings className="w-4 h-4" />
+            الإعدادات
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-destructive hover:bg-destructive/10 transition-all cursor-pointer"
+          >
+            <LogOut className="w-4 h-4" />
+            تسجيل الخروج
+          </button>
+          <div className="text-xs text-muted-foreground text-center pt-2">RC Nuts © 2026</div>
         </div>
       </aside>
 
