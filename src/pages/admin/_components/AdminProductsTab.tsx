@@ -41,27 +41,19 @@ export default function AdminProductsTab({ products }: Props) {
     toast.success(!product.inStock ? "تم تفعيل المنتج" : "تم تحديد المنتج كـنـفذت الكمية");
   };
 
-  // iOS-style toggle button
+  // Professional stock toggle - clean badge style
   const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
     <button
       type="button"
       onClick={onChange}
-      className={`relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+      className={`relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
         enabled 
-          ? "bg-emerald-500 border-emerald-400 shadow-lg shadow-emerald-500/30" 
-          : "bg-red-400 border-red-300 shadow-lg shadow-red-500/30"
+          ? "bg-emerald-100 text-emerald-700 border border-emerald-300 hover:bg-emerald-200" 
+          : "bg-red-100 text-red-700 border border-red-300 hover:bg-red-200"
       }`}
     >
-      <span className="sr-only">Toggle</span>
-      <span
-        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition-all duration-300 ease-in-out ${
-          enabled ? "translate-x-6" : "translate-x-1"
-        }`}
-      />
-      {/* Status indicator */}
-      <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white/80 transition-opacity duration-200 ${enabled ? "opacity-0" : "opacity-100"}`}>
-        ✕
-      </span>
+      <span className={`w-2 h-2 rounded-full ${enabled ? "bg-emerald-500" : "bg-red-500"}`} />
+      {enabled ? "متوفر" : "نفذت"}
     </button>
   );
 

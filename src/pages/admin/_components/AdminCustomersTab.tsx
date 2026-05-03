@@ -118,8 +118,8 @@ export default function AdminCustomersTab({ customerStats }: Props) {
       const addr = XLSX.utils.encode_cell({ r: 0, c: col });
       if (!ws[addr]) continue;
       ws[addr].s = {
-        font: { bold: true, color: { rgb: "FFFFFF" }, // White text
-        fill: { fgColor: { rgb: "4A7C59" }, // Olive green
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "4A7C59" } },
         alignment: { horizontal: "center" },
         border: {
           top: { style: "thin", color: { rgb: "3D5C49" } },
@@ -138,7 +138,7 @@ export default function AdminCustomersTab({ customerStats }: Props) {
         const isEven = row % 2 === 0;
         ws[addr].s = {
           ...ws[addr].s,
-          fill: { fgColor: isEven ? { rgb: "F5F5DC" } : { rgb: "FFFFFF" } }, // Beige / White
+          fill: { fgColor: isEven ? { rgb: "F5F5DC" } : { rgb: "FFFFFF" } },
           alignment: { horizontal: "center" },
         };
       }
