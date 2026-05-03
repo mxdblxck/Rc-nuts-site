@@ -137,7 +137,8 @@ export default function CheckoutPage() {
         notes: data.notes ?? undefined,
       });
       
-      // Send Telegram notification (fire and forget)
+      // Send Telegram notification via Convex action (fire and forget)
+      console.log("[Telegram] Sending...");
       sendTelegramNotification({
         orderId,
         customerName: data.customerName,
@@ -154,7 +155,7 @@ export default function CheckoutPage() {
         paymentMethod: "cod",
         notes: data.notes,
       })
-        .then(() => console.log("[Telegram] Sent"))
+        .then((result) => console.log("[Telegram] Result:", result))
         .catch((err) => console.error("[Telegram] Error:", err));
       
       clearCart();
