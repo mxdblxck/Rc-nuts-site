@@ -1,4 +1,5 @@
 import { action } from "./_generated/server";
+import { v } from "convex/values";
 
 /**
  * Telegram Notification Action - sends order notifications to admin via Telegram bot
@@ -6,15 +7,22 @@ import { action } from "./_generated/server";
  */
 export const sendOrderNotification = action({
   args: {
-    orderId: "string",
-    customerName: "string",
-    customerPhone: "string",
-    customerCity: "string",
-    customerAddress: "string",
-    total: "number",
-    items: "array",
-    paymentMethod: "string",
-    notes: "optional",
+    orderId: v.string(),
+    customerName: v.string(),
+    customerPhone: v.string(),
+    customerCity: v.string(),
+    customerAddress: v.string(),
+    total: v.number(),
+    items: v.array(
+      v.object({
+        productName: v.string(),
+        quantity: v.number(),
+        price: v.number(),
+        weight: v.optional(v.string()),
+      })
+    ),
+    paymentMethod: v.string(),
+    notes: v.optional(v.string()),
   },
   handler: async (_ctx, args) => {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;

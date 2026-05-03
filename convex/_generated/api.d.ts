@@ -16,6 +16,7 @@ import type * as orders from "../orders.js";
 import type * as packs from "../packs.js";
 import type * as products from "../products.js";
 import type * as shipping from "../shipping.js";
+import type * as telegram from "../telegram.js";
 import type * as users from "../users.js";
 
 import type {
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   packs: typeof packs;
   products: typeof products;
   shipping: typeof shipping;
+  telegram: typeof telegram;
   users: typeof users;
 }>;
 
