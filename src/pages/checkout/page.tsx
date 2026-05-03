@@ -137,10 +137,10 @@ export default function CheckoutPage() {
       });
       
       // Send Telegram notification (fire and forget)
-      // Use relative path that works in both dev and prod
       const notifyOrder = async () => {
         try {
-          const response = await fetch("/api/telegram-notify", {
+          // Convex HTTP action route (no /api prefix)
+          const response = await fetch("/telegram-notify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
