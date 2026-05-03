@@ -18,6 +18,7 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        "mesh": "relative overflow-hidden bg-primary text-primary-foreground hover:bg-primary/90",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
@@ -46,11 +47,19 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
-
+  
+  // Mesh gradient animation for mesh variant
+  const isMesh = variant === "mesh";
+  
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant: isMesh ? "default" : variant, size, className }))}
+      style={isMesh ? {
+        background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(158, 60%, 40%) 50%, hsl(var(--primary)) 100%)',
+        backgroundSize: '200% 200%',
+        animation: 'meshGradient 3s ease infinite',
+      } : undefined}
       {...props}
     />
   );

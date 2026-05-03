@@ -134,12 +134,13 @@ export default function ProductCard({ product }: { product: Product }) {
               </Button>
             ) : (
               <Button
+                variant="mesh"
                 size="sm"
                 className="w-full gap-2 cursor-pointer"
                 onClick={handleAddToCart}
               >
                 <ShoppingCart className="w-4 h-4" />
-                أضف للسلة
+                اشتري الآن
               </Button>
             )
           ) : (

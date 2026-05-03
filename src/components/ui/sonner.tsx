@@ -10,7 +10,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       className="toaster group"
       toastOptions={{
         classNames: {
-          toast: "!max-w-[360px] !w-[360px]",
+          toast: "!max-w-[360px] !w-[360px] !gap-2 !p-3",
         },
       }}
       style={
