@@ -25,10 +25,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", img: "/مكسرات.png", bg: "from-amber-100/60 to-amber-50/30", shadow: "hover:shadow-amber-500/20" },
-  { name: "بذور", img: "/بذور.png", bg: "from-emerald-100/60 to-emerald-50/30", shadow: "hover:shadow-emerald-500/20" },
-  { name: "خلطات", img: "/خلطات.png", bg: "from-orange-100/60 to-orange-50/30", shadow: "hover:shadow-orange-500/20" },
-  { name: "مجففات", img: "/مجففات.png", bg: "from-rose-100/60 to-rose-50/30", shadow: "hover:shadow-rose-500/20" },
+  { name: "مكسرات", img: "/مكسرات.png" },
+  { name: "بذور", img: "/بذور.png" },
+  { name: "خلطات", img: "/خلطات.png" },
+  { name: "مجففات", img: "/مجففات.png" },
 ];
 
 // Professional Counter Component
@@ -259,9 +259,16 @@ export default function Index() {
       </section>
 
       {/* Categories - Premium Cards */}
-      <section className="py-16 max-w-7xl mx-auto px-4 w-full">
+      <section className="py-10 max-w-7xl mx-auto px-4 w-full">
+        {/* Cool separator with center diamond */}
+        <div className="flex items-center gap-4 mb-8">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
+          <div className="w-2 h-2 rotate-45 bg-primary/30" />
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
+        </div>
+        
         <h2 className="text-2xl md:text-3xl font-black text-foreground mb-6 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-10 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
+        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
         
         {/* Desktop: 4 cols | Mobile: 2x2 grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -276,9 +283,9 @@ export default function Index() {
             >
               <Link
                 to={`/shop?category=${cat.name}`}
-                className={`relative flex flex-col items-center justify-center gap-3 h-full rounded-2xl bg-gradient-to-br ${cat.bg} border border-white/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer overflow-hidden group`}
+                className="relative flex flex-col items-center justify-center gap-3 h-full rounded-2xl bg-primary/5 border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer overflow-hidden group"
               >
-                {/* Image - Left/Center */}
+                {/* Image - Center */}
                 <div className="w-24 h-24 md:w-28 md:h-28 relative">
                   <img 
                     src={cat.img} 
@@ -289,9 +296,6 @@ export default function Index() {
                 
                 {/* Title - Bottom */}
                 <h3 className="font-bold text-lg md:text-xl text-foreground/90">{cat.name}</h3>
-                
-                {/* Shine effect on hover */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </Link>
             </motion.div>
           ))}
