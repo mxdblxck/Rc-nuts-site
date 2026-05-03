@@ -1,24 +1,5 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
-import { api, FunctionArgs } from "./_generated/api";
-
-// Schedule Telegram notification after order creation
-async function scheduleTelegramNotification(
-  ctx: { scheduler: { runAfter: (delay: number, f: FunctionArgs, args: unknown) => Promise<void> } },
-  args: {
-    orderId: string;
-    customerName: string;
-    customerPhone: string;
-    customerCity: string;
-    customerAddress: string;
-    total: number;
-    items: { productName: string; quantity: number; price: number; weight?: string }[];
-    paymentMethod: string;
-    notes?: string;
-  }
-) {
-  await ctx.scheduler.runAfter(0, api.telegram.sendOrderNotification, args);
-}
 
 export const createOrder = mutation({
   args: {
@@ -71,19 +52,6 @@ export const createOrder = mutation({
       ...args,
       userId,
       status: "pending",
-    });
-
-    // Send Telegram notification (fire and forget)
-    await scheduleTelegramNotification(ctx, {
-      orderId: orderId.toString(),
-      customerName: args.customerName,
-      customerPhone: args.customerPhone,
-      customerCity: args.customerCity,
-      customerAddress: args.customerAddress,
-      total: args.total,
-      items: args.items,
-      paymentMethod: args.paymentMethod,
-      notes: args.notes,
     });
 
     return orderId;
