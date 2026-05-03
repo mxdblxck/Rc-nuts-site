@@ -235,7 +235,7 @@ export default function Index() {
       </section>
 
       {/* Features - Apple Style */}
-      <section className="py-24 bg-background">
+      <section className="py-16 md:py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
             {features.map((f, i) => (
@@ -271,7 +271,7 @@ export default function Index() {
         <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
         
         {/* Desktop: 4 cols | Mobile: 2x2 grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
@@ -283,19 +283,19 @@ export default function Index() {
             >
               <Link
                 to={`/shop?category=${cat.name}`}
-                className="relative flex flex-col items-center justify-center gap-3 h-full rounded-2xl bg-primary/5 border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer overflow-hidden group"
+                className="relative flex flex-col items-center justify-center gap-2 h-full rounded-xl bg-primary/5 border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:bg-emerald-500/10 transition-all duration-300 cursor-pointer overflow-hidden group"
               >
                 {/* Image - Center */}
-                <div className="w-24 h-24 md:w-28 md:h-28 relative">
+                <div className="w-20 h-20 md:w-24 md:h-24 relative">
                   <img 
                     src={cat.img} 
                     alt={cat.name}
-                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
                   />
                 </div>
                 
                 {/* Title - Bottom */}
-                <h3 className="font-bold text-lg md:text-xl text-foreground/90">{cat.name}</h3>
+                <h3 className="font-bold text-base md:text-lg text-foreground/90">{cat.name}</h3>
               </Link>
             </motion.div>
           ))}
@@ -303,7 +303,7 @@ export default function Index() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-16 bg-muted/20 w-full">
+      <section className="py-12 md:py-16 bg-muted/20 w-full">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div>
@@ -365,7 +365,7 @@ export default function Index() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 bg-muted/30 w-full">
+      <section className="py-12 md:py-16 bg-muted/30 w-full">
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="text-3xl font-black text-foreground mb-2 font-serif text-center">ماذا يقول زبائننا؟</h2>
           <p className="text-muted-foreground text-center mb-10">آراء حقيقية من زبائن راضين</p>
@@ -393,7 +393,7 @@ export default function Index() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-16 max-w-7xl mx-auto px-4 w-full">
+      <section id="about" className="py-12 md:py-16 max-w-7xl mx-auto px-4 w-full">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="rounded-2xl overflow-hidden shadow-lg aspect-video">
             <img

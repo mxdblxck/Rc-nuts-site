@@ -70,8 +70,8 @@ export default function PackAnnouncementBanner() {
 
       <style>{`
         @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-25%); }
+          0% { transform: translateX(-25%); }
+          100% { transform: translateX(0); }
         }
         .marquee-container {
           width: 100%;
@@ -79,7 +79,7 @@ export default function PackAnnouncementBanner() {
         }
         .marquee-content {
           display: flex;
-          animation: marquee 20s linear infinite;
+          animation: marquee 16s linear infinite;
           white-space: nowrap;
         }
         .marquee-content:hover {
@@ -87,7 +87,7 @@ export default function PackAnnouncementBanner() {
         }
         @media (max-width: 768px) {
           .marquee-content {
-            animation-duration: 10s;
+            animation-duration: 8s;
           }
         }
       `}</style>
