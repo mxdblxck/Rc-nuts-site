@@ -33,17 +33,18 @@ export default function PacksPage() {
     setTimeout(() => setAddedIds((prev) => { const s = new Set(prev); s.delete(pack._id); return s; }), 3000);
 
     toast(
-      <div className="flex items-center justify-between gap-3 w-full" dir="rtl">
-        <div className="flex items-center gap-2 min-w-0">
+      <div className="flex items-center gap-3 w-full min-w-0" dir="rtl">
+        {/* Left: icon + name */}
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <Gift className="w-4 h-4 text-primary shrink-0" />
           <span className="text-sm font-medium truncate">تمت إضافة الباقة: {pack.nameAr}</span>
         </div>
+        {/* Right: CTA — solid primary button, same as cart */}
         <button
           onClick={() => { toast.dismiss(); navigate("/cart"); }}
-          className="shrink-0 flex items-center gap-1 text-xs font-bold text-primary border border-primary/40 bg-primary/5 hover:bg-primary/15 px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap"
+          className="shrink-0 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 px-3 py-1.5 rounded-lg transition-all whitespace-nowrap"
         >
           الذهاب إلى السلة
-          <ArrowLeft className="w-3 h-3" />
         </button>
       </div>,
       { duration: 4000 }
