@@ -25,10 +25,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", desc: "لوز، كاجو، بيسطاش، جوز وبندق بجودة ممتازة وطازجة دائماً", img: "/مكسرات.png", color: "bg-amber-50/50 border-amber-200 hover:border-amber-500" },
-  { name: "بذور", desc: "بذور يقطين وغيرها محمصة بعناية وغنية بالفوائد", img: "/بذور.png", color: "bg-green-50/50 border-green-200 hover:border-green-500" },
-  { name: "خلطات", desc: "خلطات مميزة ومكسرات معسلة ومتنوعة لكل الأذواق", img: "/خلطات.png", color: "bg-orange-50/50 border-orange-200 hover:border-orange-500" },
-  { name: "مجففات", desc: "فواكه مجففة طبيعية 100% مثل التين والزبيب والموز والفراولة بجودة عالية", img: "/مجففات.png", color: "bg-red-50/50 border-red-200 hover:border-red-500" },
+  { name: "مكسرات", img: "/مكسرات.png", bg: "from-amber-100/60 to-amber-50/30", shadow: "hover:shadow-amber-500/20" },
+  { name: "بذور", img: "/بذور.png", bg: "from-emerald-100/60 to-emerald-50/30", shadow: "hover:shadow-emerald-500/20" },
+  { name: "خلطات", img: "/خلطات.png", bg: "from-orange-100/60 to-orange-50/30", shadow: "hover:shadow-orange-500/20" },
+  { name: "مجففات", img: "/مجففات.png", bg: "from-rose-100/60 to-rose-50/30", shadow: "hover:shadow-rose-500/20" },
 ];
 
 // Professional Counter Component
@@ -258,39 +258,40 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Categories - Compact Cards */}
-      <section className="py-12 max-w-7xl mx-auto px-4 w-full">
-        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
+      {/* Categories - Premium Cards */}
+      <section className="py-16 max-w-7xl mx-auto px-4 w-full">
+        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-6 font-serif text-center">تصفح حسب الفئة</h2>
+        <p className="text-muted-foreground text-center mb-10 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
         
-        {/* Mobile: vertical stack | Desktop: 2x2 grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Desktop: 4 cols | Mobile: 2x2 grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.08 }}
+              transition={{ duration: 0.5, delay: i * 0.08 }}
               viewport={{ once: true }}
+              className="aspect-square"
             >
               <Link
                 to={`/shop?category=${cat.name}`}
-                className={`flex items-center justify-between gap-3 p-3 rounded-xl border-2 ${cat.color} hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group`}
+                className={`relative flex flex-col items-center justify-center gap-3 h-full rounded-2xl bg-gradient-to-br ${cat.bg} border border-white/50 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 cursor-pointer overflow-hidden group`}
               >
-                {/* Text Left */}
-                <div className="flex flex-col flex-1 min-w-0">
-                  <h3 className="font-bold text-base text-foreground truncate">{cat.name}</h3>
-                  <p className="text-xs text-muted-foreground mt-0.5 leading-tight line-clamp-2">{cat.desc}</p>
-                </div>
-                
-                {/* Image Right */}
-                <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-white/30">
+                {/* Image - Left/Center */}
+                <div className="w-24 h-24 md:w-28 md:h-28 relative">
                   <img 
                     src={cat.img} 
                     alt={cat.name}
-                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
                   />
                 </div>
+                
+                {/* Title - Bottom */}
+                <h3 className="font-bold text-lg md:text-xl text-foreground/90">{cat.name}</h3>
+                
+                {/* Shine effect on hover */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               </Link>
             </motion.div>
           ))}
