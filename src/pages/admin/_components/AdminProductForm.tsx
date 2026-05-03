@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images, Package, Wallet, Save } from "lucide-react";
+import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images, Package, Wallet, Save, Leaf } from "lucide-react";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +27,7 @@ const schema = z.object({
   featured: z.boolean(),
   slug: z.string().min(2, "المعرف مطلوب"),
   tasteOptionsText: z.string().optional(),
+  benefitsArText: z.string().optional(),
   packagingOptions: z.array(
     z.object({
       weightValue: z.string().min(1, "القيمة مطلوبة"),
@@ -89,6 +90,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       featured: false,
       stockQuantity: 0,
       tasteOptionsText: "",
+      benefitsArText: "",
       packagingOptions: [],
       baseWeightUnit: "غ",
     },
@@ -114,7 +116,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         descriptionAr: editProduct.descriptionAr,
         category: editProduct.category,
         price: editProduct.price,
-        originalPrice: editProduct.originalPrice,
+        originalPrice: editProduct.originalPrice ?? undefined,
         imageUrl: editProduct.imageUrl,
         baseWeightValue: (() => {
           let v = editProduct.weight ?? "";
@@ -126,13 +128,14 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         featured: editProduct.featured ?? false,
         slug: editProduct.slug,
         tasteOptionsText: editProduct.tasteOptions?.join(", ") ?? "",
+        benefitsArText: editProduct.benefitsAr?.join(", ") ?? "",
         packagingOptions: editProduct.packagingOptions?.map((p) => {
           const match = p.name.match(/^(.+?)(غ|كغ)$/);
           return {
             weightValue: match ? match[1] : p.name,
             weightUnit: match ? match[2] : "غ",
             price: p.price,
-            originalPrice: p.originalPrice,
+            originalPrice: p.originalPrice ?? undefined,
           };
         }) ?? [],
       });
@@ -200,20 +203,21 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         ...newGalleryUrls,
       ];
 
-      const { baseWeightValue, baseWeightUnit, tasteOptionsText, ...restData } = data;
+      const { baseWeightValue, baseWeightUnit, tasteOptionsText, benefitsArText, ...restData } = data;
       const payload = {
         ...restData,
         weight: baseWeightValue ? `${baseWeightValue}${baseWeightUnit}` : undefined,
-        originalPrice: restData.originalPrice === 0 ? undefined : restData.originalPrice,
+        originalPrice: restData.originalPrice || restData.originalPrice === 0 ? restData.originalPrice : undefined,
         imageStorageId: imageType === "upload" ? finalStorageId : undefined,
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
         galleryStorageIds: finalGalleryIds,
         images: finalGalleryUrls,
         tasteOptions: tasteOptionsText ? tasteOptionsText.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
+        benefitsAr: benefitsArText ? benefitsArText.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
           price: p.price,
-          originalPrice: p.originalPrice === 0 ? undefined : p.originalPrice,
+          originalPrice: p.originalPrice || p.originalPrice === 0 ? p.originalPrice : undefined,
         })),
       };
 
@@ -461,6 +465,20 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           </h4>
           <Input placeholder="مملح, محمص, بدون ملح" {...register("tasteOptionsText")} className="h-12" />
           <p className="text-xs text-muted-foreground">افصل بين الخيارات بفاصلة</p>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="space-y-4 p-4 border border-border rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Leaf className="w-4 h-4 text-emerald-500" />
+            الفوائد الصحية (اختياري)
+          </h4>
+          <Textarea 
+            placeholder="غني بالألياف, مصدر للبروتين, خالٍ من الإضافات" 
+            {...register("benefitsArText")} 
+            className="h-24 resize-none"
+          />
+          <p className="text-xs text-muted-foreground">افصل بين الفوائد بفاصلة</p>
         </div>
 
         {/* Section: Toggles */}
