@@ -279,7 +279,7 @@ export default function Index() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.08 }}
               viewport={{ once: true }}
-              className="aspect-square premium-card"
+              className="aspect-square"
             >
               <Link
                 to={`/shop?category=${cat.name}`}
@@ -326,17 +326,8 @@ export default function Index() {
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {featuredProducts.map((product, i) => (
-                <motion.div
-                  key={product._id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  viewport={{ once: true }}
-                  className="premium-card"
-                >
-                  <ProductCard product={product} />
-                </motion.div>
+              {featuredProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
               ))}
             </div>
           )}
