@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQuery, useAction } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { toast } from "sonner";
 import { ShoppingBag, Tag, MapPin, Truck } from "lucide-react";
@@ -38,6 +38,7 @@ export default function CheckoutPage() {
   const { items, total, clearCart, hasPackInCart } = useCart();
   const navigate = useNavigate();
   const createOrder = useMutation(api.orders.createOrder);
+  const sendTelegramNotification = useAction(api.telegram.sendOrderNotification);
   const convex = useConvex();
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -137,37 +138,24 @@ export default function CheckoutPage() {
       });
       
       // Send Telegram notification (fire and forget)
-      const notifyOrder = async () => {
-        try {
-          // Convex HTTP action route (no /api prefix)
-          const response = await fetch("/telegram-notify", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId,
-              customerName: data.customerName,
-              customerPhone: data.customerPhone,
-              customerCity: cityFull,
-              customerAddress: data.customerAddress,
-              total: total - discount + deliveryPrice,
-              items: items.map((i) => ({
-                productName: i.productName,
-                quantity: i.quantity,
-                price: i.price,
-                weight: i.weight,
-              })),
-              paymentMethod: "cod",
-              notes: data.notes,
-            }),
-          });
-          console.log("[Telegram] Status:", response.status);
-          const text = await response.text();
-          console.log("[Telegram] Response:", text);
-        } catch (err) {
-          console.error("[Telegram] Error:", err);
-        }
-      };
-      notifyOrder();
+      sendTelegramNotification({
+        orderId,
+        customerName: data.customerName,
+        customerPhone: data.customerPhone,
+        customerCity: cityFull,
+        customerAddress: data.customerAddress,
+        total: total - discount + deliveryPrice,
+        items: items.map((i) => ({
+          productName: i.productName,
+          quantity: i.quantity,
+          price: i.price,
+          weight: i.weight,
+        })),
+        paymentMethod: "cod",
+        notes: data.notes,
+      })
+        .then(() => console.log("[Telegram] Sent"))
+        .catch((err) => console.error("[Telegram] Error:", err));
       
       clearCart();
       navigate(`/order-confirm/${orderId}`);
