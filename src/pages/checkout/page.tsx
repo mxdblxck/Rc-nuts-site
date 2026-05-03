@@ -137,26 +137,37 @@ export default function CheckoutPage() {
       });
       
       // Send Telegram notification (fire and forget)
-      fetch("https://" + window.location.host + "/api/telegram-notify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderId,
-          customerName: data.customerName,
-          customerPhone: data.customerPhone,
-          customerCity: cityFull,
-          customerAddress: data.customerAddress,
-          total: total - discount + deliveryPrice,
-          items: items.map((i) => ({
-            productName: i.productName,
-            quantity: i.quantity,
-            price: i.price,
-            weight: i.weight,
-          })),
-          paymentMethod: "cod",
-          notes: data.notes,
-        }),
-      }).catch(() => {});
+      // Use relative path that works in both dev and prod
+      const notifyOrder = async () => {
+        try {
+          const response = await fetch("/api/telegram-notify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId,
+              customerName: data.customerName,
+              customerPhone: data.customerPhone,
+              customerCity: cityFull,
+              customerAddress: data.customerAddress,
+              total: total - discount + deliveryPrice,
+              items: items.map((i) => ({
+                productName: i.productName,
+                quantity: i.quantity,
+                price: i.price,
+                weight: i.weight,
+              })),
+              paymentMethod: "cod",
+              notes: data.notes,
+            }),
+          });
+          console.log("[Telegram] Status:", response.status);
+          const text = await response.text();
+          console.log("[Telegram] Response:", text);
+        } catch (err) {
+          console.error("[Telegram] Error:", err);
+        }
+      };
+      notifyOrder();
       
       clearCart();
       navigate(`/order-confirm/${orderId}`);
