@@ -135,6 +135,29 @@ export default function CheckoutPage() {
         paymentMethod: "cash_on_delivery",
         notes: data.notes ?? undefined,
       });
+      
+      // Send Telegram notification (fire and forget)
+      fetch("https://" + window.location.host + "/api/telegram-notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          customerName: data.customerName,
+          customerPhone: data.customerPhone,
+          customerCity: cityFull,
+          customerAddress: data.customerAddress,
+          total: total - discount + deliveryPrice,
+          items: items.map((i) => ({
+            productName: i.productName,
+            quantity: i.quantity,
+            price: i.price,
+            weight: i.weight,
+          })),
+          paymentMethod: "cod",
+          notes: data.notes,
+        }),
+      }).catch(() => {});
+      
       clearCart();
       navigate(`/order-confirm/${orderId}`);
     } catch {

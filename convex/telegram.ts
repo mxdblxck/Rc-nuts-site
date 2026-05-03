@@ -1,59 +1,30 @@
-import { action } from "./_generated/server";
-
-interface OrderItem {
-  productName: string;
-  quantity: number;
-  price: number;
-  weight?: string;
-}
-
-interface SendOrderNotificationArgs {
-  orderId: string;
-  customerName: string;
-  customerPhone: string;
-  customerCity: string;
-  customerAddress: string;
-  total: number;
-  items: OrderItem[];
-  paymentMethod: string;
-  notes?: string;
-}
+import { httpAction } from "./_generated/server";
 
 /**
- * Telegram Notification Action
- * Sends order notifications to admin via Telegram bot
+ * Telegram HTTP Action - sends order notifications to admin via Telegram bot
+ * Called from frontend after order is placed
  */
-export const sendOrderNotification = action({
-  args: {
-    orderId: "string",
-    customerName: "string",
-    customerPhone: "string",
-    customerCity: "string",
-    customerAddress: "string",
-    total: "number",
-    items: "array",
-    paymentMethod: "string",
-    notes: "optional",
-  },
-  handler: async (_ctx, args): Promise<void> => {
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
+export const sendOrderNotification = httpAction(async (ctx, request) => {
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
 
-    // Skip if not configured
-    if (!botToken || !chatId) {
-      console.log("[Telegram] Not configured - missing token or chatId");
-      return;
-    }
+  // Skip if not configured
+  if (!botToken || !chatId) {
+    return new Response(JSON.stringify({ error: "Not configured" }), { status: 200 });
+  }
 
-    // Format items list
+  try {
+    const args = await request.json();
+
+    // Format items
     const itemsList = args.items
       .map(
-        (item: { productName: string; quantity: number; price: number; weight?: string }) =>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (item: any) =>
           `• ${item.productName} ×${item.quantity} - ${item.price.toLocaleString()} دج${item.weight ? ` (${item.weight})` : ""}`
       )
       .join("\n");
 
-    // Build message with Markdown
     const message = `🛒 *طلب جديد*
 
 👤 *الزبون:* ${args.customerName}
@@ -72,25 +43,24 @@ ${args.notes ? `📌 *ملاحظة:* ${args.notes}` : ""}
 
     const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
 
-    try {
-      const response = await fetch(telegramUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: message,
-          parse_mode: "Markdown",
-        }),
-      });
+    const response = await fetch(telegramUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: "Markdown",
+      }),
+    });
 
-      if (!response.ok) {
-        const error = await response.text();
-        console.error("[Telegram] API error:", error);
-      } else {
-        console.log("[Telegram] Order notification sent:", args.orderId);
-      }
-    } catch (error) {
-      console.error("[Telegram] Failed to send:", error);
+    if (!response.ok) {
+      console.error("[Telegram] Error:", await response.text());
+      return new Response(JSON.stringify({ error: "Telegram API error" }), { status: 500 });
     }
-  },
+
+    return new Response(JSON.stringify({ success: true }), { status: 200 });
+  } catch (error) {
+    console.error("[Telegram] Failed:", error);
+    return new Response(JSON.stringify({ error: "Internal error" }), { status: 500 });
+  }
 });
