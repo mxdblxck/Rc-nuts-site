@@ -466,7 +466,7 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              <Button type="submit" variant="mesh" size="lg" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? "جاري الإرسال..." : "تأكيد الطلب"}
               </Button>
 

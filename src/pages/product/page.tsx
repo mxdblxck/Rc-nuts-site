@@ -313,9 +313,9 @@ export default function ProductPage() {
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-                <Button variant="mesh" size="lg" className="flex-1 gap-2" onClick={handleAddToCart}>
+                <Button size="lg" className="flex-1 gap-2" onClick={handleAddToCart}>
                   <ShoppingCart className="w-5 h-5" />
-                  اشتري الآن - {(currentPrice * quantity).toLocaleString("ar-DZ")} دج
+                  أضف للسلة - {(currentPrice * quantity).toLocaleString("ar-DZ")} دج
                 </Button>
               </div>
             ) : (
