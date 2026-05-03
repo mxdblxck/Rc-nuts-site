@@ -25,10 +25,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", icon: Nut, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
-  { name: "بذور", icon: Sprout, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
-  { name: "خلطات", icon: Blend, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
-  { name: "مجففات", icon: Grape, color: "bg-primary/5 border-border hover:border-primary hover:bg-primary/10" },
+  { name: "مكسرات", desc: "لوز, كاجو, فول سوداني وطرق متنوعة", img: "/مكسرات.png", color: "hover:border-amber-500/50 hover:bg-amber-50" },
+  { name: "بذور", desc: "بذور عب الشمس واليقطين والطرق", img: "/بذور.png", color: "hover:border-green-500/50 hover:bg-green-50" },
+  { name: "خلطات", desc: "خلطات ف里克 ومكسرات محمصة", img: "/خلطات.png", color: "hover:border-orange-500/50 hover:bg-orange-50" },
+  { name: "مجففات", desc: "فواكه مجففة وطرقية", img: "/مجففات.png", color: "hover:border-red-500/50 hover:bg-red-50" },
 ];
 
 // Professional Counter Component
@@ -258,33 +258,46 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Categories */}
+      {/* Categories - Premium Horizontal Cards */}
       <section className="py-16 max-w-7xl mx-auto px-4 w-full">
         <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
-        <div className="flex flex-col sm:grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-3xl mx-auto">
-          {categories.map((cat, i) => {
-            const IconComponent = cat.icon;
-            return (
-              <motion.div
-                key={cat.name}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                viewport={{ once: true }}
+        <p className="text-muted-foreground text-center mb-10 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
+        
+        {/* Mobile: horizontal scroll | Desktop: 2x2 grid */}
+        <div className="flex sm:grid sm:grid-cols-2 gap-4 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 [-webkit-overflow-scrolling:touch]">
+          {categories.map((cat, i) => (
+            <motion.div
+              key={cat.name}
+              initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              viewport={{ once: true }}
+              className="min-w-[280px] sm:min-w-0"
+            >
+              <Link
+                to={`/shop?category=${cat.name}`}
+                className={`flex items-center gap-4 p-4 rounded-2xl border-2 bg-card ${cat.color} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full`}
               >
-                <Link
-                  to={`/shop?category=${cat.name}`}
-                  className={`flex flex-col items-center justify-center gap-2 sm:gap-3 p-4 sm:p-6 rounded-2xl border-2 ${cat.color} hover:shadow-lg transition-all duration-300 cursor-pointer group h-full`}
-                >
-                  <div className="relative">
-                    <IconComponent className="w-8 h-8 sm:w-10 sm:h-10 text-primary/70 group-hover:text-primary group-hover:scale-110 transition-all duration-300" strokeWidth={1.5} />
-                  </div>
-                  <span className="font-bold text-foreground text-sm sm:text-base">{cat.name}</span>
-                </Link>
-              </motion.div>
-            );
-          })}
+                {/* Category Image */}
+                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-white/50">
+                  <img 
+                    src={cat.img} 
+                    alt={cat.name}
+                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                  />
+                </div>
+                
+                {/* Category Text */}
+                <div className="flex flex-col justify-center">
+                  <h3 className="font-bold text-lg sm:text-xl text-foreground">{cat.name}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">{cat.desc}</p>
+                  <span className="text-primary text-xs font-medium mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    تسوق الآن ←
+                  </span>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </section>
 
