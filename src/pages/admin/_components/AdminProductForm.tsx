@@ -26,7 +26,7 @@ const schema = z.object({
   inStock: z.boolean(),
   featured: z.boolean(),
   slug: z.string().min(2, "المعرف مطلوب"),
-  tasteOptions: z.array(z.string()).optional(),
+  tasteOptionsText: z.string().optional(),
   packagingOptions: z.array(
     z.object({
       weightValue: z.string().min(1, "القيمة مطلوبة"),
@@ -88,7 +88,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       inStock: true,
       featured: false,
       stockQuantity: 0,
-      tasteOptions: [],
+      tasteOptionsText: "",
       packagingOptions: [],
       baseWeightUnit: "غ",
     },
@@ -125,7 +125,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         inStock: editProduct.inStock,
         featured: editProduct.featured ?? false,
         slug: editProduct.slug,
-        tasteOptions: editProduct.tasteOptions ?? [],
+        tasteOptionsText: editProduct.tasteOptions?.join(", ") ?? "",
         packagingOptions: editProduct.packagingOptions?.map((p) => {
           const match = p.name.match(/^(.+?)(غ|كغ)$/);
           return {
@@ -200,7 +200,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         ...newGalleryUrls,
       ];
 
-      const { baseWeightValue, baseWeightUnit, ...restData } = data;
+      const { baseWeightValue, baseWeightUnit, tasteOptionsText, ...restData } = data;
       const payload = {
         ...restData,
         weight: baseWeightValue ? `${baseWeightValue}${baseWeightUnit}` : undefined,
@@ -209,6 +209,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
         galleryStorageIds: finalGalleryIds,
         images: finalGalleryUrls,
+        tasteOptions: tasteOptionsText ? tasteOptionsText.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
           price: p.price,
@@ -458,7 +459,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
             <Package className="w-4 h-4 text-primary" />
             خيارات الطعم (اختياري)
           </h4>
-          <Input placeholder="مملح, محمص, بدون ملح" {...register("tasteOptions")} className="h-12" />
+          <Input placeholder="مملح, محمص, بدون ملح" {...register("tasteOptionsText")} className="h-12" />
           <p className="text-xs text-muted-foreground">افصل بين الخيارات بفاصلة</p>
         </div>
 

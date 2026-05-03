@@ -161,7 +161,7 @@ export default function AdminProductsTab({ products }: Props) {
                     <ImageIcon className="w-8 h-8 text-muted-foreground" />
                   </div>
                 )}
-                {!p.inStock && <div className="absolute top-2 left-2 bg-destructive text-white text-xs px-2 py-1 rounded-full font-bold">منفذ</div>}
+                {!p.inStock && <div className="absolute top-2 left-2 bg-destructive text-white text-xs px-2 py-1 rounded-full font-bold">غير متوفر</div>}
                 {p.featured && <div className="absolute top-2 right-2 bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full font-bold">مميز</div>}
               </div>
               <div className="p-4">
@@ -170,7 +170,7 @@ export default function AdminProductsTab({ products }: Props) {
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-lg font-black text-primary">{p.price?.toLocaleString("ar-DZ")} دج</span>
                   <span className={`text-xs ${p.inStock ? "text-green-600" : "text-destructive"}`}>
-                    {p.inStock ? `(${p.stockQuantity || 0})` : "منفذ"}
+                    {p.inStock ? `(${p.stockQuantity || 0})` : "غير متوفر"}
                   </span>
                 </div>
                 <div className="flex gap-2">
@@ -192,14 +192,14 @@ export default function AdminProductsTab({ products }: Props) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-foreground truncate">{p.nameAr}</h3>
-                  {!p.inStock && <Badge variant="destructive" className="text-[10px]">منفذ</Badge>}
+                  {!p.inStock && <Badge variant="destructive" className="text-[10px]">غير متوفر</Badge>}
                   {p.featured && <Badge className="text-[10px] bg-primary/10 text-primary">مميز</Badge>}
                 </div>
                 <p className="text-sm text-muted-foreground">{p.category}</p>
               </div>
               <div className="text-left shrink-0">
                 <p className="font-black text-lg text-primary">{p.price?.toLocaleString("ar-DZ")} دج</p>
-                <p className={`text-sm ${p.inStock ? "text-green-600" : "text-destructive"}`}>{p.inStock ? `${p.stockQuantity || 0} في المخزن` : "منفذ"}</p>
+                <p className={`text-sm ${p.inStock ? "text-green-600" : "text-destructive"}`}>{p.inStock ? `${p.stockQuantity || 0} في المخزن` : "غير متوفر"}</p>
               </div>
               <div className="flex gap-2 shrink-0">
                 <ToggleSwitch enabled={p.inStock} onChange={() => handleToggleStock(p)} />
