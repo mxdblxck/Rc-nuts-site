@@ -430,32 +430,34 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           </div>
         </div>
 
-        {/* Section: Packaging Options */}
-        {fields.length > 0 && (
-          <div className="space-y-4 p-4 border border-border rounded-xl">
-            <h4 className="font-bold text-foreground flex items-center gap-2">
-              <Package className="w-4 h-4 text-primary" />
-              خيارات التعبئة والوزن
-            </h4>
-            {fields.map((field, idx) => (
-              <div key={field.id} className="flex gap-2 items-end">
-                <Input {...register(`packagingOptions.${idx}.weightValue` as const)} placeholder="وزن" className="flex-1 h-12" />
-                <select {...register(`packagingOptions.${idx}.weightUnit` as const)} className="border border-border rounded-xl bg-background px-3 h-12 w-20">
-                  <option value="غ">غ</option>
-                  <option value="كغ">كغ</option>
-                </select>
-                <Input type="number" {...register(`packagingOptions.${idx}.price` as const)} placeholder="سعر" className="w-24 h-12" />
-                <Button type="button" variant="ghost" onClick={() => remove(idx)} className="h-12 text-destructive">
-                  <Trash className="w-4 h-4" />
-                </Button>
-              </div>
-            ))}
-            <Button type="button" variant="outline" onClick={() => append({ weightValue: "", weightUnit: "غ", price: 0 })} className="w-full">
-              <Plus className="w-4 h-4 mr-2" />
-              إضافة خيار تعبئة
-            </Button>
-          </div>
-        )}
+        {/* Section: Packaging Options - Always show for adding/editing */}
+        <div className="space-y-4 p-4 border border-border rounded-xl">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Package className="w-4 h-4 text-primary" />
+            خيارات التعبئة والوزن (اختياري)
+          </h4>
+          {fields.length === 0 && (
+            <p className="text-sm text-muted-foreground py-2">أضف خيارات التعبئة (أوزن وسعر مختلف)</p>
+          )}
+          {fields.map((field, idx) => (
+            <div key={field.id} className="flex gap-2 items-end">
+              <Input {...register(`packagingOptions.${idx}.weightValue` as const)} placeholder="الوزن" className="flex-1 h-12" />
+              <select {...register(`packagingOptions.${idx}.weightUnit` as const)} className="border border-border rounded-xl bg-background px-3 h-12 w-20">
+                <option value="غ">غ</option>
+                <option value="كغ">كغ</option>
+              </select>
+              <Input type="number" {...register(`packagingOptions.${idx}.price` as const)} placeholder="السعر" className="w-24 h-12" />
+              <Input type="number" {...register(`packagingOptions.${idx}.originalPrice` as const)} placeholder="السعر القديم" className="w-24 h-12" />
+              <Button type="button" variant="ghost" onClick={() => remove(idx)} className="h-12 text-destructive">
+                <Trash className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+          <Button type="button" variant="outline" onClick={() => append({ weightValue: "", weightUnit: "غ", price: 0, originalPrice: undefined })} className="w-full">
+            <Plus className="w-4 h-4 ml-2" />
+            إضافة خيار تعبئة
+          </Button>
+        </div>
 
         {/* Section: Taste Options */}
         <div className="space-y-4 p-4 border border-border rounded-xl">
