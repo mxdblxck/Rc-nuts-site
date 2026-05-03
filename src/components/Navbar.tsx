@@ -1,16 +1,16 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, Gift } from "lucide-react";
+import { ShoppingCart, Menu, X, Gift, Home, Store, User, Phone } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/hooks/use-cart.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
 import PackAnnouncementBanner from "@/components/PackAnnouncementBanner.tsx";
 
 const navLinks = [
-  { href: "/", label: "الرئيسية" },
-  { href: "/shop", label: "المتجر" },
+  { href: "/", label: "الرئيسية", icon: Home },
+  { href: "/shop", label: "المتجر", icon: Store },
   { href: "/packs", label: "الباقات", icon: Gift },
-  { href: "/about", label: "من نحن" },
-  { href: "/#contact", label: "اتصل بنا" },
+  { href: "/about", label: "من نحن", icon: User },
+  { href: "/#contact", label: "اتصل بنا", icon: Phone },
 ];
 
 export default function Navbar() {
