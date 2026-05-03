@@ -25,10 +25,10 @@ const features = [
 ];
 
 const categories = [
-  { name: "مكسرات", desc: "لوز, كاجو, فول سوداني وطرق متنوعة", img: "/مكسرات.png", color: "hover:border-amber-500/50 hover:bg-amber-50" },
-  { name: "بذور", desc: "بذور عب الشمس واليقطين والطرق", img: "/بذور.png", color: "hover:border-green-500/50 hover:bg-green-50" },
-  { name: "خلطات", desc: "خلطات ف里克 ومكسرات محمصة", img: "/خلطات.png", color: "hover:border-orange-500/50 hover:bg-orange-50" },
-  { name: "مجففات", desc: "فواكه مجففة وطرقية", img: "/مجففات.png", color: "hover:border-red-500/50 hover:bg-red-50" },
+  { name: "مكسرات", desc: "لوز، كاجو، بيسطاش، جوز وبندق بجودة ممتازة وطازجة دائماً", img: "/مكسرات.png", color: "bg-amber-50/50 border-amber-200 hover:border-amber-500" },
+  { name: "بذور", desc: "بذور يقطين وغيرها محمصة بعناية وغنية بالفوائد", img: "/بذور.png", color: "bg-green-50/50 border-green-200 hover:border-green-500" },
+  { name: "خلطات", desc: "خلطات مميزة ومكسرات معسلة ومتنوعة لكل الأذواق", img: "/خلطات.png", color: "bg-orange-50/50 border-orange-200 hover:border-orange-500" },
+  { name: "مجففات", desc: "فواكه مجففة طبيعية 100% مثل التين والزبيب والموز والفراولة بجودة عالية", img: "/مجففات.png", color: "bg-red-50/50 border-red-200 hover:border-red-500" },
 ];
 
 // Professional Counter Component
@@ -258,42 +258,38 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Categories - Premium Horizontal Cards */}
-      <section className="py-16 max-w-7xl mx-auto px-4 w-full">
+      {/* Categories - Compact Cards */}
+      <section className="py-12 max-w-7xl mx-auto px-4 w-full">
         <h2 className="text-2xl md:text-3xl font-black text-foreground mb-2 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-10 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
+        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
         
-        {/* Mobile: horizontal scroll | Desktop: 2x2 grid */}
-        <div className="flex sm:grid sm:grid-cols-2 gap-4 overflow-x-auto sm:overflow-visible pb-4 sm:pb-0 [-webkit-overflow-scrolling:touch]">
+        {/* Mobile: vertical stack | Desktop: 2x2 grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
-              initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.08 }}
               viewport={{ once: true }}
-              className="min-w-[280px] sm:min-w-0"
             >
               <Link
                 to={`/shop?category=${cat.name}`}
-                className={`flex items-center gap-4 p-4 rounded-2xl border-2 bg-card ${cat.color} hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group h-full`}
+                className={`flex items-center justify-between gap-3 p-3 rounded-xl border-2 ${cat.color} hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group`}
               >
-                {/* Category Image */}
-                <div className="w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-xl overflow-hidden bg-white/50">
+                {/* Text Left */}
+                <div className="flex flex-col flex-1 min-w-0">
+                  <h3 className="font-bold text-base text-foreground truncate">{cat.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-0.5 leading-tight line-clamp-2">{cat.desc}</p>
+                </div>
+                
+                {/* Image Right */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-white/30">
                   <img 
                     src={cat.img} 
                     alt={cat.name}
-                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                   />
-                </div>
-                
-                {/* Category Text */}
-                <div className="flex flex-col justify-center">
-                  <h3 className="font-bold text-lg sm:text-xl text-foreground">{cat.name}</h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">{cat.desc}</p>
-                  <span className="text-primary text-xs font-medium mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    تسوق الآن ←
-                  </span>
                 </div>
               </Link>
             </motion.div>
