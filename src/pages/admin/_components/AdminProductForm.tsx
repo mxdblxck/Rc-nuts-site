@@ -233,7 +233,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
 
   return (
     <div className="bg-card rounded-2xl overflow-hidden">
-      {/* Header */}
+      {/* Premium Header */}
       <div className="bg-gradient-to-l from-primary to-primary/80 p-6">
         <div className="flex items-center justify-between">
           <div>
@@ -273,6 +273,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
               <Input placeholder="بذور اليقطين" {...register("nameAr")} className="h-12" />
               {errors.nameAr && <p className="text-destructive text-xs">{errors.nameAr.message}</p>}
             </div>
+
             <div className="space-y-2">
               <Label className="font-medium">الفئة *</Label>
               <select className="w-full border border-border rounded-xl p-3 bg-background h-12" {...register("category")}>
@@ -281,12 +282,15 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
                   <option key={c} value={c}>{c}</option>
                 ))}
               </select>
+              {errors.category && <p className="text-destructive text-xs">{errors.category.message}</p>}
             </div>
+
             <div className="space-y-2 sm:col-span-2">
               <Label className="font-medium">الوصف *</Label>
-              <Textarea placeholder="وصف المنتج..." rows={3} {...register("descriptionAr")} className="rounded-xl" />
+              <Textarea placeholder="وصف المنتج..." rows={4} {...register("descriptionAr")} className="rounded-xl" />
               {errors.descriptionAr && <p className="text-destructive text-xs">{errors.descriptionAr.message}</p>}
             </div>
+
             <div className="space-y-2">
               <Label className="font-medium">معرف URL *</Label>
               <Input placeholder="product-name" dir="ltr" {...register("slug")} className="h-12" />
@@ -307,6 +311,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
               <Input type="number" placeholder="1000" {...register("price")} className="h-12 text-lg" />
               {errors.price && <p className="text-destructive text-xs">{errors.price.message}</p>}
             </div>
+
             <div className="space-y-2">
               <Label className="font-medium">السعر القديم (دج) (اختياري)</Label>
               <Input type="number" placeholder="يترك فارغاً إذا لا يوجد تخفيض" {...register("originalPrice")} className="h-12" />
@@ -339,11 +344,68 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           )}
         </div>
 
-        {/* Section: Stock */}
+        {/* Section: Gallery */}
+        <div className="space-y-4 p-4 border border-border rounded-xl">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Images className="w-4 h-4 text-primary" />
+            معرض الصور (اختياري)
+          </h4>
+          <div className="flex gap-2 mb-3">
+            <button type="button" onClick={() => setGalleryInputType("url")} className={`px-4 py-2 rounded-xl font-medium transition-colors ${galleryInputType === "url" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+              رابط
+            </button>
+            <button type="button" onClick={() => setGalleryInputType("upload")} className={`px-4 py-2 rounded-xl font-medium transition-colors ${galleryInputType === "upload" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
+              رفع
+            </button>
+          </div>
+          {galleryInputType === "url" && (
+            <div className="flex gap-2">
+              <Input value={galleryUrlInput} onChange={(e) => setGalleryUrlInput(e.target.value)} placeholder="https://..." className="h-12 flex-1" />
+              <Button type="button" onClick={() => { if (galleryUrlInput) { setGalleryEntries([...galleryEntries, { type: "url", url: galleryUrlInput }]); setGalleryUrlInput(""); } }} className="h-12">
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+          )}
+          {galleryInputType === "upload" && (
+            <>
+              <Input type="file" accept="image/*" multiple onChange={(e) => { const files = Array.from(e.target.files ?? []); const newEntries = files.map((file) => ({ type: "file" as const, file, previewUrl: URL.createObjectURL(file) })); setGalleryEntries([...galleryEntries, ...newEntries]); }} className="cursor-pointer" />
+            </>
+          )}
+          {(existingGalleryIds.length > 0 || existingGalleryUrls.length > 0 || galleryEntries.length > 0) && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {existingGalleryIds.map((id, idx) => (
+                <div key={`exist-${id}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border bg-muted flex items-center justify-center">
+                  <span className="text-xs text-muted-foreground">صورة {idx + 1}</span>
+                  <button type="button" onClick={() => setExistingGalleryIds((prev) => prev.filter((_, i) => i !== idx))} className="absolute top-1 left-1 bg-destructive text-white rounded-full w-5 h-5 flex items-center justify-center">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {existingGalleryUrls.map((url, idx) => (
+                <div key={`existurl-${idx}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
+                  <img src={url} alt={`صورة ${idx + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => setExistingGalleryUrls((prev) => prev.filter((_, i) => i !== idx))} className="absolute top-1 left-1 bg-destructive text-white rounded-full w-5 h-5 flex items-center justify-center">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+              {galleryEntries.map((entry, idx) => (
+                <div key={`new-${idx}`} className="relative w-20 h-20 rounded-lg overflow-hidden border border-border">
+                  <img src={entry.type === "file" ? (entry as { type: "file"; file: File; previewUrl: string }).previewUrl : ""} alt={`معاينة ${idx + 1}`} className="w-full h-full object-cover" />
+                  <button type="button" onClick={() => { if (entry.type === "file") URL.revokeObjectURL((entry as { type: "file"; file: File; previewUrl: string }).previewUrl); setGalleryEntries((prev) => prev.filter((_, i) => i !== idx)); }} className="absolute top-1 left-1 bg-destructive text-white rounded-full w-5 h-5 flex items-center justify-center">
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Section: Weight */}
         <div className="space-y-4">
           <h4 className="font-bold text-foreground flex items-center gap-2 pb-2 border-b border-border">
             <Package className="w-4 h-4 text-primary" />
-            المخزن والوزن
+            الوزن والكمية
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -361,7 +423,52 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
               <Input type="number" min={0} placeholder="0" {...register("stockQuantity")} className="h-12" />
             </div>
           </div>
-          <div className="flex gap-6 pt-2">
+        </div>
+
+        {/* Section: Packaging Options */}
+        {fields.length > 0 && (
+          <div className="space-y-4 p-4 border border-border rounded-xl">
+            <h4 className="font-bold text-foreground flex items-center gap-2">
+              <Package className="w-4 h-4 text-primary" />
+              خيارات التعبئة والوزن
+            </h4>
+            {fields.map((field, idx) => (
+              <div key={field.id} className="flex gap-2 items-end">
+                <Input {...register(`packagingOptions.${idx}.weightValue` as const)} placeholder="وزن" className="flex-1 h-12" />
+                <select {...register(`packagingOptions.${idx}.weightUnit` as const)} className="border border-border rounded-xl bg-background px-3 h-12 w-20">
+                  <option value="غ">غ</option>
+                  <option value="كغ">كغ</option>
+                </select>
+                <Input type="number" {...register(`packagingOptions.${idx}.price` as const)} placeholder="سعر" className="w-24 h-12" />
+                <Button type="button" variant="ghost" onClick={() => remove(idx)} className="h-12 text-destructive">
+                  <Trash className="w-4 h-4" />
+                </Button>
+              </div>
+            ))}
+            <Button type="button" variant="outline" onClick={() => append({ weightValue: "", weightUnit: "غ", price: 0 })} className="w-full">
+              <Plus className="w-4 h-4 mr-2" />
+              إضافة خيار تعبئة
+            </Button>
+          </div>
+        )}
+
+        {/* Section: Taste Options */}
+        <div className="space-y-4 p-4 border border-border rounded-xl">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Package className="w-4 h-4 text-primary" />
+            خيارات الطعم (اختياري)
+          </h4>
+          <Input placeholder="مملح, محمص, بدون ملح" {...register("tasteOptions")} className="h-12" />
+          <p className="text-xs text-muted-foreground">افصل بين الخيارات بفاصلة</p>
+        </div>
+
+        {/* Section: Toggles */}
+        <div className="space-y-4 p-4 border border-border rounded-xl">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Package className="w-4 h-4 text-primary" />
+            الإعدادات
+          </h4>
+          <div className="flex gap-6 flex-wrap">
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" {...register("inStock")} className="w-5 h-5 rounded" />
               <span className="text-sm font-medium">متوفر في المخزن</span>
