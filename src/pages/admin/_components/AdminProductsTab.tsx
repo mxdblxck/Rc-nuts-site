@@ -46,16 +46,22 @@ export default function AdminProductsTab({ products }: Props) {
     <button
       type="button"
       onClick={onChange}
-      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-        enabled ? "bg-green-500" : "bg-gray-300"
+      className={`relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+        enabled 
+          ? "bg-emerald-500 border-emerald-400 shadow-lg shadow-emerald-500/30" 
+          : "bg-red-400 border-red-300 shadow-lg shadow-red-500/30"
       }`}
     >
       <span className="sr-only">Toggle</span>
       <span
-        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out ${
-          enabled ? "translate-x-5" : "translate-x-0"
+        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-md ring-0 transition-all duration-300 ease-in-out ${
+          enabled ? "translate-x-6" : "translate-x-1"
         }`}
       />
+      {/* Status indicator */}
+      <span className={`absolute inset-0 flex items-center justify-center text-[10px] font-bold text-white/80 transition-opacity duration-200 ${enabled ? "opacity-0" : "opacity-100"}`}>
+        ✕
+      </span>
     </button>
   );
 

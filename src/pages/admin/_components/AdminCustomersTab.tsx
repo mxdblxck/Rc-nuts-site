@@ -75,7 +75,7 @@ export default function AdminCustomersTab({ customerStats }: Props) {
     return filtered;
   }, [customerStats, search, sortBy, sortOrder]);
 
-  // Export to Excel (.xlsx)
+  // Export to Excel (.xlsx) - Professional styling
   const exportToExcel = () => {
     if (!filteredCustomers.length) {
       toast.error("لا يوجد بيانات للتصدير");
@@ -84,15 +84,15 @@ export default function AdminCustomersTab({ customerStats }: Props) {
 
     // Create Excel data
     const data = filteredCustomers.map((c: CustomerStat) => ({
-      "الاسم": c.name || "",
-      "الهاتف": c.phone || "",
+      "الاسم الكامل": c.name || "",
+      "رقم الهاتف": c.phone || "",
       "الولاية": c.wilaya || "",
       "البلدية": c.city || "",
       "عدد الطلبات": c.orderCount || 0,
-      "إجمالي الصرف (دج)": c.totalSpent || 0,
-      "آخر طلب": c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString("ar-DZ") : "",
-      "الوسوم": c.tags?.join(", ") || "",
-      "ملاحظات": c.note || "",
+      "إجمالي الإنفاق (دج)": c.totalSpent || 0,
+      "تاريخ آخر طلب": c.lastOrderDate ? new Date(c.lastOrderDate).toLocaleDateString("ar-DZ") : "-",
+      "الوسوم": c.tags?.join(", ") || "-",
+      "ملاحظات": c.note || "-",
     }));
 
     // Create workbook and worksheet
@@ -101,16 +101,48 @@ export default function AdminCustomersTab({ customerStats }: Props) {
 
     // Set column widths
     ws["!cols"] = [
-      { wch: 20 }, // الاسم
-      { wch: 15 }, // الهاتف
-      { wch: 15 }, // الولاية
-      { wch: 15 }, // البلدية
+      { wch: 25 }, // الاسم الكامل
+      { wch: 15 }, // رقم الهاتف
+      { wch: 18 }, // الولاية
+      { wch: 18 }, // البلدية
       { wch: 12 }, // عدد الطلبات
-      { wch: 15 }, // إجمالي الصرف
-      { wch: 15 }, // آخر طلب
-      { wch: 15 }, // الوسوم
-      { wch: 30 }, // ملاحظات
+      { wch: 18 }, // إجمالي الإنفاق
+      { wch: 15 }, // تاريخ آخر طلب
+      { wch: 20 }, // الوسوم
+      { wch: 35 }, // ملاحظات
     ];
+
+    // Professional header styling
+    const range = XLSX.utils.decode_range(ws["!ref"] || "A1");
+    for (let col = range.s.c; col <= range.e.c; col++) {
+      const addr = XLSX.utils.encode_cell({ r: 0, c: col });
+      if (!ws[addr]) continue;
+      ws[addr].s = {
+        font: { bold: true, color: { rgb: "FFFFFF" }, // White text
+        fill: { fgColor: { rgb: "4A7C59" }, // Olive green
+        alignment: { horizontal: "center" },
+        border: {
+          top: { style: "thin", color: { rgb: "3D5C49" } },
+          bottom: { style: "thin", color: { rgb: "3D5C49" } },
+          left: { style: "thin", color: { rgb: "3D5C49" } },
+          right: { style: "thin", color: { rgb: "3D5C49" } },
+        },
+      };
+    }
+
+    // Alternate row colors for readability
+    for (let row = 1; row <= range.e.r; row++) {
+      for (let col = range.s.c; col <= range.e.c; col++) {
+        const addr = XLSX.utils.encode_cell({ r: row, c: col });
+        if (!ws[addr]) continue;
+        const isEven = row % 2 === 0;
+        ws[addr].s = {
+          ...ws[addr].s,
+          fill: { fgColor: isEven ? { rgb: "F5F5DC" } : { rgb: "FFFFFF" } }, // Beige / White
+          alignment: { horizontal: "center" },
+        };
+      }
+    }
 
     XLSX.utils.book_append_sheet(wb, ws, "الزبائن");
 
@@ -184,31 +216,31 @@ export default function AdminCustomersTab({ customerStats }: Props) {
         </p>
       )}
 
-      {/* Customer Cards */}
+      {/* Customer Cards - Premium Design */}
       {filteredCustomers.length === 0 ? (
-        <div className="text-center py-12">
-          <User className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">لا يوجد عملاء_matches kriteria</p>
+        <div className="text-center py-16 bg-muted/20 rounded-2xl">
+          <User className="w-16 h-16 text-muted-foreground/50 mx-auto mb-4" />
+          <p className="text-muted-foreground text-lg font-medium">لا يوجد عملاء_matches kriteria</p>
         </div>
       ) : (
         <div className="grid gap-4">
           {filteredCustomers.map((c: CustomerStat) => (
             <div
               key={c.phone}
-              className={`bg-card border rounded-2xl p-5 hover:shadow-lg transition-all duration-300 cursor-pointer ${
-                selectedCustomer === c.phone ? "border-primary ring-2 ring-primary/20" : "border-border"
+              className={`bg-card border-2 rounded-2xl p-5 hover:shadow-xl hover:border-primary/30 transition-all duration-300 cursor-pointer group ${
+                selectedCustomer === c.phone ? "border-primary ring-2 ring-primary/20 shadow-lg" : "border-border"
               }`}
               onClick={() => setSelectedCustomer(selectedCustomer === c.phone ? null : c.phone)}
             >
               <div className="flex items-start justify-between gap-4">
                 {/* Avatar & Info */}
                 <div className="flex items-start gap-4 min-w-0">
-                  <div className="w-14 h-14 bg-gradient-to-br from-primary/20 to-primary/5 rounded-2xl flex items-center justify-center shrink-0">
-                    <span className="text-xl font-black text-primary">{(c.name || "?")[0]}</span>
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500/20 to-amber-500/20 rounded-2xl flex items-center justify-center shrink-0 border border-emerald-500/20">
+                    <span className="text-xl font-black text-emerald-600">{(c.name || "?")[0]}</span>
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-lg text-foreground truncate">{c.name || "بدون اسم"}</h3>
+                      <h3 className="font-bold text-lg text-foreground truncate group-hover:text-primary transition-colors">{c.name || "بدون اسم"}</h3>
                       {c.tags?.includes("vip") && (
                         <Star className="w-4 h-4 text-amber-500 fill-amber-500 shrink-0" />
                       )}
@@ -216,7 +248,7 @@ export default function AdminCustomersTab({ customerStats }: Props) {
                     <p className="text-sm text-muted-foreground font-mono" dir="ltr">{c.phone}</p>
                     {(c.wilaya || c.city) && (
                       <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-                        <MapPin className="w-3 h-3" />
+                        <MapPin className="w-3 h-3 text-emerald-500" />
                         {c.city}{c.wilaya ? `، ${c.wilaya}` : ""}
                       </p>
                     )}
