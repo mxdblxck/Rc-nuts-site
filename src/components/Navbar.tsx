@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { ShoppingCart, Menu, X, Gift, Home, Store, User, Phone } from "lucide-react";
+import { ShoppingCart, Menu, X, Gift, Home, Store, Info, Phone } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/hooks/use-cart.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/", label: "الرئيسية", icon: Home },
   { href: "/shop", label: "المتجر", icon: Store },
   { href: "/packs", label: "الباقات", icon: Gift },
-  { href: "/about", label: "من نحن", icon: User },
+  { href: "/about", label: "من نحن", icon: Info },
   { href: "/#contact", label: "اتصل بنا", icon: Phone },
 ];
 
@@ -47,13 +47,13 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-sm font-medium transition-colors flex items-center gap-1 ${
+                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${
                   isActive(link.href)
                     ? "text-primary font-bold"
                     : "text-foreground/70 hover:text-primary"
                 }`}
               >
-                {link.icon && <link.icon className="w-3.5 h-3.5" />}
+                {link.icon && <link.icon className="w-4 h-4" />}
                 {link.label}
               </Link>
             ))}
@@ -127,10 +127,7 @@ export default function Navbar() {
                     : "text-foreground/80 hover:bg-muted hover:text-primary"
                 } ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}
               >
-                {link.icon
-                  ? <link.icon className="w-4 h-4 shrink-0" />
-                  : <span className="w-4 h-4 shrink-0 flex items-center justify-center text-primary/40 text-xs">•</span>
-                }
+                {link.icon && <link.icon className="w-4 h-4 shrink-0" />}
                 {link.label}
                 {link.href === "/packs" && (
                   <span className="mr-auto text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-bold">

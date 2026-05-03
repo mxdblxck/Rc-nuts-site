@@ -22,10 +22,11 @@ type DeliveryOption = "office" | "home";
 const schema = z.object({
   customerName: z
     .string()
-    .min(3, "الاسم مطلوب")
-    .refine((val) => val.trim().split(/\s+/).length >= 2, {
-      message: "يرجى إدخال الاسم الكامل (الاسم + اللقب)",
-    }),
+    .min(2, "الاسم مطلوب")
+    .refine(
+      (val) => val.trim().split(/\s+/).filter(Boolean).length >= 2,
+      "يرجى إدخال الاسم الكامل (الاسم + اللقب)"
+    ),
   customerPhone: z
     .string()
     .min(1, "رقم الهاتف مطلوب")
