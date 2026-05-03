@@ -1,5 +1,7 @@
 {
   "rewrites": [
     { "source": "/((?!api/).*)", "destination": "/" }
-  ]
+  ],
+  "buildCommand": "npm run build && npx convex deploy",
+  "installCommand": "npm install"
 }
