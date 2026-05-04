@@ -140,6 +140,7 @@ export default function CheckoutPage() {
         couponCode: couponApplied ? couponCode : undefined,
         total: total - discount + deliveryPrice,
         paymentMethod: "cash_on_delivery",
+        deliveryOption: deliveryOption,
         notes: data.notes ?? undefined,
       });
       

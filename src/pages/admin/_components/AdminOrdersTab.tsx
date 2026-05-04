@@ -4,6 +4,7 @@ import { api } from "@/convex/_generated/api.js";
 import {
   Search, Eye, X, MessageCircle, MapPin, Package,
   Phone, Calendar, Trash2, ChevronDown, AlertTriangle,
+  CheckCircle2, Clock, Truck, Check, FileText, Download, Building2, Home
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
@@ -367,42 +368,156 @@ export default function AdminOrdersTab() {
               {/* Scrollable Content */}
               <div className="flex-1 overflow-y-auto p-6 space-y-6">
 
-                {/* Status Updater */}
-                <div className="bg-muted/30 p-4 rounded-2xl border border-border">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-sm font-bold text-foreground">حالة الطلب</h3>
-                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${statusColors[selectedOrder.status]}`}>
-                      {statusLabels[selectedOrder.status] ?? selectedOrder.status}
-                    </span>
+                {/* Professional POS Status Stepper */}
+                <div className="bg-card p-5 rounded-2xl border border-border shadow-sm">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-sm font-black text-foreground">تتبع الطلب</h3>
+                    {selectedOrder.status === "cancelled" ? (
+                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border bg-rose-100 text-rose-700 border-rose-200">
+                        طلب ملغى
+                      </span>
+                    ) : (
+                      <span className="text-xs text-muted-foreground">التسلسل الهرمي</span>
+                    )}
                   </div>
-                  {/* Show all statuses, highlight current, dim unavailable */}
-                  <div className="flex gap-2 flex-wrap">
-                    {Object.entries(statusLabels).map(([val, label]) => {
-                      const isCurrent = selectedOrder.status === val;
-                      const isAvailable = statusFlow[selectedOrder.status]?.includes(val);
-                      return (
-                        <button
-                          key={val}
-                          onClick={() => isAvailable && handleStatusChange(selectedOrder._id, val)}
-                          disabled={!isAvailable && !isCurrent}
-                          className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all flex-1 text-center ${
-                            isCurrent
-                              ? statusColors[val] + " shadow-sm scale-105"
-                              : isAvailable
-                              ? "bg-background border-border text-foreground hover:bg-muted cursor-pointer"
-                              : "bg-muted/30 border-border/50 text-muted-foreground/50 cursor-not-allowed"
+
+                  {selectedOrder.status !== "cancelled" && (
+                    <div className="relative mb-6">
+                      <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 h-1 bg-muted/50 rounded-full overflow-hidden">
+                        <div 
+                          className={`h-full transition-all duration-500 ease-in-out ${
+                            selectedOrder.status === "pending" ? "bg-amber-500" :
+                            selectedOrder.status === "confirmed" ? "bg-blue-500" :
+                            selectedOrder.status === "shipped" ? "bg-purple-500" : "bg-emerald-500"
                           }`}
-                        >
-                          {label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  {statusFlow[selectedOrder.status]?.length === 0 && (
-                    <p className="text-xs text-muted-foreground mt-2 text-center">
-                      هذا الطلب في حالته النهائية
-                    </p>
+                          style={{
+                            width: selectedOrder.status === "pending" ? "0%" :
+                                   selectedOrder.status === "confirmed" ? "33%" :
+                                   selectedOrder.status === "shipped" ? "66%" : "100%"
+                          }}
+                        />
+                      </div>
+                      
+                      <div className="relative flex justify-between items-center z-10">
+                        {/* Pending Step */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all bg-amber-500 border-amber-500 text-white shadow-md`}>
+                            <Clock className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-bold text-foreground">قيد الانتظار</span>
+                        </div>
+                        
+                        {/* Confirmed Step */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                            ["confirmed", "shipped", "delivered"].includes(selectedOrder.status) ? "bg-blue-500 border-blue-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                          }`}>
+                            <CheckCircle2 className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-bold text-foreground">تم التأكيد</span>
+                        </div>
+
+                        {/* Shipped Step */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                            ["shipped", "delivered"].includes(selectedOrder.status) ? "bg-purple-500 border-purple-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                          }`}>
+                            <Truck className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-bold text-foreground">مشحون</span>
+                        </div>
+
+                        {/* Delivered Step */}
+                        <div className="flex flex-col items-center gap-2">
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
+                            selectedOrder.status === "delivered" ? "bg-emerald-500 border-emerald-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                          }`}>
+                            <Check className="w-4 h-4" />
+                          </div>
+                          <span className="text-[10px] font-bold text-foreground">مكتمل</span>
+                        </div>
+                      </div>
+                    </div>
                   )}
+
+                  {/* Primary Action Button based on current status */}
+                  {selectedOrder.status !== "cancelled" && selectedOrder.status !== "delivered" && (
+                    <Button 
+                      className={`w-full mb-3 text-white ${
+                        selectedOrder.status === "pending" ? "bg-blue-600 hover:bg-blue-700" :
+                        selectedOrder.status === "confirmed" ? "bg-purple-600 hover:bg-purple-700" :
+                        "bg-emerald-600 hover:bg-emerald-700"
+                      }`}
+                      size="lg"
+                      onClick={() => {
+                        const nextStatus = 
+                          selectedOrder.status === "pending" ? "confirmed" :
+                          selectedOrder.status === "confirmed" ? "shipped" : "delivered";
+                        handleStatusChange(selectedOrder._id, nextStatus);
+                      }}
+                    >
+                      {selectedOrder.status === "pending" && "تأكيد الطلب و الإرسال لشركة التوصيل"}
+                      {selectedOrder.status === "confirmed" && "تغيير كـ مشحون"}
+                      {selectedOrder.status === "shipped" && "تغيير كـ مكتمل"}
+                    </Button>
+                  )}
+
+                  {selectedOrder.status === "delivered" && (
+                     <div className="w-full mb-3 p-3 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg text-center border border-emerald-200">
+                       تم تسليم هذا الطلب بنجاح للزبون ✓
+                     </div>
+                  )}
+
+                  {/* Secondary Actions */}
+                  {selectedOrder.status !== "cancelled" && selectedOrder.status !== "delivered" && (
+                     <Button 
+                       variant="outline" 
+                       className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive border-border"
+                       onClick={() => handleStatusChange(selectedOrder._id, "cancelled")}
+                     >
+                       إلغاء الطلب
+                     </Button>
+                  )}
+                </div>
+
+                {/* Delivery Information & Tracking */}
+                <div className="bg-muted/30 p-4 rounded-2xl border border-border">
+                  <h3 className="text-sm font-bold text-foreground flex items-center gap-2 mb-3 pb-2 border-b border-border">
+                    <Package className="w-4 h-4 text-primary" />
+                    معلومات التوصيل
+                  </h3>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div className="flex justify-between items-center bg-card p-3 rounded-xl border border-border">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        {selectedOrder.deliveryOption === "office" ? <Building2 className="w-4 h-4" /> : <Home className="w-4 h-4" />}
+                        <span>نوع التوصيل:</span>
+                      </div>
+                      <span className="font-bold text-foreground">
+                        {selectedOrder.deliveryOption === "office" ? "مكتب شركة التوصيل (StopDesk)" : "إلى باب المنزل (Home)"}
+                      </span>
+                    </div>
+
+                    {selectedOrder.trackingId && (
+                      <div className="flex flex-col gap-2 bg-card p-3 rounded-xl border border-border">
+                        <div className="flex justify-between items-center">
+                          <span className="text-muted-foreground flex items-center gap-2"><FileText className="w-4 h-4" /> رقم التتبع:</span>
+                          <span className="font-mono font-bold bg-primary/10 text-primary px-2 py-0.5 rounded">{selectedOrder.trackingId}</span>
+                        </div>
+                        {selectedOrder.labelUrl && (
+                          <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            className="w-full mt-2 gap-2"
+                            onClick={() => window.open(selectedOrder.labelUrl, '_blank')}
+                          >
+                            <Download className="w-4 h-4" />
+                            تحميل بوليصة الشحن (PDF)
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 {/* Customer Details */}

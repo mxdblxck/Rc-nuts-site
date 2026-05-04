@@ -1,4 +1,5 @@
-import { mutation, query } from "./_generated/server";
+import { mutation, query, internalQuery, internalMutation } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
 export const createOrder = mutation({
@@ -24,6 +25,7 @@ export const createOrder = mutation({
     couponCode: v.optional(v.string()),
     total: v.number(),
     paymentMethod: v.string(),
+    deliveryOption: v.optional(v.string()),
     notes: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
@@ -97,6 +99,35 @@ export const updateOrderStatus = mutation({
   handler: async (ctx, args) => {
     // Auth bypassed for local development
     await ctx.db.patch(args.orderId, { status: args.status });
+
+    console.log(`[Order Mutation] Status updated to: ${args.status} for order: ${args.orderId}`);
+
+    // If the order status is set to 'confirmed' (تم التأكيد), trigger the Dolivroo delivery action
+    if (args.status === "confirmed") {
+      console.log(`[Order Mutation] Scheduling Dolivroo creation for order: ${args.orderId}`);
+      await ctx.scheduler.runAfter(0, internal.dolivroo.createParcel, { orderId: args.orderId });
+    }
+  },
+});
+
+export const getOrderById = internalQuery({
+  args: { orderId: v.id("orders") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.orderId);
+  },
+});
+
+export const updateOrderTracking = internalMutation({
+  args: {
+    orderId: v.id("orders"),
+    trackingId: v.string(),
+    labelUrl: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.orderId, {
+      trackingId: args.trackingId,
+      labelUrl: args.labelUrl,
+    });
   },
 });
 

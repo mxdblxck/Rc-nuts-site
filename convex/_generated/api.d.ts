@@ -9,6 +9,7 @@
  */
 
 import type * as coupons from "../coupons.js";
+import type * as dolivroo from "../dolivroo.js";
 import type * as files from "../files.js";
 import type * as generated_api from "../generated/api.js";
 import type * as generated_server from "../generated/server.js";
@@ -27,6 +28,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   coupons: typeof coupons;
+  dolivroo: typeof dolivroo;
   files: typeof files;
   "generated/api": typeof generated_api;
   "generated/server": typeof generated_server;

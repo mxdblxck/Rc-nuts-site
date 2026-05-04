@@ -65,6 +65,9 @@ export default defineSchema({
     total: v.number(),
     status: v.string(), // "pending" | "confirmed" | "shipped" | "delivered" | "cancelled"
     paymentMethod: v.string(), // "cash_on_delivery" | "bank_transfer"
+    deliveryOption: v.optional(v.string()), // "home" | "office"
+    trackingId: v.optional(v.string()),
+    labelUrl: v.optional(v.string()),
     notes: v.optional(v.string()),
   })
     .index("by_status", ["status"])
