@@ -41,21 +41,19 @@ export default function AdminProductsTab({ products }: Props) {
     toast.success(!product.inStock ? "تم تفعيل المنتج" : "تم تحديد المنتج كـنـفذت الكمية");
   };
 
-  // iOS-style toggle button
+  // Professional stock toggle - clean badge style
   const ToggleSwitch = ({ enabled, onChange }: { enabled: boolean; onChange: () => void }) => (
     <button
       type="button"
       onClick={onChange}
-      className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
-        enabled ? "bg-green-500" : "bg-gray-300"
+      className={`relative inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${
+        enabled 
+          ? "bg-emerald-100 text-emerald-700 border border-emerald-300 hover:bg-emerald-200" 
+          : "bg-red-100 text-red-700 border border-red-300 hover:bg-red-200"
       }`}
     >
-      <span className="sr-only">Toggle</span>
-      <span
-        className={`pointer-events-none inline-block h-6 w-6 transform rounded-full bg-white shadow-lg ring-0 transition-transform duration-200 ease-in-out ${
-          enabled ? "translate-x-5" : "translate-x-0"
-        }`}
-      />
+      <span className={`w-2 h-2 rounded-full ${enabled ? "bg-emerald-500" : "bg-red-500"}`} />
+      {enabled ? "متوفر" : "نفذت"}
     </button>
   );
 

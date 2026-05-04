@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { Label } from "@/components/ui/label.tsx";
 import { Textarea } from "@/components/ui/textarea.tsx";
-import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images, Package, Wallet, Save } from "lucide-react";
+import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images, Package, Wallet, Save, Leaf } from "lucide-react";
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 import { useEffect, useRef, useState } from "react";
@@ -27,6 +27,7 @@ const schema = z.object({
   featured: z.boolean(),
   slug: z.string().min(2, "المعرف مطلوب"),
   tasteOptionsText: z.string().optional(),
+  benefitsArText: z.string().optional(),
   packagingOptions: z.array(
     z.object({
       weightValue: z.string().min(1, "القيمة مطلوبة"),
@@ -89,6 +90,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       featured: false,
       stockQuantity: 0,
       tasteOptionsText: "",
+      benefitsArText: "",
       packagingOptions: [],
       baseWeightUnit: "غ",
     },
@@ -114,7 +116,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         descriptionAr: editProduct.descriptionAr,
         category: editProduct.category,
         price: editProduct.price,
-        originalPrice: editProduct.originalPrice,
+        originalPrice: editProduct.originalPrice ?? undefined,
         imageUrl: editProduct.imageUrl,
         baseWeightValue: (() => {
           let v = editProduct.weight ?? "";
@@ -126,13 +128,14 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         featured: editProduct.featured ?? false,
         slug: editProduct.slug,
         tasteOptionsText: editProduct.tasteOptions?.join(", ") ?? "",
+        benefitsArText: editProduct.benefitsAr?.join(", ") ?? "",
         packagingOptions: editProduct.packagingOptions?.map((p) => {
           const match = p.name.match(/^(.+?)(غ|كغ)$/);
           return {
             weightValue: match ? match[1] : p.name,
             weightUnit: match ? match[2] : "غ",
             price: p.price,
-            originalPrice: p.originalPrice,
+            originalPrice: p.originalPrice ?? undefined,
           };
         }) ?? [],
       });
@@ -200,20 +203,21 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         ...newGalleryUrls,
       ];
 
-      const { baseWeightValue, baseWeightUnit, tasteOptionsText, ...restData } = data;
+      const { baseWeightValue, baseWeightUnit, tasteOptionsText, benefitsArText, ...restData } = data;
       const payload = {
         ...restData,
         weight: baseWeightValue ? `${baseWeightValue}${baseWeightUnit}` : undefined,
-        originalPrice: restData.originalPrice === 0 ? undefined : restData.originalPrice,
+        originalPrice: restData.originalPrice || restData.originalPrice === 0 ? restData.originalPrice : undefined,
         imageStorageId: imageType === "upload" ? finalStorageId : undefined,
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
         galleryStorageIds: finalGalleryIds,
         images: finalGalleryUrls,
         tasteOptions: tasteOptionsText ? tasteOptionsText.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
+        benefitsAr: benefitsArText ? benefitsArText.split(",").map((t) => t.trim()).filter(Boolean) : undefined,
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
           price: p.price,
-          originalPrice: p.originalPrice === 0 ? undefined : p.originalPrice,
+          originalPrice: p.originalPrice || p.originalPrice === 0 ? p.originalPrice : undefined,
         })),
       };
 
@@ -406,52 +410,45 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         <div className="space-y-4">
           <h4 className="font-bold text-foreground flex items-center gap-2 pb-2 border-b border-border">
             <Package className="w-4 h-4 text-primary" />
-            الوزن والكمية
+            الوزن الأساسي
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="font-medium">الوزن الأساسي</Label>
-              <div className="flex gap-2">
-                <Input placeholder="250" {...register("baseWeightValue")} className="h-12 flex-1" />
-                <select {...register("baseWeightUnit")} className="border border-border rounded-xl bg-background px-3 h-12">
-                  <option value="غ">غ</option>
-                  <option value="كغ">كغ</option>
-                </select>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="font-medium">الكمية المتاحة *</Label>
-              <Input type="number" min={0} placeholder="0" {...register("stockQuantity")} className="h-12" />
-            </div>
+          <div className="flex gap-2">
+            <Input placeholder="250" {...register("baseWeightValue")} className="h-12 flex-1" />
+            <select {...register("baseWeightUnit")} className="border border-border rounded-xl bg-background px-3 h-12">
+              <option value="غ">غ</option>
+              <option value="كغ">كغ</option>
+            </select>
           </div>
         </div>
 
-        {/* Section: Packaging Options */}
-        {fields.length > 0 && (
-          <div className="space-y-4 p-4 border border-border rounded-xl">
-            <h4 className="font-bold text-foreground flex items-center gap-2">
-              <Package className="w-4 h-4 text-primary" />
-              خيارات التعبئة والوزن
-            </h4>
-            {fields.map((field, idx) => (
-              <div key={field.id} className="flex gap-2 items-end">
-                <Input {...register(`packagingOptions.${idx}.weightValue` as const)} placeholder="وزن" className="flex-1 h-12" />
-                <select {...register(`packagingOptions.${idx}.weightUnit` as const)} className="border border-border rounded-xl bg-background px-3 h-12 w-20">
-                  <option value="غ">غ</option>
-                  <option value="كغ">كغ</option>
-                </select>
-                <Input type="number" {...register(`packagingOptions.${idx}.price` as const)} placeholder="سعر" className="w-24 h-12" />
-                <Button type="button" variant="ghost" onClick={() => remove(idx)} className="h-12 text-destructive">
-                  <Trash className="w-4 h-4" />
-                </Button>
-              </div>
-            ))}
-            <Button type="button" variant="outline" onClick={() => append({ weightValue: "", weightUnit: "غ", price: 0 })} className="w-full">
-              <Plus className="w-4 h-4 mr-2" />
-              إضافة خيار تعبئة
-            </Button>
-          </div>
-        )}
+        {/* Section: Packaging Options - Always show for adding/editing */}
+        <div className="space-y-4 p-4 border border-border rounded-xl">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Package className="w-4 h-4 text-primary" />
+            خيارات التعبئة والوزن (اختياري)
+          </h4>
+          {fields.length === 0 && (
+            <p className="text-sm text-muted-foreground py-2">أضف خيارات التعبئة (أوزن وسعر مختلف)</p>
+          )}
+          {fields.map((field, idx) => (
+            <div key={field.id} className="flex gap-2 items-end">
+              <Input {...register(`packagingOptions.${idx}.weightValue` as const)} placeholder="الوزن" className="flex-1 h-12" />
+              <select {...register(`packagingOptions.${idx}.weightUnit` as const)} className="border border-border rounded-xl bg-background px-3 h-12 w-20">
+                <option value="غ">غ</option>
+                <option value="كغ">كغ</option>
+              </select>
+              <Input type="number" {...register(`packagingOptions.${idx}.price` as const)} placeholder="السعر" className="w-24 h-12" />
+              <Input type="number" {...register(`packagingOptions.${idx}.originalPrice` as const)} placeholder="السعر القديم" className="w-24 h-12" />
+              <Button type="button" variant="ghost" onClick={() => remove(idx)} className="h-12 text-destructive">
+                <Trash className="w-4 h-4" />
+              </Button>
+            </div>
+          ))}
+          <Button type="button" variant="outline" onClick={() => append({ weightValue: "", weightUnit: "غ", price: 0, originalPrice: undefined })} className="w-full">
+            <Plus className="w-4 h-4 ml-2" />
+            إضافة خيار تعبئة
+          </Button>
+        </div>
 
         {/* Section: Taste Options */}
         <div className="space-y-4 p-4 border border-border rounded-xl">
@@ -463,21 +460,41 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
           <p className="text-xs text-muted-foreground">افصل بين الخيارات بفاصلة</p>
         </div>
 
+        {/* Benefits Section */}
+        <div className="space-y-4 p-4 border border-border rounded-xl bg-emerald-50/50 dark:bg-emerald-950/20">
+          <h4 className="font-bold text-foreground flex items-center gap-2">
+            <Leaf className="w-4 h-4 text-emerald-500" />
+            الفوائد الصحية (اختياري)
+          </h4>
+          <Textarea 
+            placeholder="غني بالألياف, مصدر للبروتين, خالٍ من الإضافات" 
+            {...register("benefitsArText")} 
+            className="h-24 resize-none"
+          />
+          <p className="text-xs text-muted-foreground">افصل بين الفوائد بفاصلة</p>
+        </div>
+
         {/* Section: Toggles */}
         <div className="space-y-4 p-4 border border-border rounded-xl">
           <h4 className="font-bold text-foreground flex items-center gap-2">
             <Package className="w-4 h-4 text-primary" />
             الإعدادات
           </h4>
-          <div className="flex gap-6 flex-wrap">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" {...register("inStock")} className="w-5 h-5 rounded" />
-              <span className="text-sm font-medium">متوفر في المخزن</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" {...register("featured")} className="w-5 h-5 rounded" />
-              <span className="text-sm font-medium">منتج مميز</span>
-            </label>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label className="font-medium">الكمية في المخزن</Label>
+              <Input type="number" min={0} placeholder="0" {...register("stockQuantity")} className="h-12" />
+            </div>
+            <div className="flex gap-6 flex-wrap pt-2">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" {...register("inStock")} className="w-5 h-5 rounded" />
+                <span className="text-sm font-medium">متوفر في المخزن</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" {...register("featured")} className="w-5 h-5 rounded" />
+                <span className="text-sm font-medium">منتج مميز</span>
+              </label>
+            </div>
           </div>
         </div>
 
