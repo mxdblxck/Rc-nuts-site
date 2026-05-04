@@ -410,23 +410,14 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         <div className="space-y-4">
           <h4 className="font-bold text-foreground flex items-center gap-2 pb-2 border-b border-border">
             <Package className="w-4 h-4 text-primary" />
-            الوزن والكمية
+            الوزن الأساسي
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="font-medium">الوزن الأساسي</Label>
-              <div className="flex gap-2">
-                <Input placeholder="250" {...register("baseWeightValue")} className="h-12 flex-1" />
-                <select {...register("baseWeightUnit")} className="border border-border rounded-xl bg-background px-3 h-12">
-                  <option value="غ">غ</option>
-                  <option value="كغ">كغ</option>
-                </select>
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="font-medium">الكمية المتاحة *</Label>
-              <Input type="number" min={0} placeholder="0" {...register("stockQuantity")} className="h-12" />
-            </div>
+          <div className="flex gap-2">
+            <Input placeholder="250" {...register("baseWeightValue")} className="h-12 flex-1" />
+            <select {...register("baseWeightUnit")} className="border border-border rounded-xl bg-background px-3 h-12">
+              <option value="غ">غ</option>
+              <option value="كغ">كغ</option>
+            </select>
           </div>
         </div>
 
@@ -489,15 +480,21 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
             <Package className="w-4 h-4 text-primary" />
             الإعدادات
           </h4>
-          <div className="flex gap-6 flex-wrap">
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" {...register("inStock")} className="w-5 h-5 rounded" />
-              <span className="text-sm font-medium">متوفر في المخزن</span>
-            </label>
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" {...register("featured")} className="w-5 h-5 rounded" />
-              <span className="text-sm font-medium">منتج مميز</span>
-            </label>
+          <div className="space-y-3">
+            <div className="space-y-2">
+              <Label className="font-medium">الكمية في المخزن</Label>
+              <Input type="number" min={0} placeholder="0" {...register("stockQuantity")} className="h-12" />
+            </div>
+            <div className="flex gap-6 flex-wrap pt-2">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" {...register("inStock")} className="w-5 h-5 rounded" />
+                <span className="text-sm font-medium">متوفر في المخزن</span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" {...register("featured")} className="w-5 h-5 rounded" />
+                <span className="text-sm font-medium">منتج مميز</span>
+              </label>
+            </div>
           </div>
         </div>
 

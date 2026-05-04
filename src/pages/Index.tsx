@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { motion, useInView, useSpring, useTransform } from "motion/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape, Camera, Sparkles, Check, CheckCircle, ArrowRight } from "lucide-react";
+import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape, Camera, Heart, Check, CheckCircle, ArrowRight, HandHeart } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import Navbar from "@/components/Navbar.tsx";
@@ -157,7 +157,7 @@ export default function Index() {
               transition={{ delay: 0.2 }}
               className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-full text-sm font-semibold mb-6"
             >
-              <Sparkles className="w-4 h-4" />
+              <HandHeart className="w-4 h-4" />
               مرحبا بزبائننا الكرام
             </motion.div>
             <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.15] mb-5 font-serif">
