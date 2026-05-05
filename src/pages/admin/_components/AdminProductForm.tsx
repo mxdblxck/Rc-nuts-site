@@ -207,7 +207,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       const payload = {
         ...restData,
         weight: baseWeightValue ? `${baseWeightValue}${baseWeightUnit}` : undefined,
-        originalPrice: restData.originalPrice || restData.originalPrice === 0 ? restData.originalPrice : undefined,
+        originalPrice: restData.originalPrice && restData.originalPrice > 0 ? restData.originalPrice : undefined,
         imageStorageId: imageType === "upload" ? finalStorageId : undefined,
         imageUrl: imageType === "url" ? restData.imageUrl : undefined,
         galleryStorageIds: finalGalleryIds,
@@ -217,7 +217,7 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
         packagingOptions: restData.packagingOptions?.map((p) => ({
           name: `${p.weightValue}${p.weightUnit}`,
           price: p.price,
-          originalPrice: p.originalPrice || p.originalPrice === 0 ? p.originalPrice : undefined,
+          originalPrice: p.originalPrice && p.originalPrice > 0 ? p.originalPrice : undefined,
         })),
       };
 

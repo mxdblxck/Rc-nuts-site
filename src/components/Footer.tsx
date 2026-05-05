@@ -29,7 +29,7 @@ export default function Footer() {
               { to: "/", label: "الرئيسية" },
               { to: "/shop", label: "المتجر" },
               { to: "/about", label: "من نحن" },
-              { to: "/#contact", label: "اتصل بنا" },
+              { to: "/contact", label: "اتصل بنا" },
             ].map((link) => (
               <li key={link.to}>
                 <Link to={link.to} className="hover:text-accent transition-colors">

@@ -1,6 +1,29 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, LogIn, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Eye, EyeOff, LogIn, AlertCircle, ShieldCheck } from "lucide-react";
+import { motion } from "framer-motion";
+
+const DEFAULT_USERNAME = "admin";
+const DEFAULT_PASSWORD = "admin123";
+const SESSION_DURATION_HOURS = 24;
+
+function isSessionValid(): boolean {
+  try {
+    const raw = localStorage.getItem("admin_session") || sessionStorage.getItem("admin_session");
+    if (!raw) return false;
+    const session = JSON.parse(raw);
+    if (!session.username || !session.loginTime) return false;
+    const expired = Date.now() - session.loginTime > SESSION_DURATION_HOURS * 3600 * 1000;
+    if (expired) {
+      localStorage.removeItem("admin_session");
+      sessionStorage.removeItem("admin_session");
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export default function AdminLoginPage() {
   const navigate = useNavigate();
@@ -10,118 +33,148 @@ export default function AdminLoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [locked, setLocked] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isSessionValid()) navigate("/admin");
+  }, [navigate]);
+
+  // Lock after 5 failed attempts
+  useEffect(() => {
+    if (attempts >= 5) {
+      setLocked(true);
+      setError("تم تجاوز عدد المحاولات. يُرجى الانتظار دقيقة.");
+      const timer = setTimeout(() => {
+        setLocked(false);
+        setAttempts(0);
+        setError("");
+      }, 60000);
+      return () => clearTimeout(timer);
+    }
+  }, [attempts]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (locked) return;
     setError("");
     setLoading(true);
 
+    await new Promise(r => setTimeout(r, 400)); // Prevent brute-force timing
+
     try {
-      // Simple admin auth check (stored in siteSettings)
-      const storedAdmin = localStorage.getItem("admin_credentials");
-      
-      if (storedAdmin) {
-        const admin = JSON.parse(storedAdmin);
-        if (username === admin.username && password === admin.password) {
-          // Set session
-          if (rememberMe) {
-            localStorage.setItem("admin_session", JSON.stringify({ username, loginTime: Date.now() }));
-          } else {
-            sessionStorage.setItem("admin_session", JSON.stringify({ username, loginTime: Date.now() }));
-          }
-          navigate("/admin");
-          return;
-        }
-      }
+      const storedRaw = localStorage.getItem("admin_credentials");
+      let stored = storedRaw ? JSON.parse(storedRaw) : { username: DEFAULT_USERNAME, password: DEFAULT_PASSWORD };
 
-      // Check default admin (first time setup)
-      if (!storedAdmin && username === "admin" && password === "admin123") {
-        const adminData = { username: "admin", password: "admin123" };
-        localStorage.setItem("admin_credentials", JSON.stringify(adminData));
+      if (username.trim() === stored.username && password === stored.password) {
+        const sessionData = JSON.stringify({ username: stored.username, loginTime: Date.now() });
         if (rememberMe) {
-          localStorage.setItem("admin_session", JSON.stringify({ username, loginTime: Date.now() }));
+          localStorage.setItem("admin_session", sessionData);
         } else {
-          sessionStorage.setItem("admin_session", JSON.stringify({ username, loginTime: Date.now() }));
+          sessionStorage.setItem("admin_session", sessionData);
         }
+        setAttempts(0);
         navigate("/admin");
-        return;
+      } else {
+        setAttempts(prev => prev + 1);
+        setError(`اسم المستخدم أو كلمة المرور غير صحيحة ${attempts + 1 >= 5 ? "" : `(${5 - attempts - 1} محاولات متبقية)`}`);
       }
-
-      setError("اسم المستخدم أو كلمة المرور غير صحيحة");
-    } catch (err) {
-      setError("حدث خطأ يرجى المحاولة مرة أخرى");
+    } catch {
+      setError("حدث خطأ — يُرجى المحاولة مرة أخرى");
     } finally {
       setLoading(false);
     }
   };
 
-  // Check if already logged in
-  const adminSession = localStorage.getItem("admin_session") || sessionStorage.getItem("admin_session");
-  if (adminSession) {
-    navigate("/admin");
-    return null;
-  }
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-accent/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
+    <div className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full border border-border/30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full border border-border/20" />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="relative w-full max-w-md px-4"
+      >
+        {/* Logo / Brand */}
         <div className="text-center mb-8">
-          <img 
-            src="/logo.png" 
-            alt="RC Nuts" 
-            className="w-20 h-20 mx-auto mb-4 rounded-full shadow-lg" 
+          <img
+            src="/logo.png"
+            alt="RC Nuts"
+            className="w-24 h-24 mx-auto mb-4 rounded-3xl shadow-2xl shadow-primary/30 object-cover"
           />
-          <h1 className="text-2xl font-bold text-primary font-serif">RC Nuts</h1>
-          <p className="text-sm text-muted-foreground mt-1">لوحة تحكم المدير</p>
+          <h1 className="text-2xl font-black text-foreground tracking-tight">RC Nuts Admin</h1>
+          <p className="text-sm text-muted-foreground mt-1.5">لوحة تحكم المدير </p>
         </div>
 
-        {/* Login Card */}
-        <div className="bg-card rounded-2xl shadow-xl border border-border p-6 sm:p-8">
-          <h2 className="text-xl font-bold text-foreground mb-6 text-center">تسجيل الدخول</h2>
-          
+        {/* Card */}
+        <div className="bg-card border border-border rounded-3xl shadow-2xl p-8">
+          <div className="flex items-center gap-2 mb-6">
+            <ShieldCheck className="w-5 h-5 text-primary" />
+            <h2 className="text-lg font-bold text-foreground">تسجيل الدخول</h2>
+          </div>
+
+          {/* Error Banner */}
           {error && (
-            <div className="flex items-center gap-2 bg-destructive/10 text-destructive px-4 py-3 rounded-lg mb-4 text-sm">
-              <AlertCircle className="w-4 h-4 shrink-0" />
-              {error}
-            </div>
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              className="flex items-start gap-2 bg-destructive/10 text-destructive border border-destructive/20 px-4 py-3 rounded-2xl mb-5 text-sm"
+            >
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="off">
             {/* Username */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-foreground" htmlFor="username">
                 اسم المستخدم
               </label>
               <input
+                id="username"
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
-                placeholder="أدخل اسم المستخدم"
+                onChange={e => setUsername(e.target.value)}
+                autoComplete="username"
                 required
+                disabled={locked}
                 dir="ltr"
+                placeholder="admin"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 
             {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
+            <div className="space-y-1.5">
+              <label className="text-sm font-bold text-foreground" htmlFor="password">
                 كلمة المرور
               </label>
               <div className="relative">
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-border bg-background text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all pr-12"
-                  placeholder="أدخل كلمة المرور"
+                  onChange={e => setPassword(e.target.value)}
+                  autoComplete="current-password"
                   required
+                  disabled={locked}
                   dir="ltr"
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 pl-12 rounded-xl border border-border bg-background text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword(v => !v)}
+                  tabIndex={-1}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
@@ -129,43 +182,37 @@ export default function AdminLoginPage() {
               </div>
             </div>
 
-            {/* Remember Me */}
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="rememberMe"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-border text-primary focus:ring-primary/20"
-              />
-              <label htmlFor="rememberMe" className="text-sm text-foreground cursor-pointer">
-                تذكرني
-              </label>
-            </div>
+            {/* Remember me */}
+            <label className="flex items-center gap-3 cursor-pointer select-none group">
+              <div
+                onClick={() => setRememberMe(v => !v)}
+                className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${rememberMe ? "bg-primary border-primary" : "border-border bg-background group-hover:border-primary/50"}`}
+              >
+                {rememberMe && <span className="text-primary-foreground text-xs font-black">✓</span>}
+              </div>
+              <span className="text-sm text-foreground">تذكرني لمدة 24 ساعة</span>
+            </label>
 
-            {/* Submit Button */}
+            {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-3 px-4 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              disabled={loading || locked}
+              className="w-full py-3.5 px-4 bg-primary text-primary-foreground rounded-xl font-bold text-base hover:bg-primary/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <span className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />
               ) : (
                 <LogIn className="w-5 h-5" />
               )}
-              تسجيل الدخول
+              {locked ? "مقفل مؤقتاً..." : "دخول"}
             </button>
           </form>
         </div>
 
-        {/* Back to site */}
-        <div className="text-center mt-6">
-          <Link to="/" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            ← العودة للمتجر
-          </Link>
-        </div>
-      </div>
+        <p className="text-center text-xs text-muted-foreground mt-6">
+          RC Nuts © {new Date().getFullYear()} — منصة البيع الإلكتروني
+        </p>
+      </motion.div>
     </div>
   );
 }

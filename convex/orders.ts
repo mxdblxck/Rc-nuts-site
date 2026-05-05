@@ -149,14 +149,26 @@ export const getOrderStats = query({
       .filter((o) => o.status !== "cancelled")
       .reduce((sum, o) => sum + o.total, 0);
     const pending = allOrders.filter((o) => o.status === "pending").length;
+    const confirmed = allOrders.filter((o) => o.status === "confirmed").length;
+    const shipped = allOrders.filter((o) => o.status === "shipped").length;
     const delivered = allOrders.filter((o) => o.status === "delivered").length;
+    const cancelled = allOrders.filter((o) => o.status === "cancelled").length;
 
     // Product sales count
     const productSalesMap: Record<string, number> = {};
+    const wilayaMap: Record<string, number> = {};
+
     for (const order of allOrders) {
       if (order.status !== "cancelled") {
+        // Track products
         for (const item of order.items) {
           productSalesMap[item.productName] = (productSalesMap[item.productName] ?? 0) + item.quantity;
+        }
+        
+        // Track Wilayas
+        if (order.customerCity) {
+          const wilaya = order.customerCity.split("-")[0].trim();
+          wilayaMap[wilaya] = (wilayaMap[wilaya] ?? 0) + 1;
         }
       }
     }
@@ -164,7 +176,12 @@ export const getOrderStats = query({
     const productSales = Object.entries(productSalesMap).map(([name, quantity]) => ({
       name,
       quantity,
-    }));
+    })).sort((a, b) => b.quantity - a.quantity);
+
+    const wilayaStats = Object.entries(wilayaMap).map(([name, count]) => ({
+      name,
+      value: count,
+    })).sort((a, b) => b.value - a.value).slice(0, 7);
 
     const now = Date.now();
     const oneDay = 24 * 60 * 60 * 1000;
@@ -172,14 +189,26 @@ export const getOrderStats = query({
     const oneMonth = 30 * oneDay;
 
     let revenueToday = 0;
+    let revenueYesterday = 0;
     let revenueWeek = 0;
     let revenueMonth = 0;
+    
+    let ordersToday = 0;
+    let ordersYesterday = 0;
 
     for (const order of allOrders) {
       if (order.status !== "cancelled") {
-        if (now - order._creationTime <= oneDay) revenueToday += order.total;
-        if (now - order._creationTime <= oneWeek) revenueWeek += order.total;
-        if (now - order._creationTime <= oneMonth) revenueMonth += order.total;
+        const timeDiff = now - order._creationTime;
+        if (timeDiff <= oneDay) {
+          revenueToday += order.total;
+          ordersToday += 1;
+        } else if (timeDiff > oneDay && timeDiff <= oneDay * 2) {
+          revenueYesterday += order.total;
+          ordersYesterday += 1;
+        }
+
+        if (timeDiff <= oneWeek) revenueWeek += order.total;
+        if (timeDiff <= oneMonth) revenueMonth += order.total;
       }
     }
 
@@ -187,11 +216,18 @@ export const getOrderStats = query({
       totalOrders: allOrders.length,
       totalRevenue,
       revenueToday,
+      revenueYesterday,
       revenueWeek,
       revenueMonth,
+      ordersToday,
+      ordersYesterday,
       pendingOrders: pending,
+      confirmedOrders: confirmed,
+      shippedOrders: shipped,
       deliveredOrders: delivered,
+      cancelledOrders: cancelled,
       productSales,
+      wilayaStats,
     };
   },
 });

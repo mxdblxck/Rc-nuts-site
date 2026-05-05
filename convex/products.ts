@@ -39,6 +39,15 @@ async function resolveProductUrls(ctx: any, p: any) {
     p.images = [];
   }
 
+  // Strip originalPrice if it's 0 (treat 0 as "no discount")
+  if (p.originalPrice === 0) p.originalPrice = undefined;
+  if (p.packagingOptions) {
+    p.packagingOptions = p.packagingOptions.map((opt: any) => ({
+      ...opt,
+      originalPrice: opt.originalPrice && opt.originalPrice > 0 ? opt.originalPrice : undefined,
+    }));
+  }
+
   return p;
 }
 
@@ -131,7 +140,15 @@ export const createProduct = mutation({
   args: productArgs,
   handler: async (ctx, args) => {
     await requireAdmin(ctx as Parameters<typeof requireAdmin>[0]);
-    return await ctx.db.insert("products", args);
+    const sanitized = {
+      ...args,
+      originalPrice: args.originalPrice && args.originalPrice > 0 ? args.originalPrice : undefined,
+      packagingOptions: args.packagingOptions?.map((p) => ({
+        ...p,
+        originalPrice: p.originalPrice && p.originalPrice > 0 ? p.originalPrice : undefined,
+      })),
+    };
+    return await ctx.db.insert("products", sanitized);
   },
 });
 
@@ -183,7 +200,18 @@ export const updateProduct = mutation({
       }
     }
 
-    await ctx.db.patch(id, rest);
+    const sanitizedRest = {
+      ...rest,
+      originalPrice: rest.originalPrice !== undefined
+        ? (rest.originalPrice > 0 ? rest.originalPrice : undefined)
+        : undefined,
+      packagingOptions: rest.packagingOptions?.map((p) => ({
+        ...p,
+        originalPrice: p.originalPrice && p.originalPrice > 0 ? p.originalPrice : undefined,
+      })),
+    };
+
+    await ctx.db.patch(id, sanitizedRest);
   },
 });
 

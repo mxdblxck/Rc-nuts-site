@@ -10,7 +10,7 @@ const navLinks = [
   { href: "/shop", label: "المتجر", icon: Store },
   { href: "/packs", label: "الباقات", icon: Gift },
   { href: "/about", label: "من نحن", icon: Info },
-  { href: "/#contact", label: "اتصل بنا", icon: Phone },
+  { href: "/contact", label: "اتصل بنا", icon: Phone },
 ];
 
 export default function Navbar() {
@@ -47,11 +47,10 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  isActive(link.href)
+                className={`text-sm font-medium transition-colors flex items-center gap-1.5 ${isActive(link.href)
                     ? "text-primary font-bold"
                     : "text-foreground/70 hover:text-primary"
-                }`}
+                  }`}
               >
                 {link.icon && <link.icon className="w-4 h-4" />}
                 {link.label}
@@ -90,16 +89,14 @@ export default function Navbar() {
             >
               <div className="relative w-5 h-5">
                 <span
-                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${
-                    menuOpen ? "opacity-100 rotate-0" : "opacity-0 rotate-90"
-                  }`}
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${menuOpen ? "opacity-100 rotate-0" : "opacity-0 rotate-90"
+                    }`}
                 >
                   <X className="w-5 h-5" />
                 </span>
                 <span
-                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${
-                    menuOpen ? "opacity-0 -rotate-90" : "opacity-100 rotate-0"
-                  }`}
+                  className={`absolute inset-0 flex items-center justify-center transition-all duration-200 ${menuOpen ? "opacity-0 -rotate-90" : "opacity-100 rotate-0"
+                    }`}
                 >
                   <Menu className="w-5 h-5" />
                 </span>
@@ -110,9 +107,8 @@ export default function Navbar() {
 
         {/* Mobile Menu — animated slide down */}
         <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-          }`}
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+            }`}
         >
           <div className="border-t border-border bg-background/98 px-4 py-3 flex flex-col gap-1">
             {navLinks.map((link, i) => (
@@ -121,11 +117,10 @@ export default function Navbar() {
                 to={link.href}
                 onClick={() => setMenuOpen(false)}
                 style={{ transitionDelay: menuOpen ? `${i * 40}ms` : "0ms" }}
-                className={`flex items-center gap-3 px-3 py-3 rounded-xl font-medium transition-all duration-200 ${
-                  isActive(link.href)
+                className={`flex items-center gap-3 px-3 py-3 rounded-xl font-medium transition-all duration-200 ${isActive(link.href)
                     ? "bg-primary/10 text-primary font-bold"
                     : "text-foreground/80 hover:bg-muted hover:text-primary"
-                } ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}
+                  } ${menuOpen ? "translate-x-0 opacity-100" : "translate-x-4 opacity-0"}`}
               >
                 {link.icon && <link.icon className="w-4 h-4 shrink-0" />}
                 {link.label}

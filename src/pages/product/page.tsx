@@ -32,8 +32,10 @@ export default function ProductPage() {
   const activeTaste = selectedTaste ?? TASTE_OPTIONS[0];
 
   const currentPrice = activePackaging ? activePackaging.price : (product?.price ?? 0);
-  const currentOriginalPrice = activePackaging ? (activePackaging.originalPrice ?? activePackaging.price) : (product?.originalPrice ?? 0);
-  const discount = Math.round(((currentOriginalPrice - currentPrice) / currentOriginalPrice) * 100) || 0;
+  const currentOriginalPrice = activePackaging
+    ? (activePackaging.originalPrice && activePackaging.originalPrice > activePackaging.price ? activePackaging.originalPrice : undefined)
+    : (product?.originalPrice && product.originalPrice > product.price ? product.originalPrice : undefined);
+  const discount = currentOriginalPrice ? Math.round(((currentOriginalPrice - currentPrice) / currentOriginalPrice) * 100) : 0;
 
   const handleAddToCart = () => {
     if (!product) return;

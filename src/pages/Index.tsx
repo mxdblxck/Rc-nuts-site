@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
-import { motion, useInView, useSpring, useTransform } from "motion/react";
+import { motion } from "motion/react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
-import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Nut, Sprout, Blend, Grape, Camera, Heart, Check, CheckCircle, ArrowRight, HandHeart } from "lucide-react";
+import { ArrowLeft, Award, Leaf, ShieldCheck, Star, Truck, Sparkles, CheckCircle, ArrowRight, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Skeleton } from "@/components/ui/skeleton.tsx";
 import Navbar from "@/components/Navbar.tsx";
@@ -31,19 +30,6 @@ const categories = [
   { name: "مجففات", img: "/مجففات.png" },
 ];
 
-// Professional Counter Component
-function CounterItem({ value, suffix, label }: { value: string; suffix: string; label: string }) {
-  return (
-    <div className="text-center">
-      <div className="text-3xl sm:text-4xl font-black text-primary">
-        <span className="tabular-nums">{value}</span>
-      </div>
-      <div className="text-xs sm:text-sm text-muted-foreground mt-1">{label}</div>
-    </div>
-  );
-}
-
-// Animated Counter that counts up
 function AnimatedCounter({ target, suffix, label }: { target: number; suffix: string; label: string }) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -55,7 +41,6 @@ function AnimatedCounter({ target, suffix, label }: { target: number; suffix: st
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasAnimated.current) {
             hasAnimated.current = true;
-            // Smooth count up animation
             const duration = 2000;
             const steps = 60;
             const increment = target / steps;
@@ -74,48 +59,46 @@ function AnimatedCounter({ target, suffix, label }: { target: number; suffix: st
       },
       { threshold: 0.5 }
     );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
+    if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, [target]);
 
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-3xl sm:text-4xl font-black text-primary">
-        <span className="tabular-nums">{count}{suffix}</span>
+    <motion.div
+      ref={ref}
+      className="text-center"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="text-lg sm:text-3xl md:text-5xl font-black text-primary tabular-nums leading-none">
+        {count}{suffix}
       </div>
-      <div className="text-xs sm:text-sm text-muted-foreground mt-1">{label}</div>
-    </div>
+      <div className="mt-1 text-[0.55rem] sm:text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </div>
+    </motion.div>
   );
 }
 
-// Big Buy Button with click animation
 function BuyButton({ children, secondary = false }: { children: React.ReactNode; secondary?: boolean }) {
-  const [clicked, setClicked] = useState(false);
   const isPrimary = !secondary;
-  
   return (
     <motion.div whileTap={{ scale: 0.95 }} className="inline-block w-full sm:w-auto">
-      <Button 
+      <Button
         size="lg"
         asChild
         className={`
-          gap-2 sm:gap-3 text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-7 shadow-lg border-2 w-full sm:w-auto
-          ${isPrimary 
-            ? "border-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 shadow-primary/25" 
-            : "border-border/50 bg-transparent text-foreground hover:bg-muted border-border/30"
-          }
-          ${clicked ? "bg-green-500 border-green-500 text-white" : ""}
+          gap-2 sm:gap-3 text-base sm:text-lg px-6 sm:px-10 py-5 sm:py-7 border-2 w-full sm:w-auto
           transition-all duration-200 font-semibold
+          ${isPrimary
+            ? "border-primary/20 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/40"
+            : "border-border/40 bg-background/80 text-foreground hover:bg-background shadow-sm backdrop-blur-sm"
+          }
         `}
-        onClick={() => { if (isPrimary) { setClicked(true); setTimeout(() => setClicked(false), 1500); }}}
       >
-        {isPrimary && clicked ? (
-          <><CheckCircle className="w-5 sm:w-6" />تم!</>
-        ) : children}
+        {children}
       </Button>
     </motion.div>
   );
@@ -133,169 +116,217 @@ export default function Index() {
     <div className="min-h-screen flex flex-col">
       <Navbar />
 
-      {/* Hero Section - Enhanced */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/5 min-h-[92vh] flex items-center">
-        {/* Background decoration - enhanced */}
-        <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
-          <div className="absolute top-20 right-10 w-96 h-96 rounded-full bg-primary/15 blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-          <div className="absolute bottom-20 left-10 w-80 h-80 rounded-full bg-accent/15 blur-3xl animate-pulse" style={{ animationDuration: '5s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-3xl" />
+      {/* ── Hero Section ── */}
+      <section
+        dir="rtl"
+        className="relative w-full overflow-hidden"
+        style={{ height: "100svh", minHeight: "620px" }}
+      >
+        {/* Background image — smooth fade-in entrance */}
+        <motion.div
+          className="absolute inset-0 w-full h-full"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.4, ease: "easeOut" }}
+        >
+          {/* Mobile image */}
+          <img
+            src="/hero_premium_phone.png"
+            alt="RC Nuts — أجود المكسرات"
+            className="md:hidden w-full h-full object-cover object-center"
+            fetchPriority="high"
+            decoding="async"
+            onError={(e) => { e.currentTarget.src = "/hero_premium.png"; }}
+          />
+          {/* Desktop image */}
+          <img
+            src="/hero_premium.png"
+            alt="RC Nuts — أجود المكسرات"
+            className="hidden md:block w-full h-full object-cover object-center"
+            fetchPriority="high"
+            decoding="async"
+            onError={(e) => { e.currentTarget.src = "/logo.png"; }}
+          />
+        </motion.div>
+
+        {/* Desktop gradient — theme-aware, right side only. Jars left, text right (RTL) */}
+        <div
+          className="absolute inset-0 pointer-events-none hidden md:block"
+          style={{
+            background: "linear-gradient(to right, transparent 30%, color-mix(in srgb, var(--background) 80%, transparent) 60%, var(--background) 100%)",
+          }}
+        />
+        {/* Mobile gradient — top, light opacity */}
+        <div
+          className="absolute inset-0 pointer-events-none md:hidden"
+          style={{
+            background: "linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 20%, transparent) 45%, transparent 72%)",
+          }}
+        />
+        {/* Mobile gradient — bottom primary green — bigger reach */}
+        <div
+          className="absolute inset-0 pointer-events-none md:hidden"
+          style={{
+            background: "linear-gradient(to bottom, transparent 58%, rgba(53,115,53,0.22) 78%, rgba(53,115,53,0.60) 100%)",
+          }}
+        />
+
+        {/* Content overlay — top on mobile (centered), centered on desktop */}
+        <div className="absolute inset-0 flex items-start md:items-center">
+          <div
+            className="w-full h-full flex items-start md:items-center pt-12 md:pt-0"
+            style={{
+              paddingRight: "clamp(1rem, 4vw, 3rem)",
+              paddingLeft: "1rem",
+            }}
+          // Desktop only — no paddingTop, tighter right. Mobile keeps natural flow.
+          >
+            {/* Mobile: full width centered | Desktop: right-aligned 52% block */}
+            <div className="w-full md:w-[52%] text-center md:text-right flex flex-col">
+
+              {/* Headline — black text, green span */}
+              <motion.h1
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                className="font-serif font-black leading-[1.12] mb-5 text-foreground text-[2.6rem] sm:text-[2.2rem] md:text-[clamp(2.5rem,5.5vw,5rem)]"
+                style={{ textShadow: "0 2px 24px rgba(0,0,0,0.08)" }}
+              >
+                أجود المكسرات
+                <br />
+                <span className="text-primary">والفواكه المجففة</span>
+              </motion.h1>
+
+              {/* Subtext — dark gray */}
+              <motion.p
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.5 }}
+                className="text-base sm:text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg mx-auto md:mx-0"
+              >
+
+                مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
+              </motion.p>
+
+              {/* Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.5 }}
+                className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-end sm:justify-start mb-10"
+              >
+                <BuyButton>
+                  <Link to="/shop">
+                    <><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />اشتري الآن</>
+                  </Link>
+                </BuyButton>
+                <BuyButton secondary>
+                  <Link to="/about">
+                    <><ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />تفاصيل أكثر</>
+                  </Link>
+                </BuyButton>
+              </motion.div>
+
+              {/* Counters — first on mobile, last on desktop */}
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.65 }}
+                className="flex gap-5 sm:gap-10 md:gap-14 justify-center md:justify-start order-first md:order-last mb-4 pb-2 md:mb-0 md:pb-0"
+              >
+                <AnimatedCounter target={15} suffix="+" label="منتج فاخر" />
+                <AnimatedCounter target={100} suffix="%" label="طبيعي" />
+                <AnimatedCounter target={500} suffix="+" label="عميل راضٍ" />
+              </motion.div>
+
+            </div>
+          </div>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-8 md:py-16 grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
-          {/* Text - First on mobile, left on desktop */}
+        {/* Scroll dot — updated color for light background */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.7 }}
+        >
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="text-center md:text-start"
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+            className="w-[22px] h-[36px] rounded-full flex items-start justify-center pt-2 border-2 border-foreground/20"
           >
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-full text-sm font-semibold mb-6"
-            >
-              <HandHeart className="w-4 h-4" />
-              مرحبا بزبائننا الكرام
-            </motion.div>
-            <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-black text-foreground leading-[1.15] mb-5 font-serif">
-              أجود المكسرات
-              <br />
-              <span className="text-primary">والفواكه المجففة</span>
-            </h1>
-            <p className="text-base sm:text-lg md:text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg mx-auto md:mx-0">
-              مكسرات وبذور فاخرة مختارة بعناية، طازجة ومغذية. تسوّق من راحة منزلك بأسعار تنافسية وتوصيل سريع لجميع ولايات الجزائر.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-center md:items-start justify-center md:justify-start mb-10">
-              <BuyButton>
-                <Link to="/shop">
-                  <><ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6" />اشتري الآن</>
-                </Link>
-              </BuyButton>
-              <BuyButton secondary>
-                <Link to="/#about">
-                  <><ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />تفاصيل أكثر</>
-                </Link>
-              </BuyButton>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-              className="flex gap-8 sm:gap-12 justify-center md:justify-start"
-            >
-              <AnimatedCounter target={15} suffix="+" label="منتج فاخر" />
-              <AnimatedCounter target={100} suffix="%" label="طبيعي" />
-              <AnimatedCounter target={500} suffix="+" label="عميل راضٍ" />
-            </motion.div>
+            <div className="w-[3px] h-[8px] rounded-full bg-foreground/50" />
           </motion.div>
-
-          {/* Image - Last on mobile, right on desktop */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            className="relative"
-          >
-            <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-square max-w-sm mx-auto md:max-w-none md:aspect-[4/5] lg:aspect-square">
-              <img
-                src={`/hero2.png`}
-                alt="مكسرات طبيعية فاخرة"
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-                width="800"
-                height="800"
-                onError={(e) => { e.currentTarget.src = "/logo.png"; }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-foreground/20 to-transparent" />
-            </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="absolute -bottom-4 sm:-bottom-6 left-1/2 -translate-x-1/2 sm:left-auto sm:right-4 sm:translate-x-0 bg-card rounded-2xl shadow-2xl p-4 sm:p-5 border border-border"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-                  <Camera className="w-6 h-6 text-primary" />
-                </div>
-                <div>
-                  <div className="font-bold text-sm text-foreground">صور حقيقية</div>
-                  <div className="text-xs text-muted-foreground">للمنتجات</div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Features - Apple Style */}
-      <section className="py-16 md:py-20 bg-background">
+      {/* ── Green line separator ── */}
+      <div className="relative h-[16px] w-full -mt-[0px] -mb-[3px] z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-primary opacity-90 " />
+      </div>
+
+      {/* Features */}
+      <section className="py-10 md:py-14 bg-background">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 lg:gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.45, delay: i * 0.09, ease: [0.22, 1, 0.36, 1] }}
                 viewport={{ once: true }}
-                className="group flex flex-col items-center justify-center p-4 lg:p-6 rounded-2xl hover:bg-muted/50 transition-colors duration-300 cursor-pointer"
+                className="flex flex-col items-center text-center p-5 md:p-6 rounded-3xl bg-muted/35"
               >
-                <div className="text-primary mb-3 group-hover:scale-110 transition-transform duration-300">
+                {/* Icon */}
+                <div className="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center text-white mb-4 shadow-md shadow-primary/25">
                   {f.icon}
                 </div>
-                <h3 className="font-semibold text-foreground text-sm lg:text-base mb-1 text-center">{f.title}</h3>
-                <p className="text-xs text-muted-foreground text-center leading-snug">{f.desc}</p>
+                <h3 className="font-bold text-sm md:text-base text-foreground mb-1 leading-snug">{f.title}</h3>
+                <p className="text-[0.72rem] md:text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Categories - Premium Cards */}
-      <section className="py-10 max-w-7xl mx-auto px-4 w-full">
-        {/* Cool separator with center diamond */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="flex-1 h-px bg-gradient-to-r from-transparent to-border" />
-          <div className="w-2 h-2 rotate-45 bg-primary/30" />
-          <div className="flex-1 h-px bg-gradient-to-l from-transparent to-border" />
+      {/* Categories */}
+      <section className="py-8 md:py-12 max-w-7xl mx-auto px-4 w-full">
+        <div className="flex items-end justify-between mb-6">
+          <div className="text-right">
+            <h2 className="text-xl md:text-2xl font-black text-foreground font-serif">تصفح حسب الفئة</h2>
+            <p className="text-muted-foreground text-xs md:text-sm mt-0.5">اختر ما يناسبك</p>
+          </div>
+          <Link to="/shop" className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+            عرض الكل <ArrowLeft className="w-3 h-3" />
+          </Link>
         </div>
-        
-        <h2 className="text-2xl md:text-3xl font-black text-foreground mb-6 font-serif text-center">تصفح حسب الفئة</h2>
-        <p className="text-muted-foreground text-center mb-8 text-sm md:text-base">اختر ما يناسبك من تشكيلتنا الواسعة</p>
-        
-        {/* Desktop: 4 cols | Mobile: 2x2 grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {categories.map((cat, i) => (
             <motion.div
               key={cat.name}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
+              transition={{ duration: 0.4, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
               viewport={{ once: true }}
-              className="aspect-square"
             >
               <Link
                 to={`/shop?category=${cat.name}`}
-                className="relative flex flex-col items-center justify-center gap-2 h-full rounded-xl bg-primary/5 border border-primary/10 shadow-sm hover:shadow-xl hover:-translate-y-1 hover:bg-emerald-500/10 transition-all duration-300 cursor-pointer overflow-hidden group"
+                className="group block rounded-3xl overflow-hidden bg-muted/40 hover:bg-muted/60 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
               >
-                {/* Image - Center */}
-                <div className="w-20 h-20 md:w-24 md:h-24 relative">
-                  <img 
-                    src={cat.img} 
+                {/* Image */}
+                <div className="aspect-square flex items-center justify-center p-6 md:p-8">
+                  <img
+                    src={cat.img}
                     alt={cat.name}
-                    className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                    className="w-full h-full object-contain drop-shadow-sm group-hover:scale-[1.06] transition-transform duration-500 ease-out"
                   />
                 </div>
-                
-                {/* Title - Bottom */}
-                <h3 className="font-bold text-base md:text-lg text-foreground/90">{cat.name}</h3>
+                {/* Label */}
+                <div className="px-4 pb-4 text-right">
+                  <h3 className="font-bold text-sm md:text-base text-foreground">{cat.name}</h3>
+                  <span className="text-[0.7rem] text-primary font-semibold">تسوق الآن ›</span>
+                </div>
               </Link>
             </motion.div>
           ))}
@@ -311,24 +342,16 @@ export default function Index() {
               <p className="text-muted-foreground mt-1">أفضل مبيعاتنا وعروض حصرية</p>
             </div>
             <Button variant="secondary" asChild>
-              <Link to="/shop" className="gap-2 flex items-center">
-                عرض الكل
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
+              <Link to="/shop" className="gap-2 flex items-center">عرض الكل<ArrowLeft className="w-4 h-4" /></Link>
             </Button>
           </div>
-
           {featuredProducts === undefined ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-72 w-full rounded-2xl" />
-              ))}
+              {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-72 w-full rounded-2xl" />)}
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {featuredProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
-              ))}
+              {featuredProducts.map((product) => <ProductCard key={product._id} product={product} />)}
             </div>
           )}
         </div>
@@ -346,18 +369,9 @@ export default function Index() {
           <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-32 -translate-y-32" />
           <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-48 translate-y-48" />
           <div className="relative text-center">
-            <h2 className="text-2xl md:text-4xl font-black mb-4 font-serif">
-              عروض حصرية على جميع المنتجات
-            </h2>
-            <p className="text-primary-foreground/80 mb-6 text-lg">
-              وفّر حتى 25% على منتجاتنا المميزة - عروض محدودة الوقت!
-            </p>
-            <Button
-              size="lg"
-              variant="secondary"
-              asChild
-              className="text-primary font-bold px-8"
-            >
+            <h2 className="text-2xl md:text-4xl font-black mb-4 font-serif">عروض حصرية على جميع المنتجات</h2>
+            <p className="text-primary-foreground/80 mb-6 text-lg">وفّر حتى 25% على منتجاتنا المميزة - عروض محدودة الوقت!</p>
+            <Button size="lg" variant="secondary" asChild className="text-primary font-bold px-8">
               <Link to="/shop">استفد من العروض الآن</Link>
             </Button>
           </div>
@@ -423,7 +437,7 @@ export default function Index() {
               </div>
               <div className="text-center p-4 bg-muted rounded-xl">
                 <div className="text-2xl font-black text-primary">500+</div>
-                <div className="text-xs text-muted-foreground"> زبون راضي</div>
+                <div className="text-xs text-muted-foreground">زبون راضي</div>
               </div>
             </div>
           </div>

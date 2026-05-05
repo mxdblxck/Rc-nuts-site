@@ -141,11 +141,10 @@ export default function AdminOrdersTab() {
         <div className="flex gap-2 overflow-x-auto w-full lg:w-auto pb-1 lg:pb-0">
           <button
             onClick={() => setStatusFilter("all")}
-            className={`whitespace-nowrap px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 ${
-              statusFilter === "all"
-                ? "bg-primary text-primary-foreground shadow-md"
-                : "bg-muted/50 text-muted-foreground hover:bg-muted"
-            }`}
+            className={`whitespace-nowrap px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 ${statusFilter === "all"
+              ? "bg-primary text-primary-foreground shadow-md"
+              : "bg-muted/50 text-muted-foreground hover:bg-muted"
+              }`}
           >
             الكل
             <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${statusFilter === "all" ? "bg-white/20" : "bg-muted"}`}>
@@ -156,17 +155,15 @@ export default function AdminOrdersTab() {
             <button
               key={val}
               onClick={() => setStatusFilter(val)}
-              className={`whitespace-nowrap px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 ${
-                statusFilter === val
-                  ? "bg-primary text-primary-foreground shadow-md"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
-              }`}
+              className={`whitespace-nowrap px-3 py-2 rounded-xl text-sm font-medium transition-all flex items-center gap-1.5 ${statusFilter === val
+                ? "bg-primary text-primary-foreground shadow-md"
+                : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                }`}
             >
               {label}
               {(countByStatus[val] ?? 0) > 0 && (
-                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${
-                  statusFilter === val ? "bg-white/20" : val === "pending" ? "bg-amber-100 text-amber-700" : "bg-muted"
-                }`}>
+                <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-bold ${statusFilter === val ? "bg-white/20" : val === "pending" ? "bg-amber-100 text-amber-700" : "bg-muted"
+                  }`}>
                   {countByStatus[val]}
                 </span>
               )}
@@ -384,20 +381,19 @@ export default function AdminOrdersTab() {
                   {selectedOrder.status !== "cancelled" && (
                     <div className="relative mb-6">
                       <div className="absolute top-1/2 -translate-y-1/2 left-4 right-4 h-1 bg-muted/50 rounded-full overflow-hidden">
-                        <div 
-                          className={`h-full transition-all duration-500 ease-in-out ${
-                            selectedOrder.status === "pending" ? "bg-amber-500" :
+                        <div
+                          className={`h-full transition-all duration-500 ease-in-out ${selectedOrder.status === "pending" ? "bg-amber-500" :
                             selectedOrder.status === "confirmed" ? "bg-blue-500" :
-                            selectedOrder.status === "shipped" ? "bg-purple-500" : "bg-emerald-500"
-                          }`}
+                              selectedOrder.status === "shipped" ? "bg-purple-500" : "bg-emerald-500"
+                            }`}
                           style={{
                             width: selectedOrder.status === "pending" ? "0%" :
-                                   selectedOrder.status === "confirmed" ? "33%" :
-                                   selectedOrder.status === "shipped" ? "66%" : "100%"
+                              selectedOrder.status === "confirmed" ? "33%" :
+                                selectedOrder.status === "shipped" ? "66%" : "100%"
                           }}
                         />
                       </div>
-                      
+
                       <div className="relative flex justify-between items-center z-10">
                         {/* Pending Step */}
                         <div className="flex flex-col items-center gap-2">
@@ -406,12 +402,11 @@ export default function AdminOrdersTab() {
                           </div>
                           <span className="text-[10px] font-bold text-foreground">قيد الانتظار</span>
                         </div>
-                        
+
                         {/* Confirmed Step */}
                         <div className="flex flex-col items-center gap-2">
-                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
-                            ["confirmed", "shipped", "delivered"].includes(selectedOrder.status) ? "bg-blue-500 border-blue-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
-                          }`}>
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${["confirmed", "shipped", "delivered"].includes(selectedOrder.status) ? "bg-blue-500 border-blue-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                            }`}>
                             <CheckCircle2 className="w-4 h-4" />
                           </div>
                           <span className="text-[10px] font-bold text-foreground">تم التأكيد</span>
@@ -419,9 +414,8 @@ export default function AdminOrdersTab() {
 
                         {/* Shipped Step */}
                         <div className="flex flex-col items-center gap-2">
-                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
-                            ["shipped", "delivered"].includes(selectedOrder.status) ? "bg-purple-500 border-purple-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
-                          }`}>
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${["shipped", "delivered"].includes(selectedOrder.status) ? "bg-purple-500 border-purple-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                            }`}>
                             <Truck className="w-4 h-4" />
                           </div>
                           <span className="text-[10px] font-bold text-foreground">مشحون</span>
@@ -429,9 +423,8 @@ export default function AdminOrdersTab() {
 
                         {/* Delivered Step */}
                         <div className="flex flex-col items-center gap-2">
-                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${
-                            selectedOrder.status === "delivered" ? "bg-emerald-500 border-emerald-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
-                          }`}>
+                          <div className={`w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all ${selectedOrder.status === "delivered" ? "bg-emerald-500 border-emerald-500 text-white shadow-md" : "bg-card border-border text-muted-foreground"
+                            }`}>
                             <Check className="w-4 h-4" />
                           </div>
                           <span className="text-[10px] font-bold text-foreground">مكتمل</span>
@@ -442,17 +435,16 @@ export default function AdminOrdersTab() {
 
                   {/* Primary Action Button based on current status */}
                   {selectedOrder.status !== "cancelled" && selectedOrder.status !== "delivered" && (
-                    <Button 
-                      className={`w-full mb-3 text-white ${
-                        selectedOrder.status === "pending" ? "bg-blue-600 hover:bg-blue-700" :
+                    <Button
+                      className={`w-full mb-3 text-white ${selectedOrder.status === "pending" ? "bg-blue-600 hover:bg-blue-700" :
                         selectedOrder.status === "confirmed" ? "bg-purple-600 hover:bg-purple-700" :
-                        "bg-emerald-600 hover:bg-emerald-700"
-                      }`}
+                          "bg-emerald-600 hover:bg-emerald-700"
+                        }`}
                       size="lg"
                       onClick={() => {
-                        const nextStatus = 
+                        const nextStatus =
                           selectedOrder.status === "pending" ? "confirmed" :
-                          selectedOrder.status === "confirmed" ? "shipped" : "delivered";
+                            selectedOrder.status === "confirmed" ? "shipped" : "delivered";
                         handleStatusChange(selectedOrder._id, nextStatus);
                       }}
                     >
@@ -463,20 +455,20 @@ export default function AdminOrdersTab() {
                   )}
 
                   {selectedOrder.status === "delivered" && (
-                     <div className="w-full mb-3 p-3 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg text-center border border-emerald-200">
-                       تم تسليم هذا الطلب بنجاح للزبون ✓
-                     </div>
+                    <div className="w-full mb-3 p-3 bg-emerald-50 text-emerald-700 text-sm font-bold rounded-lg text-center border border-emerald-200">
+                      تم تسليم هذا الطلب بنجاح للزبون ✓
+                    </div>
                   )}
 
                   {/* Secondary Actions */}
                   {selectedOrder.status !== "cancelled" && selectedOrder.status !== "delivered" && (
-                     <Button 
-                       variant="outline" 
-                       className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive border-border"
-                       onClick={() => handleStatusChange(selectedOrder._id, "cancelled")}
-                     >
-                       إلغاء الطلب
-                     </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive border-border"
+                      onClick={() => handleStatusChange(selectedOrder._id, "cancelled")}
+                    >
+                      إلغاء الطلب
+                    </Button>
                   )}
                 </div>
 
@@ -486,7 +478,7 @@ export default function AdminOrdersTab() {
                     <Package className="w-4 h-4 text-primary" />
                     معلومات التوصيل
                   </h3>
-                  
+
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center bg-card p-3 rounded-xl border border-border">
                       <div className="flex items-center gap-2 text-muted-foreground">
@@ -505,9 +497,9 @@ export default function AdminOrdersTab() {
                           <span className="font-mono font-bold bg-primary/10 text-primary px-2 py-0.5 rounded">{selectedOrder.trackingId}</span>
                         </div>
                         {selectedOrder.labelUrl && (
-                          <Button 
-                            variant="secondary" 
-                            size="sm" 
+                          <Button
+                            variant="secondary"
+                            size="sm"
                             className="w-full mt-2 gap-2"
                             onClick={() => window.open(selectedOrder.labelUrl, '_blank')}
                           >

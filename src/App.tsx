@@ -57,6 +57,7 @@ import AdminPage from "./pages/admin/page.tsx";
 import AdminLoginPage from "./pages/admin/login/page.tsx";
 import AdminSettingsPage from "./pages/admin/settings/page.tsx";
 import AboutPage from "./pages/about/page.tsx";
+import ContactPage from "./pages/contact/page.tsx";
 import PacksPage from "./pages/packs/page.tsx";
 import AuthCallback from "./pages/auth/Callback.tsx";
 import NotFound from "./pages/NotFound.tsx";
@@ -86,6 +87,7 @@ export default function App() {
             </AdminProtected>
           } />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

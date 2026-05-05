@@ -9,6 +9,7 @@ interface VisitorData {
   visitorsLastMonth: number;
   changePercent: number;
   isPositive: boolean;
+  dailyVisits: { date: string; visitors: number }[];
 }
 
 export function useVisitorTracker() {
@@ -18,6 +19,7 @@ export function useVisitorTracker() {
     visitorsLastMonth: 0,
     changePercent: 0,
     isPositive: true,
+    dailyVisits: [],
   });
 
   useEffect(() => {
@@ -69,12 +71,27 @@ export function useVisitorTracker() {
       ? Math.round(((thisMonthCount - lastMonthCount) / lastMonthCount) * 100) 
       : 0;
 
+    // Generate last 7 days array for chart
+    const dailyVisits = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split("T")[0];
+      // Format as "DD MMM" in Arabic
+      const formattedDate = new Intl.DateTimeFormat('ar-DZ', { day: 'numeric', month: 'short' }).format(d);
+      dailyVisits.push({
+        date: formattedDate,
+        visitors: visits[dateStr] || 0
+      });
+    }
+
     setData({
       visitorsToday,
       visitorsThisMonth: thisMonthCount,
       visitorsLastMonth: lastMonthCount,
       changePercent,
       isPositive: changePercent >= 0,
+      dailyVisits,
     });
   }, []);
 

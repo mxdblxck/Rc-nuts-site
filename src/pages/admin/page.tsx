@@ -4,8 +4,7 @@ import { api } from "@/convex/_generated/api.js";
 import { Link } from "react-router-dom";
 import {
   Package, ShoppingCart, Users, Tag, LayoutDashboard,
-  TrendingUp, CheckCircle, Clock, Trash2, ToggleLeft, ToggleRight, Plus, Edit,
-  AlertTriangle, LogOut, Settings, Gift,
+  LogOut, Settings, Gift, Truck, Plus, ToggleLeft, ToggleRight, Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Badge } from "@/components/ui/badge.tsx";
@@ -69,13 +68,13 @@ function AdminContent() {
   }
 
   const navItems = [
-    { id: "dashboard" as AdminTab, label: "الإحصائيات", icon: <LayoutDashboard className="w-4 h-4" /> },
-    { id: "products" as AdminTab, label: "المنتجات", icon: <Package className="w-4 h-4" /> },
-    { id: "orders" as AdminTab, label: "الطلبات", icon: <ShoppingCart className="w-4 h-4" /> },
-    { id: "customers" as AdminTab, label: "الزبائن", icon: <Users className="w-4 h-4" /> },
-    { id: "coupons" as AdminTab, label: "الكوبونات", icon: <Tag className="w-4 h-4" /> },
-    { id: "packs" as AdminTab, label: "الباقات", icon: <Gift className="w-4 h-4" /> },
-    { id: "shipping" as AdminTab, label: "الشحن", icon: <Package className="w-4 h-4" /> },
+    { id: "dashboard" as AdminTab, label: "الإحصائيات", icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: "products" as AdminTab, label: "المنتجات", icon: <Package className="w-5 h-5" /> },
+    { id: "orders" as AdminTab, label: "الطلبات", icon: <ShoppingCart className="w-5 h-5" /> },
+    { id: "customers" as AdminTab, label: "الزبائن", icon: <Users className="w-5 h-5" /> },
+    { id: "coupons" as AdminTab, label: "الكوبونات", icon: <Tag className="w-5 h-5" /> },
+    { id: "packs" as AdminTab, label: "الباقات", icon: <Gift className="w-5 h-5" /> },
+    { id: "shipping" as AdminTab, label: "الشحن", icon: <Truck className="w-5 h-5" /> },
   ];
 
   const handleLogout = () => {
@@ -107,74 +106,94 @@ function AdminContent() {
   return (
     <div className="flex min-h-[calc(100vh-64px)]">
       {/* Premium Sidebar */}
-      <aside className="hidden md:flex w-72 flex-col bg-card border-l border-border shrink-0">
-        <div className="p-6 border-b border-border">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-primary-foreground font-black text-xl shadow-lg">
+      <aside className="hidden md:flex w-64 flex-col bg-card border-l border-border shrink-0">
+        {/* Brand */}
+        <div className="p-5 border-b border-border">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center text-primary-foreground font-black text-xl shadow-md">
               R
             </div>
             <div>
-              <h2 className="font-black text-lg text-foreground">RC Nuts</h2>
-              <p className="text-xs text-muted-foreground">لوحة تحكم Premium</p>
+              <p className="font-black text-foreground leading-tight">RC Nuts</p>
+              <p className="text-[11px] text-muted-foreground">لوحة التحكم</p>
             </div>
           </div>
         </div>
-        <nav className="flex-1 p-4 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 cursor-pointer ${
-                tab === item.id
-                  ? "bg-gradient-to-r from-primary to-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
-                  : "text-muted-foreground hover:bg-muted/70 hover:text-foreground hover:translate-x-0.5"
-              }`}
-            >
-              {item.icon}
-              {item.label}
-              {item.id === "orders" && orders && orders.filter((o: any) => o.status === "pending").length > 0 && (
-                <span className="mr-auto text-[10px] bg-yellow-500 text-white rounded-full px-2 py-0.5 font-bold">
-                  {orders.filter((o: any) => o.status === "pending").length}
+
+        {/* Nav */}
+        <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+          {navItems.map((item) => {
+            const isActive = tab === item.id;
+            const pendingCount = item.id === "orders" && orders ? orders.filter((o: any) => o.status === "pending").length : 0;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setTab(item.id)}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer group ${
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                }`}
+              >
+                <span className={isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground transition-colors"}>
+                  {item.icon}
                 </span>
-              )}
-            </button>
-          ))}
+                <span>{item.label}</span>
+                {pendingCount > 0 && (
+                  <span className="mr-auto text-[10px] bg-amber-500 text-white rounded-full px-2 py-0.5 font-black">
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </nav>
-        <div className="p-4 border-t border-border space-y-3">
+
+        {/* Footer */}
+        <div className="p-3 border-t border-border space-y-1">
           <Link
             to="/admin/settings"
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-muted-foreground hover:bg-muted/70 hover:text-foreground transition-all duration-200 cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-muted-foreground hover:bg-muted hover:text-foreground transition-all cursor-pointer"
           >
-            <Settings className="w-4 h-4" />
+            <Settings className="w-5 h-5" />
             الإعدادات
           </Link>
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-red-600 hover:bg-red-50 transition-all duration-200 cursor-pointer"
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all cursor-pointer"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-5 h-5" />
             تسجيل الخروج
           </button>
-          <div className="text-xs text-muted-foreground text-center pt-3 border-t border-border mt-2">
-            RC Nuts © 2026
-          </div>
+          <p className="text-[11px] text-muted-foreground text-center pt-2 border-t border-border mt-1">
+            RC Nuts © {new Date().getFullYear()}
+          </p>
         </div>
       </aside>
 
-      {/* Premium Mobile bottom tabs */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border flex justify-around z-40 px-3 py-2 shadow-lg">
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setTab(item.id)}
-            className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all duration-200 cursor-pointer ${
-              tab === item.id ? "text-primary scale-110" : "text-muted-foreground"
-            }`}
-          >
-            {item.icon}
-            <span className="text-[8px] font-medium">{item.label}</span>
-          </button>
-        ))}
+      {/* Mobile bottom tab bar */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-md border-t border-border flex justify-around z-40 px-2 py-2 shadow-xl">
+        {navItems.slice(0, 5).map((item) => {
+          const isActive = tab === item.id;
+          const pendingCount = item.id === "orders" && orders ? orders.filter((o: any) => o.status === "pending").length : 0;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              className={`relative flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
+                isActive ? "text-primary bg-primary/10" : "text-muted-foreground"
+              }`}
+            >
+              {item.icon}
+              <span className="text-[9px] font-bold">{item.label}</span>
+              {pendingCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 text-[9px] bg-amber-500 text-white rounded-full flex items-center justify-center font-black">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* Main Content */}
