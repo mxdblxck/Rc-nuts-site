@@ -129,24 +129,36 @@ export default function Index() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1.4, ease: "easeOut" }}
         >
-          {/* Mobile image */}
-          <img
-            src="/hero_premium_phone.png"
-            alt="RC Nuts — أجود المكسرات"
-            className="md:hidden w-full h-full object-cover object-center"
-            fetchPriority="high"
-            decoding="async"
-            onError={(e) => { e.currentTarget.src = "/hero_premium.png"; }}
-          />
-          {/* Desktop image */}
-          <img
-            src="/hero_premium.png"
-            alt="RC Nuts — أجود المكسرات"
-            className="hidden md:block w-full h-full object-cover object-center"
-            fetchPriority="high"
-            decoding="async"
-            onError={(e) => { e.currentTarget.src = "/logo.png"; }}
-          />
+          {/* Mobile image — WebP with PNG fallback */}
+          <picture className="md:hidden w-full h-full">
+            <source srcSet="/hero_premium_phone.webp" type="image/webp" />
+            <img
+              src="/hero_premium_phone.png"
+              alt="RC Nuts — أجود المكسرات"
+              className="w-full h-full object-cover object-center"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              width={800}
+              height={1600}
+              onError={(e) => { e.currentTarget.src = "/hero_premium.png"; }}
+            />
+          </picture>
+          {/* Desktop image — WebP with PNG fallback */}
+          <picture className="hidden md:block w-full h-full">
+            <source srcSet="/hero_premium.webp" type="image/webp" />
+            <img
+              src="/hero_premium.png"
+              alt="RC Nuts — أجود المكسرات"
+              className="w-full h-full object-cover object-center"
+              fetchPriority="high"
+              loading="eager"
+              decoding="async"
+              width={1920}
+              height={1080}
+              onError={(e) => { e.currentTarget.src = "/logo.png"; }}
+            />
+          </picture>
         </motion.div>
 
         {/* Desktop gradient — theme-aware, right side only. Jars left, text right (RTL) */}
