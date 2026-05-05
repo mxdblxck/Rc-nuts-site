@@ -12,6 +12,7 @@ import { UploadCloud, Link as LinkIcon, X, Plus, Trash, Images, Package, Wallet,
 import type { Id } from "@/convex/_generated/dataModel.d.ts";
 import type { Doc } from "@/convex/_generated/dataModel.d.ts";
 import { useEffect, useRef, useState } from "react";
+import { compressImage } from "@/lib/compressImage.ts";
 
 const schema = z.object({
   nameAr: z.string().min(2, "الاسم مطلوب"),
@@ -164,11 +165,12 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       let finalStorageId = editProduct?.imageStorageId;
       
       if (imageType === "upload" && selectedFile) {
+        const toUpload = await compressImage(selectedFile);
         const postUrl = await generateUploadUrl();
         const result = await fetch(postUrl, {
           method: "POST",
-          headers: { "Content-Type": selectedFile.type },
-          body: selectedFile,
+          headers: { "Content-Type": toUpload.type },
+          body: toUpload,
         });
         const { storageId } = await result.json();
         finalStorageId = storageId;
@@ -179,11 +181,12 @@ export default function AdminProductForm({ onClose, editProduct }: Props) {
       const newGalleryUrls: string[] = [];
       for (const entry of galleryEntries) {
         if (entry.type === "file") {
+          const toUpload = await compressImage(entry.file);
           const postUrl = await generateUploadUrl();
           const result = await fetch(postUrl, {
             method: "POST",
-            headers: { "Content-Type": entry.file.type },
-            body: entry.file,
+            headers: { "Content-Type": toUpload.type },
+            body: toUpload,
           });
           const { storageId } = await result.json();
           newGalleryIds.push(storageId as Id<"_storage">);

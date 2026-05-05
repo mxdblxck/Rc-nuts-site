@@ -168,18 +168,18 @@ export default function Index() {
             background: "linear-gradient(to right, transparent 30%, color-mix(in srgb, var(--background) 80%, transparent) 60%, var(--background) 100%)",
           }}
         />
-        {/* Mobile gradient — top, light opacity */}
+        {/* Mobile gradient — top, extended reach */}
         <div
           className="absolute inset-0 pointer-events-none md:hidden"
           style={{
-            background: "linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 20%, transparent) 45%, transparent 72%)",
+            background: "linear-gradient(to bottom, var(--background) 0%, color-mix(in srgb, var(--background) 20%, transparent) 52%, transparent 85%)", /*modify gradient hna b pourcentage */
           }}
         />
-        {/* Mobile gradient — bottom primary green — bigger reach */}
+        {/* Mobile gradient — bottom green, reduced reach */}
         <div
           className="absolute inset-0 pointer-events-none md:hidden"
           style={{
-            background: "linear-gradient(to bottom, transparent 58%, rgba(53,115,53,0.22) 78%, rgba(53,115,53,0.60) 100%)",
+            background: "linear-gradient(to bottom, transparent 70%, rgba(53,115,53,0.20) 85%, rgba(53,115,53,0.55) 100%)",
           }}
         />
 
@@ -273,8 +273,8 @@ export default function Index() {
       </section>
 
       {/* ── Green line separator ── */}
-      <div className="relative h-[16px] w-full -mt-[0px] -mb-[3px] z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-primary opacity-90 " />
+      <div className="relative h-[8px] w-full -mt-[0px] -mb-[3px] z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-primary opacity-92 " />
       </div>
 
       {/* Features */}
