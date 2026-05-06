@@ -50,7 +50,7 @@ export default function Footer() {
             </li>
             <li className="flex items-center gap-2">
               <Mail className="w-4 h-4 text-accent shrink-0" />
-              <span>rcnutsdz@gmail.com</span>
+              <span><a href="mailto:rcnutsdz@gmail.com"></a>rcnutsdz@gmail.com</span>
             </li>
             <li className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-accent shrink-0" />

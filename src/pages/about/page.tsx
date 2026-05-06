@@ -9,9 +9,8 @@ const values = [
   { icon: <Leaf className="w-5 h-5" />, title: "طبيعي 100%", desc: "خالية من المواد الحافظة والإضافات الاصطناعية" },
   { icon: <Award className="w-5 h-5" />, title: "جودة ممتازة", desc: "نختار كل منتج بعناية من أفضل المصادر" },
   { icon: <Truck className="w-5 h-5" />, title: "توصيل لكل الجزائر", desc: "نوصّل لجميع الولايات الـ58 بسرعة وأمان" },
-  { icon: <ShieldCheck className="w-5 h-5" />, title: "ضمان الرضا", desc: "مو راضٍ عن الطلب؟ راسلنا وحل مضمون" },
-  { icon: <Heart className="w-5 h-5" />, title: "بأيدينا نحمص", desc: "كل صورة حقيقية لمنتجاتنا نحمصوها بأيدينا" },
-  { icon: <Users className="w-5 h-5" />, title: "+500 عميل راضٍ", desc: "ثقة مئات العائلات الجزائرية منذ سنوات" },
+  { icon: <ShieldCheck className="w-5 h-5" />, title: "ضمان الرضا", desc: "خدمة ما بعد البيع متوفرة" },
+
 ];
 
 const stats = [
@@ -121,7 +120,7 @@ export default function AboutPage() {
             <h2 className="text-2xl md:text-3xl font-black font-serif text-foreground mb-2">قيمنا ومبادئنا</h2>
             <p className="text-muted-foreground text-sm">ما يجعلنا مختلفين</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"> {/* change grid menna */}
             {values.map((v, i) => (
               <motion.div
                 key={v.title}
